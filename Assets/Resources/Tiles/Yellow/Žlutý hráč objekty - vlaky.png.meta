@@ -1,0 +1,795 @@
+fileFormatVersion: 2
+guid: 8e3cd53e8e0bd0f48b0071dcd8582430
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_0"
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 735
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7daa0f4abcefb54ba89ee03b5c10f82
+      internalID: 990619193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_1"
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 735
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bbb72049dc472841a970e61ddc4bd42
+      internalID: 1440631621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_2"
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 734
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45d4e5b9596395643965b7a9cce2bc2d
+      internalID: -1609488902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_3"
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 734
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7aa963c7cfd3ac745b5546203b5c4f86
+      internalID: -1046157019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_4"
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 628
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e7579b58ae94534f99e25e1ab683f7e
+      internalID: 1952153421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_5"
+      rect:
+        serializedVersion: 2
+        x: 685
+        y: 628
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8233ee950557afe43a8f106912ee5e31
+      internalID: -1160639042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_6"
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 628
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 579991da8f0c946409a547895633d04d
+      internalID: -613319612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_7"
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 629
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a640c24eba18b684fb3ca129e46614b9
+      internalID: -297999156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_8"
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 627
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9d2f8e9009f8384c9653341525453cd
+      internalID: 712467914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_9"
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 627
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e72bab6f0077045438651ea54e61c38c
+      internalID: 1675594925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_10"
+      rect:
+        serializedVersion: 2
+        x: 906
+        y: 520
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16494e9705f70c64cbaa0012422d9ef7
+      internalID: 1725159493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_11"
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 521
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ba079d915e7274468836b611a0a90b3
+      internalID: 1222649152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_12"
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 519
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ae6d9c3f96c46940997fe3fd4e7de7f
+      internalID: 1958178698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_13"
+      rect:
+        serializedVersion: 2
+        x: 469
+        y: 520
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32266812409f518469b629d1e5745f0b
+      internalID: 1648852323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_14"
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 513
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d83ee5abcfec94a4bb94cff3be7b1bcc
+      internalID: 1663578249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_15"
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 412
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fb6ab4824528c347bdcad887d1bc84d
+      internalID: 475181943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_16"
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 406
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63a8511a3c336d44e9068e2b484f4a64
+      internalID: 840025503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_17"
+      rect:
+        serializedVersion: 2
+        x: 692
+        y: 406
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5114c1505f12ed4995d0edff34ee817
+      internalID: -1396439592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_18"
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 409
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bdb7a604500e1843ad05fb92c86b9ee
+      internalID: -2066612092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_19"
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 410
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaeb4488df0dc5742a0863666934cc77
+      internalID: 1413941951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_20"
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 410
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8876e88133da19b4aae2785e5885456d
+      internalID: -657632332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_21"
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 409
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cbd3848dfea8764d83afaa67c9ce5f1
+      internalID: -895638134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_22"
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 406
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6287878d28d06474b83f0102104ef802
+      internalID: 895848458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_23"
+      rect:
+        serializedVersion: 2
+        x: 914
+        y: 301
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3faf9eaeac9a5a74ba5fbae1524b62a9
+      internalID: -105621233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_24"
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 300
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0b0a172d9e6a4849a2148fbb09b8348
+      internalID: 587516268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_25"
+      rect:
+        serializedVersion: 2
+        x: 698
+        y: 300
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e53852f2fbd9faf4aa6ba39fedd4540d
+      internalID: -94112611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_26"
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 297
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9793db3e0394393418d8cdf119adb57c
+      internalID: -831322431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_27"
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 296
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24b99ffb5a428e1499212a165e2bbd62
+      internalID: 887979527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_28"
+      rect:
+        serializedVersion: 2
+        x: 489
+        y: 66
+        width: 134
+        height: 84
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03193e48dda50284582ff20bd53df95e
+      internalID: -1103481855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_29"
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 294
+        width: 109
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9b3eaa81812b2345b945525c9ab8280
+      internalID: 907992080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_2": -1609488902
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_16": 840025503
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_18": -2066612092
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_12": 1958178698
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_6": -613319612
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_26": -831322431
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_7": -297999156
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_22": 895848458
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_20": -657632332
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_19": 1413941951
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_29": 907992080
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_9": 1675594925
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_8": 712467914
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_3": -1046157019
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_15": 475181943
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_25": -94112611
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_1": 1440631621
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_4": 1952153421
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_0": 990619193
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_21": -895638134
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_11": 1222649152
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_5": -1160639042
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_13": 1648852323
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_14": 1663578249
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_17": -1396439592
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_10": 1725159493
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_23": -105621233
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_27": 887979527
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_24": 587516268
+      "\u017Dlut\xFD hr\xE1\u010D objekty - vlaky_28": -1103481855
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

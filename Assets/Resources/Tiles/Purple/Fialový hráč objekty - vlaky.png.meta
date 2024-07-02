@@ -1,0 +1,795 @@
+fileFormatVersion: 2
+guid: b3f9dae7131963a45b581507d1221a3a
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_0"
+      rect:
+        serializedVersion: 2
+        x: 1005
+        y: 736
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3cb730e4a2639eb4d9eca5d5c0f1c999
+      internalID: 2066050408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_1"
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 734
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6a5690dba6b2894096e1620a06b9caf
+      internalID: 390819327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_2"
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 734
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20c4c59ddf190714180e6a12490e7a00
+      internalID: -1459204890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_3"
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 733
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b945f2c2e18e0ca47b63e1202d651d19
+      internalID: -1553302048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_4"
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 626
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5cd42a477758e14eb7e38f137dc4a77
+      internalID: 290890459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_5"
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 627
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c58107750dd646843bba44b2e185e322
+      internalID: 930785133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_6"
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 627
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80dca0726c068264baf85361817460c7
+      internalID: 1774836161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_7"
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 628
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c5a2502cc3ba944784a5c2cf58675e2
+      internalID: -1841927721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_8"
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 627
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f4789c65ece77f49a4b309cd7a252c0
+      internalID: 1534362190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_9"
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 625
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 090915a076cccaa429c6d61e510cc651
+      internalID: -763953008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_10"
+      rect:
+        serializedVersion: 2
+        x: 908
+        y: 523
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e77de25082e84149886f74c87a3c78d
+      internalID: 319269803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_11"
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 521
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 277d64da62312c34a9381996b8912280
+      internalID: 163440037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_12"
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 520
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aaab10b9626e63f4cb8315a5767cbb59
+      internalID: 1463681039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_13"
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 518
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38c230b35d523444e9aa4d468e8742bf
+      internalID: 360636204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_14"
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 520
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3abc405ff9f0ac547973d8b6e378f78b
+      internalID: -1759623523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_15"
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 412
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bdc262d5b7f1d46449cd1f959229e746
+      internalID: -1559586007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_16"
+      rect:
+        serializedVersion: 2
+        x: 802
+        y: 411
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5cb4549f366b7342bf7ac57448f04b2
+      internalID: -300940664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_17"
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 411
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 306531586ae917845b73cfb3c2dd19c6
+      internalID: -114633228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_18"
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 409
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92e57978cb1522e4d891dcacf2467f33
+      internalID: -1743678697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_19"
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 409
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adee41c505605cb49931dc5038402c4e
+      internalID: 1515050468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_20"
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 409
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d6cc7ac6dd6d7b4da21b56cf44b43f5
+      internalID: -2128718584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_21"
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 407
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c7749c4a5c9b5a4397e66e82db1c982
+      internalID: -1617798185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_22"
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 407
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac71333c80aef5d429b3add9641aa843
+      internalID: -1144565162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_23"
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 302
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59078d5062a3b814d8ce645b0cd575f7
+      internalID: 1040163022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_24"
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 301
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 396ce9396a9faa042a00fd586d5c8f0e
+      internalID: 1048004453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_25"
+      rect:
+        serializedVersion: 2
+        x: 692
+        y: 301
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83d079a67acd6c94b827460e442d7d9c
+      internalID: 197594460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_26"
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 299
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 741458b7589cf1648b0611fc2ebcf7bc
+      internalID: -586173884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_27"
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 294
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04f6de88724d69947be5be428e89979d
+      internalID: -1437948556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_28"
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 293
+        width: 111
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c417672da6e0bd448a0da249edcf339
+      internalID: -436786972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Fialov\xFD hr\xE1\u010D objekty - vlaky_29"
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 67
+        width: 132
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 921875df5b7808f40a0f263126d39bdb
+      internalID: -698544798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_23": 1040163022
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_22": -1144565162
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_9": -763953008
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_15": -1559586007
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_12": 1463681039
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_0": 2066050408
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_26": -586173884
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_5": 930785133
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_16": -300940664
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_21": -1617798185
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_17": -114633228
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_20": -2128718584
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_1": 390819327
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_4": 290890459
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_6": 1774836161
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_25": 197594460
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_28": -436786972
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_7": -1841927721
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_18": -1743678697
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_29": -698544798
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_24": 1048004453
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_11": 163440037
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_2": -1459204890
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_3": -1553302048
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_8": 1534362190
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_10": 319269803
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_27": -1437948556
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_14": -1759623523
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_19": 1515050468
+      "Fialov\xFD hr\xE1\u010D objekty - vlaky_13": 360636204
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
