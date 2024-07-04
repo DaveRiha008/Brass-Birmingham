@@ -5,7 +5,7 @@ using UnityEngine;
 public struct Constants
 {
   //Game parameters
-  readonly public static bool instantGameRestart = true;
+  readonly public static bool instantGameRestart = false;
 
   readonly public static int boatCost = 3;
   readonly public static int train1Cost = 5;
@@ -17,7 +17,7 @@ public struct Constants
   readonly public static int maxIncome = 99;
   readonly public static int maxVP = 99;
 
-  readonly public static string saveFilesAbsolutePath = "C:/Users/Øíha/Documents/Brass Birmingham saves";
+  readonly public static string saveFilesAbsolutePath = Application.dataPath;
   readonly public static string saveFileName = "SaveFile.dat";
   readonly public static string vicFileName = "VictoryData.dat";
 

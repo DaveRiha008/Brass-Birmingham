@@ -62,7 +62,8 @@ public class BreweryTileScript : TileScript
   }
   public override void Remove()
   {
-    for (int i = 0; i < myBarrels.Count; i++)
+    int removeCount = myBarrels.Count;
+    for (int i = 0; i < removeCount; i++)
       RemoveBarrel();
 
 
@@ -87,9 +88,13 @@ public class BreweryTileScript : TileScript
 
   public override void LoadFromSaveData(SaveData sd)
   {
+    //Debug.Log("BarrelTileScript load called");
     int barrelsToRemove = myBarrels.Count;
     for (int i = 0; i < barrelsToRemove; i++)
+    {
+      //Debug.Log($"Removing {i}th barrel");
       RemoveBarrel();
+    }
     foreach (SaveData.TileScriptData data in sd.tileScriptData)
       if (data.id == id)
       {
@@ -100,6 +105,11 @@ public class BreweryTileScript : TileScript
           builtOnSpace = dataSpace;
           dataSpace.myTile = this;
           dataSpace.builtIndustry = industryType;
+        }
+        else if (builtOnSpace is not null)
+        {
+          builtOnSpace.RemoveBuiltIndustry();
+          builtOnSpace = null;
         }
 
         for (int i = 0; i < data.resourceCount; i++)

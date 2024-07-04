@@ -80,7 +80,8 @@ public class IronWorksTileScript : TileScript
 
   public override void Remove()
   {
-    for (int i = 0; i < myIrons.Count; i++)
+    int removeCount = myIrons.Count;
+    for (int i = 0; i < removeCount; i++)
       RemoveIron();
     base.Remove();
   }
@@ -107,7 +108,7 @@ public class IronWorksTileScript : TileScript
     int ironToRemove = myIrons.Count;
     for (int i = 0; i < ironToRemove; i++)
     {
-      //Debug.Log($"Removing {i}th iron");
+      Debug.Log($"Removing {i}th iron");
       RemoveIron();
     }
     foreach (SaveData.TileScriptData data in sd.tileScriptData)
@@ -120,6 +121,11 @@ public class IronWorksTileScript : TileScript
           builtOnSpace = dataSpace;
           dataSpace.myTile = this;
           dataSpace.builtIndustry = industryType;
+        }
+        else if (builtOnSpace is not null)
+        {
+          builtOnSpace.RemoveBuiltIndustry();
+          builtOnSpace = null;
         }
 
         for (int i = 0; i < data.resourceCount; i++)

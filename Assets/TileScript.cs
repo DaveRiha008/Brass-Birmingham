@@ -220,6 +220,11 @@ public class TileScript : Clickable, ISaveable
           dataSpace.myTile = this;
           dataSpace.builtIndustry = industryType;
         }
+        else if (builtOnSpace is not null)
+        {
+          builtOnSpace.RemoveBuiltIndustry();
+          builtOnSpace = null;
+        }
         if (data.isUpgraded) Upgrade(false);
         else Downgrade(false);
         if (data.isDeveloped) Develop();

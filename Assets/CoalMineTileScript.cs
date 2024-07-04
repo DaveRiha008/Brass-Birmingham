@@ -74,7 +74,9 @@ public class CoalMineTileScript : TileScript
   }
   public override void Remove()
   {
-    for (int i = 0; i < myCoals.Count; i++)
+    int removeCount = myCoals.Count;
+
+    for (int i = 0; i < removeCount; i++)
       RemoveCoal();
     base.Remove();
   }
@@ -100,7 +102,10 @@ public class CoalMineTileScript : TileScript
   {
     int coalToRemove = myCoals.Count;
     for (int i = 0; i < coalToRemove; i++)
+    {
+      //Debug.Log($"Removing {i}th coal");
       RemoveCoal();
+    }
     foreach (SaveData.TileScriptData data in sd.tileScriptData)
       if (data.id == id)
       {
@@ -113,8 +118,16 @@ public class CoalMineTileScript : TileScript
           dataSpace.builtIndustry = industryType;
         }
 
+        else if (builtOnSpace is not null)
+        {
+          builtOnSpace.RemoveBuiltIndustry();
+          builtOnSpace = null;
+        }
+        
+
         for (int i = 0; i < data.resourceCount; i++)
           AddCoal();
+
 
         if (data.isUpgraded) Upgrade(false);
         else Downgrade(false);

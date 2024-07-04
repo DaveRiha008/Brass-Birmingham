@@ -19,7 +19,7 @@ public static class SaveDataManager
       Debug.Log($"PlayerName: {playerData.name}");
     }
 
-    if (FileManager.WriteToFile(Constants.vicFileName, sd.ToJson()))
+    if (FileManager.WriteToFile(Constants.saveFileName, sd.ToJson()))
     {
       Debug.Log($"Saved {sd.ToJson()}");
       Debug.Log("Save successful");
@@ -28,7 +28,7 @@ public static class SaveDataManager
 
   public static void LoadJsonData()
   {
-    if (FileManager.LoadFromFile(Constants.vicFileName, out var json))
+    if (FileManager.LoadFromFile(Constants.saveFileName, out var json))
     {
       Debug.Log($"Loading from JSON: {json}");
 

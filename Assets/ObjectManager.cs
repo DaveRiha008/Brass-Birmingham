@@ -150,12 +150,16 @@ public class ObjectManager : MonoBehaviour, ISaveable
     Debug.Log("ObjectManager Start called!");
     mainBoard = GameObject.Find(Constants.mainBoardName);
 
+    LoadAllStaticObjects();
+
+  }
+
+  static void LoadAllStaticObjects()
+  {
     LoadAllLocations();
     LoadAllNetworkSpaces();
-    LoadAllTokens();
     coalStorage = mainBoard.transform.Find(Constants.coalStorageName).gameObject.GetComponent<ResourceStorage>();
     ironStorage = mainBoard.transform.Find(Constants.ironStorageName).gameObject.GetComponent<ResourceStorage>();
-
   }
 
   public static void InitializeObjects()
@@ -233,7 +237,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
   }
 
-  private static void LoadAllTokens()
+  private static void CreateTokens()
   {
     for (int i = 0; i < GameManager.numOfPlayers; i++)
     {
@@ -623,7 +627,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
       foreach (List<TileScript> playerTiles in industry)
       {
         foreach (TileScript tile in playerTiles)
-          tile.gameObject.SetActive(false);
+          tile.Remove();
         playerTiles.Clear();
       }
     }
@@ -662,7 +666,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
         }
       }
     }
-    allMerchants.Clear();
+    //allMerchants.Clear();
   }
 
 
@@ -781,6 +785,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
     FillMerchantBarrels();
     FillCoalStorage();
     FillIronStorage();
+    CreateTokens();
     UpdateHelpingArrays();
   }
   public static void CreateAllBuildingTiles()
@@ -963,7 +968,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     loadedTiles = HelpFunctions.GetShuffledList(loadedTiles);
     allMerchantTiles = loadedTiles;
-    //Debug.Log("Loaded total of " + loadedTiles.Count.ToString() + " merchant tiles");
+    Debug.Log("Loaded total of " + loadedTiles.Count.ToString() + " merchant tiles");
     int tileIndex = 0;
     foreach (LocationScript merchant in allMerchants)
     {
@@ -2519,6 +2524,11 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
   public static void LoadFromSaveDataStatic(SaveData sd)
   {
+    DestroyAllObjects();
+    ClearAllMemory();
+    LoadAllStaticObjects();
+    InitializeObjects();
+
     
 
     foreach (List<TileScript>[] tilesPerPlayer in allTilesPerPlayer)
