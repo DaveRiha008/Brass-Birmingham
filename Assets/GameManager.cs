@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour, ISaveable
   public static int activePlayerIndex = 0;
   public static int activePlayerTurnIndex = 0;
   static public int numOfPlayers = 4;
-  static public int numOfAI = 4;
+  static public int numOfAI = 2;
 
   static int minPlayers = 2;
   static int maxPlayers = 4;
@@ -36,11 +36,10 @@ public class GameManager : MonoBehaviour, ISaveable
 
   static public bool firstEverRound = true;
   static bool gameRunning = false;
-
+  static public bool waitingForNextEra = false;
 
   void Start()
   {
-    SortPlayerTurnsByMoneySpent();
     LoadIncomeLevels();
     StartGame();
   }
@@ -72,7 +71,6 @@ public class GameManager : MonoBehaviour, ISaveable
     //to ensure always the same order of players in the case of repeated games
     activePlayerIndex = 0;
     activePlayerTurnIndex = 0;
-    SortPlayerTurnsByMoneySpent();
 
 
     gameRunning = true;
@@ -84,6 +82,8 @@ public class GameManager : MonoBehaviour, ISaveable
     UpdateAIReplacement();
 
     InitPlayerInfo();
+
+    SortPlayerTurnsByMoneySpent();
 
     UpdateActivePlayerPropertiesBeforeAction();
     
@@ -99,6 +99,8 @@ public class GameManager : MonoBehaviour, ISaveable
 
     // For AI analysis
     VictoryDataManager.UpdateVictoryData();
+
+    AIManager.StopPlaying();
 
     //Debug.Log($"End Game called - setting currentEra from {currentEra} to BOAT");
     currentEra = ERA.BOAT;
@@ -207,8 +209,9 @@ public class GameManager : MonoBehaviour, ISaveable
   {
     for (int i = 0; i < numOfPlayers; i++)
     {
-      if (i < numOfAI) playerList[i].AIReplaced = true;
-      else playerList[i].AIReplaced = false;
+      int oppositeIndex = (numOfPlayers - 1) - i; //For the humans to play first
+      if (i < numOfAI) playerList[oppositeIndex].AIReplaced = true;
+      else playerList[oppositeIndex].AIReplaced = false;
     }
   }
   static public void EndTurn()
@@ -220,7 +223,8 @@ public class GameManager : MonoBehaviour, ISaveable
 
   static public void NextPlayer()
   {
-    ActionManager.CancelAction();
+    if(ActionManager.currentAction != ACTION.NONE)
+      ActionManager.CancelAction();
     if (CardManager.AllPlayersHaveEmptyHands() && CardManager.drawDeck.isEmpty)
       ChangeEra();
 
@@ -246,6 +250,7 @@ public class GameManager : MonoBehaviour, ISaveable
     }
     activePlayerIndex = playerTurns[activePlayerTurnIndex];
 
+    HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.PLAYER_CHANGED);
 
 
     UpdateActivePlayerPropertiesBeforeAction();
@@ -452,10 +457,20 @@ public class GameManager : MonoBehaviour, ISaveable
         ObjectManager.FillMerchantBarrels();
 
         CardManager.PutAllCardsInDrawDecks();
+        CardManager.ShuffleDrawDeck();
 
         for (int i = 0; i < numOfPlayers; i++)
           CardManager.FillPlayerHand(i);
 
+
+        if(!Constants.instantGameRestart)
+        {
+          CameraScript camera = Camera.main.GetComponent<CameraScript>();
+          camera.MoveToChangeEraScreen();
+          camera.lockScreenChange = true;
+
+          waitingForNextEra = true;
+        }
         break;
       case ERA.TRAIN:
         Debug.Log($"Changing era from train -> END GAME");
@@ -464,6 +479,15 @@ public class GameManager : MonoBehaviour, ISaveable
       default:
         break;
     }
+  }
+
+  static public void NextEraReady()
+  {
+    CameraScript camera = Camera.main.GetComponent<CameraScript>();
+    camera.lockScreenChange = false;
+    camera.MoveToMainBoard();
+
+    waitingForNextEra = false;
   }
 
   static void AwardVictoryPoints()
@@ -547,10 +571,9 @@ public class GameManager : MonoBehaviour, ISaveable
     List<int> moneyList = new();
     for (int i = 0; i < numOfPlayers; i++)
     {
-      indexList.Add(i);
+      indexList.Add(playerTurns[i]);
       moneyList.Add(playerList[playerTurns[i]].moneySpentThisTurn);
     }
-
 
     List<int> sortedIndexList = new();
     List<int> sortedMoneyList = new();
@@ -566,7 +589,6 @@ public class GameManager : MonoBehaviour, ISaveable
           maxMoneyIndex = indexList[j];
         }
       }
-
       sortedIndexList.Add(maxMoneyIndex);
       sortedMoneyList.Add(moneyMin);
       moneyList.Remove(moneyMin);
@@ -706,5 +728,5 @@ public class Player : ISaveable
   }
 }
 
-public enum BOARD { MAIN, PERSONAL, HELP, HAND, DISCARD, NONE};
+public enum BOARD { MAIN, PERSONAL, HELP, HAND, DISCARD, ERA_CHANGE, NONE};
 public enum ERA { BOAT, TRAIN }

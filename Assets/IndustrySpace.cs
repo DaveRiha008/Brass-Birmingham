@@ -41,7 +41,7 @@ public class IndustrySpace : Clickable
   // Update is called once per frame
   void Update()
   {
-
+    if (myTile is not null && !myTile.isActiveAndEnabled) RemoveBuiltIndustry();
   }
 
   public override void OnClick()

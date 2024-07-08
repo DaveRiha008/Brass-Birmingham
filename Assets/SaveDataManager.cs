@@ -14,10 +14,7 @@ public static class SaveDataManager
     //  saveable.PopulateSaveData(sd);
     //}
 
-    foreach (SaveData.PlayerData playerData in sd.playerData)
-    {
-      Debug.Log($"PlayerName: {playerData.name}");
-    }
+
 
     if (FileManager.WriteToFile(Constants.saveFileName, sd.ToJson()))
     {

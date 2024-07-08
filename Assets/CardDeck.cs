@@ -27,9 +27,13 @@ public class CardDeck : Clickable
 
   public void AddCard(CardScript card)
   {
+    if (myCards.Contains(card)) return;
+
     card.transform.SetPositionAndRotation(transform.position + new Vector3(0, 0, 5), Quaternion.Euler(new Vector3(0, 0, 90)));//Set position and rotation acording to deck but behind its collider
     myCards.Add(card);
     card.ShuffleInDeck();
+
+
     isEmpty = false;
   }
 
@@ -43,6 +47,7 @@ public class CardDeck : Clickable
     isEmpty = false;
     CardScript returnCard = myCards[0];
     myCards.RemoveAt(0);
+    returnCard.Draw();
 
     //Debug.Log("Drawing card from Normal drawDeck");
 

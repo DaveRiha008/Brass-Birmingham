@@ -20,6 +20,12 @@ public class PersonalInfoLabels : MonoBehaviour
     playerIncome = transform.Find("Income").gameObject.GetComponent<TextMeshPro>();
     playerIncomePts = transform.Find("IncomePoints").gameObject.GetComponent<TextMeshPro>();
     playerVicPts = transform.Find("VictoryPoints").gameObject.GetComponent<TextMeshPro>();
+
+    playerName.color = Constants.playerColors[playerIndex];
+    playerMoney.color = Constants.playerColors[playerIndex];
+    playerIncome.color = Constants.playerColors[playerIndex];
+    playerIncomePts.color = Constants.playerColors[playerIndex];
+    playerVicPts.color = Constants.playerColors[playerIndex];
   }
 
   // Update is called once per frame

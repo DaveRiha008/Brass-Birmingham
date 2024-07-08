@@ -109,6 +109,7 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_TIMELINE
 --compilation-defines=ENABLE_LEGACY_INPUT_MANAGER
 --compilation-defines=TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+--compilation-defines=DOTWEEN
 --compilation-defines=PACKAGE_PHYSICS
 --compilation-defines=PACKAGE_PHYSICS2D
 --compilation-defines=PACKAGE_TILEMAP
@@ -143,6 +144,7 @@ Library: lib_burst_generated
 --root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Unity.2D.IK.Runtime.dll
 --root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Unity.2D.Tilemap.Extras.dll
 --root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Unity.InternalAPIEngineBridge.001.dll
+--root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Assembly-CSharp-firstpass.dll
 --assembly-folder=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\
 --pdb-search-paths=Temp/ManagedSymbols/
 --method=Unity.Burst.BurstCompiler+BurstCompilerHelper, Unity.Burst, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::IsBurstEnabled()--8c2be93e18276203cbd918daa2748a10
@@ -260,6 +262,7 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_TIMELINE
 --compilation-defines=ENABLE_LEGACY_INPUT_MANAGER
 --compilation-defines=TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+--compilation-defines=DOTWEEN
 --compilation-defines=PACKAGE_PHYSICS
 --compilation-defines=PACKAGE_PHYSICS2D
 --compilation-defines=PACKAGE_TILEMAP
@@ -294,6 +297,7 @@ Library: lib_burst_generated
 --root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Unity.2D.IK.Runtime.dll
 --root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Unity.2D.Tilemap.Extras.dll
 --root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Unity.InternalAPIEngineBridge.001.dll
+--root-assembly=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\Assembly-CSharp-firstpass.dll
 --assembly-folder=C:\Users\Říha\Documents\Škola\Ročníkový projekt - Brass Birmingham\Unity project\Brass Birmingham\Temp\StagingArea\Data\Managed\
 --pdb-search-paths=Temp/ManagedSymbols/
 --method=Unity.Burst.BurstCompiler+BurstCompilerHelper, Unity.Burst, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::IsBurstEnabled()--8c2be93e18276203cbd918daa2748a10

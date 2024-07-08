@@ -27,7 +27,8 @@ public class CameraScript : MonoBehaviour
   float yMaxBoundary = 1000;
   float yMinBoundary = -1000;
 
-  public bool lockMainBoard = true;
+  public bool lockMainBoard = false;
+  public bool lockScreenChange = false;
 
 
 
@@ -39,6 +40,8 @@ public class CameraScript : MonoBehaviour
     currentResetSize = originalCameraSize;
 
     originalCameraZ = transform.position.z;
+
+    lockMainBoard = Constants.initMainBoardLock;
 
     MoveToMainBoard();    
   }
@@ -180,6 +183,7 @@ public class CameraScript : MonoBehaviour
   void MoveToBoard(string boardName)
   {
     if (lockMainBoard && boardName != "Main Board") return;
+    if (lockScreenChange) return;
     GameObject board = GameObject.Find(boardName); 
     Vector3 boardPosition = board.transform.position;
     BoxCollider2D boardCollider = board.transform.Find("Background").gameObject.GetComponent<BoxCollider2D>(); //Fixed name of object!!
@@ -220,5 +224,13 @@ public class CameraScript : MonoBehaviour
     currentResetSize = originalCameraSize;
     MoveToBoard("Discard Preview - Player " + (GameManager.activePlayerIndex + 1).ToString()); //Fixed name of object!!
     GameManager.currentlyOnBoard = BOARD.DISCARD;
+  }
+
+  public void MoveToChangeEraScreen()
+  {
+    Debug.Log("Changing camera to EraChange");
+    currentCameraSize = originalCameraSize;
+    MoveToBoard("EraChangeScreen"); //Fixed name of object!!
+    GameManager.currentlyOnBoard = BOARD.ERA_CHANGE;
   }
 }

@@ -52,21 +52,6 @@ public class CardManager : MonoBehaviour, ISaveable
   private static List<GameObject> allBorders = new();
 
 
-  //private void Awake()
-  //{
-  //  CreateSingleton();
-  //}
-  //void CreateSingleton()
-  //{
-  //  if (instance == null)
-  //    instance = this;
-  //  else
-  //    Destroy(gameObject);
-
-
-  //  //DontDestroyOnLoad(gameObject);
-  //}
-
   private void Start()
   {
 
@@ -127,6 +112,11 @@ public class CardManager : MonoBehaviour, ISaveable
     playerDiscards[3] = player4Discard;
 
     InitializeCards();
+  }
+
+  private void Update()
+  {
+
   }
 
   public static void InitializeCards()
@@ -283,7 +273,13 @@ public class CardManager : MonoBehaviour, ISaveable
     }
     foreach (CardScript card in allWildLocationCards)
     {
+      //Debug.Log($"Adding wild location card in deck - currently {wildLocationDrawDeck.GetNumberOfCardsInDeck()} card in deck");
       wildLocationDrawDeck.AddCard(card);
+    }
+    for (int i = 0; i < GameManager.numOfPlayers; i++)
+    {
+      playerHands[i].Clear();
+      playerDiscards[i].Clear();
     }
   }
 
@@ -380,7 +376,6 @@ public class CardManager : MonoBehaviour, ISaveable
     }
     if (drawWildCard && ActionManager.currentAction == ACTION.SCOUT)
       ActionManager.ScoutChoseWildCard();
-    drawnCard.Draw();
     playerHands[playerIndex].Add(drawnCard);
     RemakeHandView(playerIndex);
   }
@@ -416,10 +411,16 @@ public class CardManager : MonoBehaviour, ISaveable
 
   private static void RemakeView(List<CardScript> cardList, GameObject board)
   {
+    SortCardsByID(cardList);
+
+
     int matrixSize = Mathf.CeilToInt(Mathf.Sqrt(cardList.Count));
     float middle = ((matrixSize - 1) / 2.0f);
     float cardSizeX = cardList[0].GetComponent<BoxCollider2D>().size.x * cardList[0].transform.localScale.x; //Expecting all cards are the same size
     float cardSizeY = cardList[0].GetComponent<BoxCollider2D>().size.y * cardList[0].transform.localScale.y;
+
+    cardSizeX += 0.2f; //Padding
+    cardSizeY += 0.2f;
 
     //Debug.Log("Card size X: " + cardSizeX.ToString());
     //Debug.Log("Card size Y: " + cardSizeY.ToString());
@@ -442,6 +443,40 @@ public class CardManager : MonoBehaviour, ISaveable
         float yChange = (j - middle) * cardSizeY;
         cardList[cardIndex].transform.position = board.transform.position + new Vector3(xChange, yChange, 0);
         //Debug.Log("Card positioned!  X Change: " + xChange.ToString() + " Y Change: " + yChange.ToString() + " Final position: " + cardList[cardIndex].transform.position.ToString());
+      }
+    }
+  }
+
+  static void SortCardsByID(List<CardScript> cards)
+  {
+    cards.Sort((x, y) => x.id.CompareTo(y.id));
+  }
+
+  public static void PrintAllCardLocations()
+  {
+    foreach(CardScript card in allCards)
+    {
+      Debug.Log($"Card with id {card.id} has state {card.myState}");
+    }
+  }
+  public static void PrintAllHands()
+  {
+    for (int i = 0; i < GameManager.numOfPlayers; i++)
+    {
+      foreach(CardScript card in playerHands[i])
+      {
+        Debug.Log($"Hand {i} has card with id {card.id}");
+      }
+    }
+  }
+
+  public static void PrintAllDiscards()
+  {
+    for (int i = 0; i < GameManager.numOfPlayers; i++)
+    {
+      foreach (CardScript card in playerDiscards[i])
+      {
+        Debug.Log($"Discard {i} has card with id {card.id}");
       }
     }
   }
@@ -537,11 +572,10 @@ public class CardManager : MonoBehaviour, ISaveable
       playerDiscards[playerIndex].Remove(card);
       playerHands[playerIndex].Add(card);
       RemakeDiscardView(playerIndex);
-
+      card.Draw();
     }
     canDrawWildCards = false;
 
-    card.Draw();
     RemakeHandView(playerIndex);
 
   }
@@ -606,7 +640,7 @@ public class CardManager : MonoBehaviour, ISaveable
       else if (playerIndex == 3) dataHand = myData.player4HandIds;
       foreach (CardScript card in playerHand)
       {
-        Debug.Log($"Adding {card} with id {card.id} to {playerIndex} hand in data");
+        //Debug.Log($"Adding {card} with id {card.id} to {playerIndex} hand in data");
         dataHand.Add(card.id);
       }
 
@@ -627,7 +661,7 @@ public class CardManager : MonoBehaviour, ISaveable
       else if (playerIndex == 3) dataDiscard = myData.player4DiscardIds;
       foreach (CardScript card in playerDiscard)
       {
-        Debug.Log($"Adding {card} with id {card.id} to {playerIndex} discard in data");
+        //Debug.Log($"Adding {card} with id {card.id} to {playerIndex} discard in data");
         dataDiscard.Add(card.id);
       }
 

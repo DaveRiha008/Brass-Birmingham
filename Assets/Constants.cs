@@ -6,6 +6,8 @@ public struct Constants
 {
   //Game parameters
   readonly public static bool instantGameRestart = false;
+  readonly public static bool initMainBoardLock = false;
+  readonly public static bool initAIFreePlay = true;
 
   readonly public static int boatCost = 3;
   readonly public static int train1Cost = 5;
@@ -21,6 +23,8 @@ public struct Constants
   readonly public static string saveFileName = "SaveFile.dat";
   readonly public static string vicFileName = "VictoryData.dat";
 
+
+  readonly public static Color[] playerColors = { Color.red, Color.yellow, Color.white, Color.magenta };
 
   //  Player start of game info
   readonly public static int initPlayerMoney = 17;
@@ -85,6 +89,20 @@ public struct Constants
   readonly public static string misResTextIron = "ádnı zdroj eleza není dostupnı!";
   readonly public static string misResTextCoal = "ádnı zdroj Uhlí není dostupnı!";
   readonly public static string misResTextBarrel = "ádnı zdroj Piva není dostupnı!";
+
+
+
+  //  info
+  //CZ
+  readonly public static string playerChangedText = "Zmìna hráèe - nyní hraje: ";
+  readonly public static string actionCanceledText = "Akce zrušena";
+  readonly public static string succesfulBuildText = "Stavba probìhla úspìšnì";
+  readonly public static string succesfulSellText = "Prodej probìhl úspìšnì";
+  readonly public static string succesfulLoanText = "Pùjèka probìhla úspìšnì";
+  readonly public static string succesfulScoutText = "Prùzkum probìhl úspìšnì";
+  readonly public static string succesfulDevelopText = "Prùzkum probìhl úspìšnì";
+  readonly public static string succesfulNetworkText = "Sí probìhla úspìšnì";
+
 
   //CARDS
   readonly public static string cardsPath = "Cards";
@@ -350,6 +368,9 @@ public struct Constants
   readonly public static string barrelBorderPath = "Merch Barrel Border";
   readonly public static string ironStorageBorderPath = "Iron Storage Border";
   readonly public static string coalStorageBorderPath = "Coal Storage Border";
+
+  readonly public static string HUDPath = "HUD";
+  readonly public static string mainInfoLabelPath = "InfoLabel";
 
 
   //Scene object names

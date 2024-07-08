@@ -6,7 +6,7 @@ public class CardScript : Clickable, ISaveable
 {
   public int id = 0;
   public CARD_TYPE myType = CARD_TYPE.LOCATION;
-  public CARD_STATE myState = CARD_STATE.IN_DRAW_DECK;
+  public CARD_STATE myState = CARD_STATE.NONE;
 
   public List<INDUSTRY_TYPE> myIndustries = new();
   public string myLocation = "";
@@ -81,4 +81,4 @@ public class CardScript : Clickable, ISaveable
 }
 
 public enum CARD_TYPE { LOCATION, INDUSTRY, WILD_LOCATION, WILD_INDUSTRY }
-public enum CARD_STATE { IN_DRAW_DECK, IN_HAND, DISCARDED }
+public enum CARD_STATE { IN_DRAW_DECK, IN_HAND, DISCARDED, NONE }

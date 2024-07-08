@@ -34,7 +34,7 @@ public class TileScript : Clickable, ISaveable
   public int buildIronReq = 0;
   public int buildCoalReq = 0;
 
-  int upgradeIncomeReward = 0;
+  public int upgradeIncomeReward = 0;
   public int upgradeVicPtsReward = 0;
   public int upgradeNetworkVicPtsReward = 0;
 
@@ -182,6 +182,7 @@ public class TileScript : Clickable, ISaveable
 
   public virtual void Remove()
   {
+
     isDeveloped = true;
     alreadyBuilt = false;
     isUpgraded = false;

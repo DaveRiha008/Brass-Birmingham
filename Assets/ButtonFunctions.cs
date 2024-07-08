@@ -126,6 +126,11 @@ public class ButtonFunctions : MonoBehaviour
     GameManager.EndTurn();
   }
 
+  public void NextEraReady()
+  {
+    GameManager.NextEraReady();
+  }
+
   public void Utility()
   {
     ObjectManager.HighlightNearestFreeCoalSpaces();

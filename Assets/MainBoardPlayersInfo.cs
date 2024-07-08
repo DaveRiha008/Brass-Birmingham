@@ -54,7 +54,7 @@ public class MainBoardPlayersInfo : MonoBehaviour
   {
     for (int i = 0; i < GameManager.numOfPlayers; i++)
     {
-      string labelName = "Player" + (i + 1).ToString() + "Money";
+      string labelName = "Player" + (i + 1).ToString() + "Info"; //Fixed scene name
       moneyLabels.Add(transform.Find(labelName).gameObject.GetComponent<TextMeshPro>());
     }
   }
@@ -73,9 +73,10 @@ public class MainBoardPlayersInfo : MonoBehaviour
     {
       TextMeshPro label = moneyLabels[i];
       Player player = GameManager.GetPlayer(GameManager.playerTurns[i]);
-      string text = player.name + ": " + player.moneySpentThisTurn;
+      string text = player.name + "\n Utraceno: " + player.moneySpentThisTurn + "  Peníze: " + player.money + "  Pøíjem: " + player.income + "  Body: " + player.victoryPoints;
       //Debug.Log(labelName);
       label.text = text;
+      label.color = Constants.playerColors[player.index];
     }
   }
 }

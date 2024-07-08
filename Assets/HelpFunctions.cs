@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class HelpFunctions
 {
@@ -27,4 +28,40 @@ public class HelpFunctions
     }
     return loadedObject;
   }
+
+  static public void HUDInfoShowMessage(INFO_MESSAGE mess)
+  {
+    MainInfoLabel info = GameObject.Find(Constants.HUDPath).transform.Find(Constants.mainInfoLabelPath).GetComponent<MainInfoLabel>();
+    switch (mess)
+    {
+      case INFO_MESSAGE.PLAYER_CHANGED:
+        info.PlayerChanged();
+        break;
+      case INFO_MESSAGE.ACTION_CANCELED:
+        info.ActionCanceled();
+        break;
+      case INFO_MESSAGE.BUILD_SUCCESS:
+        info.SuccesfulBuild();
+        break;
+      case INFO_MESSAGE.SELL_SUCCESS:
+        info.SuccesfulSell();
+        break;
+      case INFO_MESSAGE.LOAN_SUCCESS:
+        info.SuccesfulLoan();
+        break;
+      case INFO_MESSAGE.SCOUT_SUCCESS:
+        info.SuccesfulScout();
+        break;
+      case INFO_MESSAGE.DEVELOP_SUCCESS:
+        info.SuccesfulDevelop();
+        break;
+      case INFO_MESSAGE.NETWORK_SUCCESS:
+        info.SuccesfulNetwork();
+        break;
+      default:
+        break;
+    }
+  }
 }
+
+public enum INFO_MESSAGE { PLAYER_CHANGED, ACTION_CANCELED, BUILD_SUCCESS, SELL_SUCCESS, LOAN_SUCCESS, SCOUT_SUCCESS, DEVELOP_SUCCESS, NETWORK_SUCCESS }

@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class AIBehaviour
 {
-  Player myAIPlayer;
+  protected Player myAIPlayer;
 
-  CardScript chosenCard;
-  IndustrySpace chosenSpace;
-  TileScript chosenTile;
-  NetworkSpace chosenNetworkSpace;
-  List<ACTION> unFinishableActions = new();
-  List<ACTION> actionsOrder = new() { ACTION.SELL, ACTION.BUILD, ACTION.NETWORK, ACTION.DEVELOP, ACTION.SCOUT, ACTION.LOAN, ACTION.NONE };
-  int startActionsDone = 0;
-  int startTurnsDone = 0;
+  protected CardScript chosenCard;
+  protected IndustrySpace chosenSpace;
+  protected TileScript chosenTile;
+  protected NetworkSpace chosenNetworkSpace;
+  protected List<ACTION> unFinishableActions = new();
+  protected List<ACTION> actionsOrder = new() { ACTION.SELL, ACTION.BUILD, ACTION.NETWORK, ACTION.DEVELOP, ACTION.SCOUT, ACTION.LOAN, ACTION.NONE };
+  protected int startActionsDone = 0;
+  protected int startTurnsDone = 0;
 
 
   public AIBehaviour(Player playerWithThisBehaviour)
@@ -37,6 +37,7 @@ public class AIBehaviour
     chosenSpace = null;
     chosenTile = null;
     chosenNetworkSpace = null;
+
 
     startActionsDone++;
     if (startActionsDone > 2000) return; //Stack Overflow defense
@@ -187,6 +188,11 @@ public class AIBehaviour
   }
   protected virtual void CancelAction()
   {
+    chosenCard = null;
+    chosenSpace = null;
+    chosenTile = null;
+    chosenNetworkSpace = null;
+
     unFinishableActions.Add(ActionManager.currentAction);
     //Debug.Log($"AI added {ActionManager.currentAction} to unfinishableActions");
     ActionManager.CancelAction();
@@ -353,7 +359,7 @@ public class AIBehaviour
       Debug.Log("AI tried to finish not done action");
   }
 
-  bool CoalCheck(LocationScript location)
+  protected bool CoalCheck(LocationScript location)
   {
     List<CoalMineTileScript> possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(location);
     if (possibleSources.Count <= 0)
@@ -367,7 +373,7 @@ public class AIBehaviour
     }
     else return true;
   }
-  bool IronCheck()
+  protected bool IronCheck()
   {
     List<IronWorksTileScript> possibleSources = ObjectManager.GetAllIronWorksWithFreeIron();
     if (possibleSources.Count <= 0)
@@ -378,7 +384,7 @@ public class AIBehaviour
     else return true;
   }
 
-  bool CoalCheck(NetworkSpace space)
+  protected bool CoalCheck(NetworkSpace space)
   {
     List<CoalMineTileScript> possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(space);
     if (possibleSources.Count <= 0)
@@ -392,19 +398,19 @@ public class AIBehaviour
     }
     else return true;
   }
-  bool BarrelCheckTiles(NetworkSpace space)
+  protected bool BarrelCheckTiles(NetworkSpace space)
   {
     List<IndustrySpace> breweriesWithBarrels = ObjectManager.GetAllSpacesWithAvailableBarrels(space);
     if (breweriesWithBarrels.Count <= 0) { return false; }
     else return true;
   }
-  bool BarrelCheckTiles(LocationScript location)
+  protected bool BarrelCheckTiles(LocationScript location)
   {
     List<IndustrySpace> breweriesWithBarrels = ObjectManager.GetAllSpacesWithAvailableBarrels(location);
     if (breweriesWithBarrels.Count <= 0) { return false; }
     else return true;
   }
-  bool BarrelCheckMerchants()
+  protected bool BarrelCheckMerchants()
   {
     List<BarrelSpace> merchantBarrels = ObjectManager.GetAllAvailableMerchantBarrels(chosenTile.builtOnSpace.myLocation, chosenTile);
     if (merchantBarrels.Count > 0)

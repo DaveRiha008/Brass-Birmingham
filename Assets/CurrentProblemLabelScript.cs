@@ -2,20 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class CurrentProblemLabelScript : Clickable
 {
   TextMeshProUGUI myTM;
+  float fadeDuration = 3;
   // Start is called before the first frame update
   void Start()
   {
     myTM = GetComponent<TextMeshProUGUI>();
+    myTM.alpha = 0;
   }
 
   // Update is called once per frame
   void Update()
   {
-    string text = "";
+    string text = myTM.text;
+    if (ActionManager.curMisRes != ACTION_MISSING_RESOURCE.NONE)
+    {
+      myTM.DOKill();
+      myTM.alpha = 1;
+    }
     switch (ActionManager.curMisRes)
     {
       case ACTION_MISSING_RESOURCE.CARD:
@@ -61,7 +69,10 @@ public class CurrentProblemLabelScript : Clickable
         text = Constants.misResTextBarrel;
         break;
       case ACTION_MISSING_RESOURCE.NONE:
-        text = "";
+        if(myTM.alpha == 1)
+        {
+          FadeAway();
+        }
         break;
       default:
         break;
@@ -69,8 +80,14 @@ public class CurrentProblemLabelScript : Clickable
     myTM.text = text;
   }
 
+  void FadeAway()
+  {
+    Debug.Log("Fade called");
+    myTM.DOFade(0, fadeDuration);
+  }
+
   public override void OnClick()
   {
-    ActionManager.curMisRes = ACTION_MISSING_RESOURCE.NONE;
+    myTM.text = "";
   }
 }

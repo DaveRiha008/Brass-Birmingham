@@ -9,17 +9,18 @@ public class AIManager:MonoBehaviour
   static bool isPlaying = false;
   public static bool playFreely = false;
 
-  static AI_STRATEGY[] playerStrategies = { AI_STRATEGY.CHOOSE_FIRST, AI_STRATEGY.CHOOSE_FIRST, AI_STRATEGY.CHOOSE_FIRST, AI_STRATEGY.CHOOSE_FIRST };
+  static AI_STRATEGY[] playerStrategies = { AI_STRATEGY.CHOOSE_BETTER, AI_STRATEGY.CHOOSE_BETTER_CARD, AI_STRATEGY.CHOOSE_BETTER_TILE, AI_STRATEGY.CHOOSE_FIRST };
 
   static AIBehaviour[] strategiesPerPlayer = { 
-    new AIBehaviour(GameManager.GetPlayer(0)),
-    new AIBehaviour(GameManager.GetPlayer(1)),
-    new AIBehaviour(GameManager.GetPlayer(2)),
+    new AIChooseBetter(GameManager.GetPlayer(0)),
+    new AIChooseBetterCard(GameManager.GetPlayer(1)),
+    new AIChooseBetterTile(GameManager.GetPlayer(2)),
     new AIBehaviour(GameManager.GetPlayer(3)) };
 
 
   void Start()
   {
+    playFreely = Constants.initAIFreePlay;
     LoadPlayerStrategies();
   }
 
@@ -29,14 +30,14 @@ public class AIManager:MonoBehaviour
   private void Update()
   {
     //Debug.Log("AIManager update");
-    if (!isPlaying) return;
+    if (!isPlaying || GameManager.waitingForNextEra || !GameManager.GetActivePlayer().AIReplaced) return;
     if (playFreely) AIDoNextPart();
 
   }
 
   private void OnDestroy()
   {
-    strategiesPerPlayer[0] = new AIBehaviour(GameManager.GetPlayer(0));
+    strategiesPerPlayer[0] = new AIChooseBetter(GameManager.GetPlayer(0));
     strategiesPerPlayer[1] = new AIBehaviour(GameManager.GetPlayer(1));
     strategiesPerPlayer[2] = new AIBehaviour(GameManager.GetPlayer(2));
     strategiesPerPlayer[3] = new AIBehaviour(GameManager.GetPlayer(3));
@@ -62,6 +63,12 @@ public class AIManager:MonoBehaviour
     }
   }
 
+  public static void StopPlaying()
+  {
+    isPlaying = false;
+    //if (Camera.main.TryGetComponent(out CameraScript camera))
+    //  camera.lockMainBoard = false;
+  }
   public static AI_STRATEGY GetPlayerStrategy(int playerIndex) => playerStrategies[playerIndex];
 
   //TODO: Implement correct AI turn by a certaion strategy
@@ -72,11 +79,11 @@ public class AIManager:MonoBehaviour
     //Debug.Log("AI Playing turn");
     isPlaying = true;
 
-    if (Camera.main.TryGetComponent<CameraScript>(out CameraScript camera))
-    {
-      camera.MoveToMainBoard();
-      //camera.lockMainBoard = true;
-    }
+    //if (Camera.main.TryGetComponent<CameraScript>(out CameraScript camera))
+    //{
+    //  camera.MoveToMainBoard();
+    //  camera.lockMainBoard = true;
+    //}
 
     strategiesPerPlayer[GameManager.activePlayerIndex].StartTurn();
   }
@@ -89,8 +96,8 @@ public class AIManager:MonoBehaviour
     else
     {
 
-      //if(Camera.main.TryGetComponent<CameraScript>(out CameraScript camera))
-      //  camera.lockMainBoard = false;
+      if (Camera.main.TryGetComponent(out CameraScript camera))
+        camera.lockMainBoard = false;
       isPlaying = false;
       //Debug.Log("Calling EndTurn from AI -> Done all actions");
       GameManager.EndTurn();
@@ -146,4 +153,4 @@ public class AIManager:MonoBehaviour
     }
   }
 }
-public enum AI_STRATEGY { CHOOSE_FIRST, NONE }
+public enum AI_STRATEGY { CHOOSE_FIRST, CHOOSE_BETTER, CHOOSE_BETTER_CARD, CHOOSE_BETTER_TILE, NONE }

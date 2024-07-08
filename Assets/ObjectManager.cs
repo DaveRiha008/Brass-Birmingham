@@ -282,6 +282,13 @@ public class ObjectManager : MonoBehaviour, ISaveable
     item.GetComponent<SpriteRenderer>().enabled = false;
     itemInHand.GetComponent<BoxCollider2D>().enabled = false;
 
+    GameManager.ActivePlayerSpendMoney(itemInHand.buildCost, out bool enoughMoney);
+    if (!enoughMoney)
+    {
+      Debug.LogError("Chose tile without money to pay for it");
+      return;
+    }
+
     ActionManager.BuildPickedUpItem();
   }
 
@@ -1183,12 +1190,16 @@ public class ObjectManager : MonoBehaviour, ISaveable
   {
     //if (!canChooseSpace) return;
 
-    GameManager.ActivePlayerSpendMoney(itemInHand.buildCost, out bool enoughMoney);
-    if (!enoughMoney)
-    {
-      //Debug.Log("Not enough money to build held industry");
-      return;
-    }
+    Debug.Log($"Building {itemInHand}");
+
+
+    //SPEND MONEY WHEN CHOOSING - BETTER FOR PAYING FOR REASOURCES LATER
+    //GameManager.ActivePlayerSpendMoney(itemInHand.buildCost, out bool enoughMoney);
+    //if (!enoughMoney)
+    //{
+    //  Debug.Log("Not enough money to build held industry");
+    //  return;
+    //}
 
     AddFirstUnbuiltIndex(itemInHand, out bool success);
     if (!success)
@@ -1199,6 +1210,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     chosenBuildSpace.builtIndustry = itemInHand.industryType;
     itemInHand.transform.position = chosenBuildSpace.transform.position;
+    Debug.Log($"Moved {itemInHand} to position of {chosenBuildSpace}");
     itemInHand.builtOnSpace = chosenBuildSpace;
 
     if(chosenBuildSpace.myTile is not null)
@@ -1285,7 +1297,40 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
   }
 
+  static public TileScript GetTileOfNextLevel(TileScript tile)
+  {
+    List<TileScript> tilesOfCorrectType;
+    switch (tile.industryType)
+    {
+      case INDUSTRY_TYPE.BREWERY:
+        tilesOfCorrectType = allBreweries[tile.ownerPlayerIndex];
+        break;
+      case INDUSTRY_TYPE.COALMINE:
+        tilesOfCorrectType = allCoalMines[tile.ownerPlayerIndex];
+        break;
+      case INDUSTRY_TYPE.COTTONMILL:
+        tilesOfCorrectType = allCottonMills[tile.ownerPlayerIndex];
+        break;
+      case INDUSTRY_TYPE.IRONWORKS:
+        tilesOfCorrectType = allIronWorks[tile.ownerPlayerIndex];
+        break;
+      case INDUSTRY_TYPE.MANUFACTURER:
+        tilesOfCorrectType = allManufacturers[tile.ownerPlayerIndex];
+        break;
+      case INDUSTRY_TYPE.POTTERY:
+        tilesOfCorrectType = allPotteries[tile.ownerPlayerIndex];
+        break;
+      case INDUSTRY_TYPE.NONE:
+      default:
+        return null;
+    }
 
+    foreach (TileScript curTile in tilesOfCorrectType)
+      if (curTile.level == tile.level + 1)
+        return curTile;
+
+    return null;
+  }
   static public List<TileScript> GetViableTilesForCurrentAction()
   {
     ACTION action = ActionManager.currentAction;
@@ -1426,11 +1471,11 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
         break;
       case CARD_TYPE.WILD_LOCATION:
-        viableSpaces = GetViableBuildSpacesWildLocationCard(card);
+        viableSpaces = GetViableBuildSpacesWildLocationCard();
 
         break;
       case CARD_TYPE.WILD_INDUSTRY:
-        viableSpaces = GetViableBuildSpacesWildIndustryCard(card);
+        viableSpaces = GetViableBuildSpacesWildIndustryCard();
 
         break;
       default:
@@ -1476,11 +1521,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return new List<IndustrySpace>();
   }
-  static List<IndustrySpace> GetViableBuildSpacesWildLocationCard(CardScript card)
+  static public List<IndustrySpace> GetViableBuildSpacesWildLocationCard()
   {
-    if (card.myType != CARD_TYPE.WILD_LOCATION)
-      Debug.LogError("Wrong card type!");
-
     List<IndustrySpace> allSpaces = new();
     foreach (LocationScript location in allIndustryLocations)
       if (location.myType == LocationType.CITY) //Nameless breweries and Merchants are not possible from wild location
@@ -1567,12 +1609,12 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     return viableSpaces;
   }
-  static List<IndustrySpace> GetViableBuildSpacesWildIndustryCard(CardScript card)
+  static public List<IndustrySpace> GetViableBuildSpacesWildIndustryCard()
   {
-    if (card.myType != CARD_TYPE.WILD_INDUSTRY)
-      Debug.LogError("Wrong card type!");
-
-    return GetMyNetworkFreeSpacesForItemInHand(GameManager.activePlayerIndex);
+    if (itemInHand is not null)
+      return GetMyNetworkFreeSpacesForItemInHand(GameManager.activePlayerIndex);
+    else
+      return GetMyNetworkFreeSpaces(GameManager.activePlayerIndex);
   }
 
   static public void HighlightTiles<T>(List<T> tiles) where T : TileScript
@@ -1600,11 +1642,11 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
         break;
       case CARD_TYPE.WILD_LOCATION:
-        viableTiles = GetViableTilesWildLocationCard(card);
+        viableTiles = GetViableTilesWildLocationCard();
 
         break;
       case CARD_TYPE.WILD_INDUSTRY:
-        viableTiles = GetViableTilesWildIndustryCard(card);
+        viableTiles = GetViableTilesWildIndustryCard();
 
         break;
       default:
@@ -1644,11 +1686,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
       }
     return viableTiles;
   }
-  static List<TileScript> GetViableTilesWildLocationCard(CardScript card)
+  static public List<TileScript> GetViableTilesWildLocationCard()
   {
-    if (card.myType != CARD_TYPE.WILD_LOCATION)
-      Debug.LogError("Wrong card type!");
-
     if (chosenBuildSpace is null) return new List<TileScript>();
 
     List<TileScript> viableTiles = new();
@@ -1677,11 +1716,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     return viableTiles;
   }
-  static List<TileScript> GetViableTilesWildIndustryCard(CardScript card)
+  static public List<TileScript> GetViableTilesWildIndustryCard()
   {
-    if (card.myType != CARD_TYPE.WILD_INDUSTRY)
-      Debug.LogError("Wrong card type!");
-
     List<TileScript> viableTiles = new();
     foreach (List<TileScript> tiles in allTilesPerPlayer[GameManager.activePlayerIndex])
       foreach (TileScript tile in tiles)
@@ -1692,6 +1728,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     return viableTiles;
   }
+
 
   static public List<IndustrySpace> GetAllIndustrySpacesInLocation(LocationScript location)
   {
@@ -1864,6 +1901,45 @@ public class ObjectManager : MonoBehaviour, ISaveable
     if (tile is CoalMineTileScript && GetAllCoalMinesWithFreeCoal().Count <= 0 && coalStorage.IsEmpty()) return true;//Overbuild other players coalMine
 
     return false;
+  }
+
+  static public List<IndustrySpace> GetMyNetworkFreeSpaces(int playerIndex)
+  {
+    List<LocationScript> myNetworkLocations = GetMyNetworkLocations(playerIndex);
+    if (myNetworkLocations.Count <= 0)
+      myNetworkLocations = allIndustryLocations;
+
+    List<IndustrySpace> myNetworkFreeSpaces = new();
+
+    foreach (LocationScript location in myNetworkLocations)
+    {
+      if (location.myType == LocationType.MERCHANT) continue;
+
+      bool occupiedLocation = false; //For detecting location with already built industry by this player out of boat era
+      List<IndustrySpace> curFreeSpaces = new();
+      foreach (IndustrySpace space in locationSpacesDict[location])
+      {
+        if (space.myTile is not null)
+        {
+          TileScript tile = space.myTile;
+          if (GameManager.currentEra == ERA.BOAT)
+          {
+            if (tile.ownerPlayerIndex == playerIndex)
+              occupiedLocation = true;
+          }
+        }
+
+        else
+          curFreeSpaces.Add(space);
+      }
+
+      if (occupiedLocation) continue;
+
+      else
+        foreach (IndustrySpace curSpace in curFreeSpaces)
+          myNetworkFreeSpaces.Add(curSpace);
+    }
+    return myNetworkFreeSpaces;
   }
   static public List<IndustrySpace> GetMyNetworkFreeSpacesForItemInHand(int playerIndex)
   {
@@ -2417,7 +2493,12 @@ public class ObjectManager : MonoBehaviour, ISaveable
     for (int i = 0; i < GameManager.numOfPlayers; i++)
     {
       foreach (TileScript tile in GetAllMyBuiltTiles(i))
-        if (tile.level <= 1) tile.Remove();
+        if (tile.level <= 1)
+        {
+          if (tile.builtOnSpace is not null)
+            tile.builtOnSpace.RemoveBuiltIndustry();
+          tile.Remove();
+        }
     }
   }
   static public void DestroyAllBorders()

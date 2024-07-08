@@ -52,7 +52,8 @@ public class ActionManager : MonoBehaviour
   static public void DoAction(ACTION action)
   {
     if (PlayerDoneAllActions()) return;
-    CancelAction();
+    if (currentAction != ACTION.NONE) return;
+    //CancelAction();
     switch (action)
     {
       case ACTION.BUILD:
@@ -141,7 +142,8 @@ public class ActionManager : MonoBehaviour
         break;
       case ACTION.NONE:
         //Debug.Log("Card discarded for no action");
-        CancelAction(true);
+        actionsPlayed++;
+        currentState = ACTION_STATE.NONE;
         if (GameManager.GameRunning())
         {
           Debug.Log("Calling EndTurn from empty action -> after discard");
@@ -273,6 +275,7 @@ public class ActionManager : MonoBehaviour
   {
     currentState = ACTION_STATE.CHOOSING_IRON;
 
+
     if (ObjectManager.GetAllIronWorksWithFreeIron().Count <= 0)
     {
       if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetIronStoragePrice()))
@@ -358,6 +361,10 @@ public class ActionManager : MonoBehaviour
 
     coalFromStorage.GetComponent<SpriteRenderer>().enabled = false;
     coalFromStorage.SetActive(false);
+
+    ObjectManager.MakeCoalStorageUnClickable();
+    ObjectManager.DestroyAllBorders();
+
     //Debug.Log($"Got coal from storage for {coalPrice}");
     GameManager.ActivePlayerSpendMoney(coalPrice, out bool enoughMoney);
     if (!enoughMoney)
@@ -417,12 +424,18 @@ public class ActionManager : MonoBehaviour
     var ironFromStorage = ObjectManager.GetIronFromStorage(out int ironPrice);
     ironFromStorage.SetActive(false);
     GameManager.ActivePlayerSpendMoney(ironPrice, out bool enoughMoney);
+
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_IRON;
       Debug.Log("Not enough money to buy iron from storage");
       CancelAction();
     }
+
+
+    ObjectManager.MakeIronStorageUnClickable();
+    ObjectManager.DestroyAllBorders();
+
 
     ObjectManager.buildIronReq--;
 
@@ -442,6 +455,7 @@ public class ActionManager : MonoBehaviour
 
   static void EndBuildAction()
   {
+    Debug.Log($"Ending build action succesfully - building {ObjectManager.itemInHand} on {ObjectManager.chosenBuildSpace}");
     currentState = ACTION_STATE.NONE;
 
     ObjectManager.BuildHeldIndustry();
@@ -979,6 +993,43 @@ public class ActionManager : MonoBehaviour
 
   static public void CancelAction(bool endedSuccesfully = false)
   {
+    //Debug.Log($"Cancel action called with {endedSuccesfully} ending");
+    if(!endedSuccesfully)
+      HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.ACTION_CANCELED);
+    else
+    {
+      //Debug.Log("HUD info showing succesfully done action");
+      switch (currentAction)
+      {
+        case ACTION.BUILD:
+          HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.BUILD_SUCCESS);
+          break;
+        case ACTION.SELL:
+          HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.SELL_SUCCESS);
+          break;
+        case ACTION.LOAN:
+          HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.LOAN_SUCCESS);
+          break;
+        case ACTION.SCOUT:
+          HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.SCOUT_SUCCESS);
+          break;
+        case ACTION.DEVELOP:
+          HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.DEVELOP_SUCCESS);
+          break;
+        case ACTION.NETWORK:
+          HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.NETWORK_SUCCESS);
+          break;
+        case ACTION.NONE:
+          break;
+        default:
+          break;
+      }
+    }
+
+    CameraScript camera = Camera.main.GetComponent<CameraScript>();
+    camera.MoveToMainBoard();
+
+    curMisRes = ACTION_MISSING_RESOURCE.NONE;
 
     if (currentAction == ACTION.BUILD && !endedSuccesfully)
     {
@@ -1050,6 +1101,7 @@ public class ActionManager : MonoBehaviour
     developFromMerchantReward = false;
     developIronSource1 = null;
     developIronSource2 = null;
+    developIronTakenFromStorage = 0;
     tileToBeSold = null;
     recentlySoldTiles.Clear();
     placedNetworkSpace = null;
@@ -1072,7 +1124,7 @@ public class ActionManager : MonoBehaviour
 
     ObjectManager.developReqIron = false;
     ObjectManager.buildCoalReq = 0;
-    ObjectManager.buildCoalReq = 0;
+    ObjectManager.buildIronReq = 0;
     ObjectManager.DestroyAllBorders();
     ObjectManager.MakeAllIndustrySpacesUnclickable();
     ObjectManager.MakeAllNetworkSpacesUnclickable();
