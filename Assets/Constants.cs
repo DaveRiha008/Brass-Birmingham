@@ -5,7 +5,7 @@ using UnityEngine;
 public struct Constants
 {
   //Game parameters
-  readonly public static bool instantGameRestart = false;
+  readonly public static bool instantGameRestart = true;
   readonly public static bool initMainBoardLock = true;
   readonly public static bool initAIFreePlay = true;
 
