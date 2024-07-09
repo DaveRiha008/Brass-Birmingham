@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour, ISaveable
   public static int activePlayerIndex = 0;
   public static int activePlayerTurnIndex = 0;
   static public int numOfPlayers = 4;
-  static public int numOfAI = 2;
+  static public int numOfAI = 4;
 
   static int minPlayers = 2;
   static int maxPlayers = 4;

@@ -70,8 +70,7 @@ public class ResourceStorage : Clickable, ISaveable
 
   public int AddMostExpensiveResource(GameObject inputObject = null)
   {
-    if(myType == RESOURCE_TYPE.IRON)
-      Debug.Log("Adding to storage");
+
     GameObject addedObject;
     if (inputObject is null)
     {

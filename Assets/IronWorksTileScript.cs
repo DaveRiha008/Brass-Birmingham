@@ -39,6 +39,8 @@ public class IronWorksTileScript : TileScript
 
   public bool HasIron() => myIrons.Count > 0;
 
+  public int GetResourceCount() => myIrons.Count;
+
   public void RemoveIron()
   {
     if (myIrons.Count <= 0)

@@ -34,6 +34,9 @@ public class CoalMineTileScript : TileScript
 
   public bool HasCoal() => myCoals.Count > 0;
 
+  public int GetResourceCount() => myCoals.Count;
+
+
   public void RemoveCoal()
   {
     if (myCoals.Count <= 0)

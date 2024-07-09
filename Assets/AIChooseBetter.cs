@@ -133,6 +133,15 @@ public class AIChooseBetter : AIBehaviour
     ObjectManager.ChooseTile(chosenTile);
   }
 
+  float GetTileBuildUtility(TileScript tile)
+  {
+    float costFraction = tile.buildCost / (float)myAIPlayer.money;
+    float utility = tile.upgradeNetworkVicPtsReward + tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
+    utility *= 1 - costFraction; //The more expensive tile has lower utility
+
+    return utility;
+  }
+
   void ChooseTileBuild(List<TileScript> possibleTiles)
   {
     float maxUtility = 0;
@@ -140,8 +149,7 @@ public class AIChooseBetter : AIBehaviour
     foreach (TileScript tile in possibleTiles)
     {
       float costFraction = tile.buildCost / (float)myAIPlayer.money;
-      float utility = tile.upgradeNetworkVicPtsReward + tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
-      utility *= 1-costFraction; //The more expensive tile has lower utility
+      float utility = GetTileBuildUtility(tile);
       if (utility > maxUtility)
       {
         maxUtility = utility;
@@ -173,9 +181,7 @@ public class AIChooseBetter : AIBehaviour
     TileScript bestTile = possibleTiles[0];
     foreach (TileScript tile in possibleTiles)
     {
-      float costFraction = tile.buildCost / (float)myAIPlayer.money;
-      float curUtility = tile.upgradeNetworkVicPtsReward + tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
-      curUtility *= 1 - costFraction; //The more expensive tile has lower utility
+      float curUtility = GetTileBuildUtility(tile);
 
 
       TileScript nextLevelTile = ObjectManager.GetTileOfNextLevel(tile);
@@ -184,9 +190,7 @@ public class AIChooseBetter : AIBehaviour
         nextLevelUtility = curUtility;
       else
       {
-        float nextLevelCostFraction = nextLevelTile.buildCost / (float)myAIPlayer.money;
-        nextLevelUtility = nextLevelTile.upgradeNetworkVicPtsReward + nextLevelTile.upgradeVicPtsReward + nextLevelTile.upgradeIncomeReward;
-        nextLevelUtility *= 1 - costFraction; //The more expensive tile has lower utility
+        nextLevelUtility = GetTileBuildUtility(nextLevelTile);
 
         //If the next level tile can't be built in the current era -> its utility is lowered
         if ((!nextLevelTile.canBeBuiltInBoatEra && GameManager.currentEra == ERA.BOAT) || (!nextLevelTile.canBeBuiltInTrainEra && GameManager.currentEra == ERA.TRAIN))
@@ -210,122 +214,512 @@ public class AIChooseBetter : AIBehaviour
     chosenTile = bestTile;
   }
 
-  //public override void ChooseIndustrySpace()
-  //{
-  //  List<IndustrySpace> possibleSpaces = ObjectManager.GetAllViableBuildSpaces(chosenCard);
-  //  //Debug.Log($"Possible spaces: {possibleSpaces.Count}");
-  //  if (possibleSpaces.Count <= 0) { CantChooseSpace(); return; }
-  //  chosenSpace = possibleSpaces[0];
-  //  ObjectManager.ChooseSpace(chosenSpace);
-  //}
+  public override void ChooseIndustrySpace()
+  {
+    //Industry space is chosen only in build action -> no need to specialize
+    List<IndustrySpace> possibleSpaces;
 
-  //public override void ChooseIron()
-  //{
-  //  List<IronWorksTileScript> possibleSources = ObjectManager.GetAllIronWorksWithFreeIron();
-  //  if (possibleSources.Count <= 0)
-  //  {
-  //    if (myAIPlayer.money >= ObjectManager.GetIronStoragePrice())
-  //      ObjectManager.ChoseIronStorage();
-  //    else
-  //    { NotEnoughMoney(); return; }
-  //  }
-  //  else ObjectManager.ChooseTile(possibleSources[0]);
-  //}
+    if (chosenTile is not null)
+      possibleSpaces = ObjectManager.GetMyNetworkFreeSpacesForItemInHand(myAIPlayer.index);
 
-  //public override void ChooseCoal()
-  //{
-  //  List<CoalMineTileScript> possibleSources;
-  //  if (ActionManager.currentAction == ACTION.BUILD)
-  //  {
-  //    possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenSpace.myLocation);
-  //    if (possibleSources.Count <= 0)
-  //    {
-  //      if (ObjectManager.GetAllConnectedMerchantTiles(chosenSpace.myLocation).Count > 0)
-  //      {
-  //        if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice()) ObjectManager.ChoseCoalStorage();
-  //        else { NotEnoughMoney(); return; }
-  //      }
-  //      else { CantChooseCoal(); return; }
-  //    }
-  //    else ObjectManager.ChooseTile(possibleSources[0]);
-  //  }
+    else
+      possibleSpaces = ObjectManager.GetAllViableBuildSpaces(chosenCard);
 
-  //  else if (ActionManager.currentAction == ACTION.NETWORK)
-  //  {
-  //    possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenNetworkSpace);
-  //    if (possibleSources.Count <= 0)
-  //    {
-  //      if (ObjectManager.GetAllConnectedMerchantTiles(chosenNetworkSpace).Count > 0)
-  //      {
-  //        if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice()) ObjectManager.ChoseCoalStorage();
-  //        else NotEnoughMoney();
-  //      }
-  //      else { CantChooseCoal(); return; }
-  //    }
-  //    else ObjectManager.ChooseTile(possibleSources[0]);
-  //  }
 
-  //}
+    //Debug.Log($"Possible spaces: {possibleSpaces.Count}");
+    if (possibleSpaces.Count <= 0) { CantChooseSpace(); return; }
 
-  //public override void ChooseBarrel()
-  //{
-  //  //Debug.Log("AI Choosing barrel");
-  //  if (ActionManager.currentAction == ACTION.SELL)
-  //  {
-  //    List<BarrelSpace> merchantBarrels = ObjectManager.GetAllAvailableMerchantBarrels(chosenTile.builtOnSpace.myLocation, chosenTile); //Barrel from merchant
-  //    if (merchantBarrels.Count > 0)
-  //    {
-  //      ObjectManager.BarrelSpaceClicked(merchantBarrels[0]); /*Debug.Log("AI Chose barrel succesfully");*/
-  //      return;
-  //    }
+    float maxUtility = float.MinValue;
+    IndustrySpace bestSpace = possibleSpaces[0];
 
-  //    List<IndustrySpace> breweriesWithBarrels = ObjectManager.GetAllSpacesWithAvailableBarrels(chosenTile.builtOnSpace.myLocation); //Barrel from brewery
-  //    if (breweriesWithBarrels.Count <= 0) { CantChooseBarrel(); return; }
-  //    //Debug.Log($"Choosing {breweriesWithBarrels[0]} as barrel source");
-  //    ObjectManager.ChooseTile(breweriesWithBarrels[0].myTile);
+    foreach(IndustrySpace space in possibleSpaces)
+    {
+      float spaceUtility = GetIndustrySpaceUtility(space);
+      if(spaceUtility > maxUtility)
+      {
+        maxUtility = spaceUtility;
+        bestSpace = space;
+      }
+    }
 
-  //    //Debug.Log("AI Chose barrel succesfully");
-  //  }
-  //  else if (ActionManager.currentAction == ACTION.NETWORK)
-  //  {
-  //    List<IndustrySpace> breweriesWithBarrels = ObjectManager.GetAllSpacesWithAvailableBarrels(chosenNetworkSpace);
-  //    if (breweriesWithBarrels.Count <= 0) { CantChooseBarrel(); return; }
-  //    //Debug.Log($"Choosing {breweriesWithBarrels[0]} as barrel source");
+    chosenSpace = bestSpace;
+    ObjectManager.ChooseSpace(chosenSpace);
+  }
 
-  //    ObjectManager.ChooseTile(breweriesWithBarrels[0].myTile);
-  //    //Debug.Log("AI Chose barrel succesfully");
-  //  }
-  //}
+  float GetIndustrySpaceUtility(IndustrySpace space)
+  {
+    const float merchConnectedBonus = 5;
 
-  //public override void ChooseNetwork()
-  //{
-  //  if (GameManager.currentEra == ERA.TRAIN && chosenNetworkSpace is not null &&
-  //    !GameManager.ActivePlayerHasEnoughMoney(Constants.train2Cost) && ActionManager.IsActionFinishable())
-  //  { DoneAction(); return; }
+    float utility = 0f;
+    INDUSTRY_TYPE bestTileType = INDUSTRY_TYPE.NONE;
+    if (chosenTile is null)
+    {
+      if (space.hasBrew)
+      {
+        float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.BREWERY);
+        if (potentialUtility > utility)
+        {
+          utility = potentialUtility;
+          bestTileType = INDUSTRY_TYPE.BREWERY;
+        }
 
-  //  List<NetworkSpace> possibleNetworks = ObjectManager.GetMyNetworkNeighborConnections(myAIPlayer.index);
+      }
+      if (space.hasCoal)
+      {
+        float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.COALMINE);
+        if(potentialUtility > utility){
+        utility = potentialUtility;
+          bestTileType= INDUSTRY_TYPE.COALMINE;
+        }
+      }
+      if (space.hasCot)
+      { 
+        float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.COTTONMILL);
+        if(potentialUtility > utility){
+        utility = potentialUtility;
+          bestTileType= INDUSTRY_TYPE.COTTONMILL;
+        }
+      }
+      if (space.hasIron)
+      { 
+        float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.IRONWORKS);
+        if(potentialUtility > utility){
+        utility = potentialUtility;
+          bestTileType= INDUSTRY_TYPE.IRONWORKS;
+        }
+      }
+      if (space.hasMan)
+      { 
+        float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.MANUFACTURER);
+        if(potentialUtility > utility){
+        utility = potentialUtility;
+          bestTileType= INDUSTRY_TYPE.MANUFACTURER;
+        }
+      }
+      if (space.hasPot)
+      { 
+       float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.POTTERY);
+        if(potentialUtility > utility){
+        utility = potentialUtility;
+          bestTileType= INDUSTRY_TYPE.POTTERY;
+        }
+      }
 
-  //  if (GameManager.currentEra == ERA.TRAIN) //For trains check coal availability
-  //  {
-  //    List<NetworkSpace> possibleNetworksWithCoals = new();
-  //    foreach (NetworkSpace space in possibleNetworks)
-  //    {
-  //      if (CoalCheck(space))
-  //      {
-  //        if (chosenNetworkSpace is null || BarrelCheckTiles(space)) //For second train check barrel
-  //          possibleNetworksWithCoals.Add(space);
-  //      }
-  //    }
+    }
+    else {
+      utility = GetTileBuildUtility(chosenTile);
+      bestTileType = chosenTile.industryType;
+    }
 
-  //    possibleNetworks = possibleNetworksWithCoals;
-  //  }
+    // If the best tile is tradeable -> add utility if merchant is connected
+    if (bestTileType == INDUSTRY_TYPE.COTTONMILL || bestTileType == INDUSTRY_TYPE.COALMINE || bestTileType == INDUSTRY_TYPE.POTTERY || bestTileType == INDUSTRY_TYPE.MANUFACTURER) 
+    {
+      List<MerchantTileSpace> connectedMerchants = ObjectManager.GetAllConnectedMerchantTiles(space.myLocation);
 
-  //  if (possibleNetworks.Count <= 0)
-  //  {
-  //    if (ActionManager.IsActionFinishable()) { DoneAction(); return; }
-  //    else { CantChooseNetwork(); return; }
-  //  }
-  //  chosenNetworkSpace = possibleNetworks[0];
-  //  ObjectManager.ChoseNetwork(chosenNetworkSpace);
-  //}
+      if (bestTileType == INDUSTRY_TYPE.COALMINE && connectedMerchants.Count > 0) utility += merchConnectedBonus;
+
+      else
+      {
+        foreach (MerchantTileSpace merch in connectedMerchants)
+        {
+          if ((bestTileType == INDUSTRY_TYPE.COTTONMILL && merch.myTile.hasCot) ||
+            (bestTileType == INDUSTRY_TYPE.MANUFACTURER && merch.myTile.hasMan) ||
+            (bestTileType == INDUSTRY_TYPE.POTTERY && merch.myTile.hasPottery))
+          {
+            utility += merchConnectedBonus;
+            break;
+          }
+          else continue;
+        }
+      }
+    }
+
+    return utility;
+  }
+
+  float GetIndustrySpacePotentialTileUtility(IndustrySpace space, INDUSTRY_TYPE type)
+  {
+    switch (type)
+    {
+      case INDUSTRY_TYPE.BREWERY:
+        if (space.hasBrew)
+        {
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.BREWERY, myAIPlayer.index);
+          if (potentialBuiltTile is not null)
+            return GetTileBuildUtility(potentialBuiltTile);
+        }
+        return 0;
+      case INDUSTRY_TYPE.COALMINE:
+        if (space.hasCoal)
+        {
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.COALMINE, myAIPlayer.index);
+          if (potentialBuiltTile is not null)
+            return GetTileBuildUtility(potentialBuiltTile);
+        }
+        return 0;
+      case INDUSTRY_TYPE.COTTONMILL:
+        if (space.hasCot)
+        {
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.COTTONMILL, myAIPlayer.index);
+          if (potentialBuiltTile is not null)
+            return GetTileBuildUtility(potentialBuiltTile);
+        }
+        return 0;
+      case INDUSTRY_TYPE.IRONWORKS:
+        if (space.hasIron)
+        {
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.IRONWORKS, myAIPlayer.index);
+          if (potentialBuiltTile is not null)
+            return GetTileBuildUtility(potentialBuiltTile);
+        }
+        return 0;
+      case INDUSTRY_TYPE.MANUFACTURER:
+        if (space.hasMan)
+        {
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.MANUFACTURER, myAIPlayer.index);
+          if (potentialBuiltTile is not null)
+            return GetTileBuildUtility(potentialBuiltTile);
+        }
+        return 0;
+      case INDUSTRY_TYPE.POTTERY:
+        if (space.hasPot)
+        {
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.POTTERY, myAIPlayer.index);
+          if (potentialBuiltTile is not null)
+            return GetTileBuildUtility(potentialBuiltTile);
+        }
+        return 0;
+      case INDUSTRY_TYPE.NONE:
+        break;
+      default:
+        break;
+    }
+    return 0;
+  }
+
+  public override void ChooseIron()
+  {
+    List<IronWorksTileScript> possibleSources = ObjectManager.GetAllIronWorksWithFreeIron();
+    if (possibleSources.Count <= 0)
+    {
+      if (myAIPlayer.money >= ObjectManager.GetIronStoragePrice())
+      {
+        ObjectManager.ChoseIronStorage();
+        return;
+      }
+      else
+      { NotEnoughMoney(); return; }
+    }
+
+
+    List<IronWorksTileScript> mySources = new();
+    List<IronWorksTileScript> otherSources = new();
+
+    foreach (IronWorksTileScript source in possibleSources)
+    {
+      if (source.ownerPlayerIndex == myAIPlayer.index)
+        mySources.Add(source);
+
+      else
+        otherSources.Add(source);
+    }
+
+    IronWorksTileScript bestSource = possibleSources[0];
+    if (mySources.Count > 0) //If we have sources -> we want the emptied -> get the one with least resources
+    {
+      int minRes = int.MaxValue;
+      foreach (IronWorksTileScript source in mySources)
+        if(source.GetResourceCount() < minRes)
+        {
+          minRes = source.GetResourceCount();
+          bestSource = source;
+        }
+    }
+    else //If we don't have any source, we don't want to upgrade any other -> get the one with most resources
+    {
+      int maxRes = int.MinValue;
+      foreach (IronWorksTileScript source in mySources)
+        if (source.GetResourceCount() > maxRes)
+        {
+          maxRes = source.GetResourceCount();
+          bestSource = source;
+        }
+    }
+
+    ObjectManager.ChooseTile(bestSource);
+  }
+
+  public override void ChooseCoal()
+  {
+    List<CoalMineTileScript> possibleSources;
+    if (ActionManager.currentAction == ACTION.BUILD)
+    {
+      possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenSpace.myLocation);
+      if (possibleSources.Count <= 0)
+      {
+        if (ObjectManager.GetAllConnectedMerchantTiles(chosenSpace.myLocation).Count > 0)
+        {
+          if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice())
+          {
+            ObjectManager.ChoseCoalStorage();
+            return;
+          }
+          else { NotEnoughMoney(); return; }
+        }
+        else { CantChooseCoal(); return; }
+      }
+    }
+
+    else if (ActionManager.currentAction == ACTION.NETWORK)
+    {
+      possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenNetworkSpace);
+      if (possibleSources.Count <= 0)
+      {
+        if (ObjectManager.GetAllConnectedMerchantTiles(chosenNetworkSpace).Count > 0)
+        {
+          if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice())
+          {
+            ObjectManager.ChoseCoalStorage();
+            return;
+          }
+          else { NotEnoughMoney(); return; }
+        }
+        else { CantChooseCoal(); return; }
+      }
+    }
+
+    else
+    {
+      Debug.LogError("AI can't choose coal in other action than build or network");
+      return;
+    }
+
+
+    List<CoalMineTileScript> mySources = new();
+    List<CoalMineTileScript> otherSources = new();
+
+    foreach (CoalMineTileScript source in possibleSources)
+    {
+      if (source.ownerPlayerIndex == myAIPlayer.index)
+        mySources.Add(source);
+
+      else
+        otherSources.Add(source);
+    }
+
+    CoalMineTileScript bestSource = possibleSources[0];
+    if (mySources.Count > 0) //If we have sources -> we want the emptied -> get the one with least resources
+    {
+      int minRes = int.MaxValue;
+      foreach (CoalMineTileScript source in mySources)
+        if (source.GetResourceCount() < minRes)
+        {
+          minRes = source.GetResourceCount();
+          bestSource = source;
+        }
+    }
+    else //If we don't have any source, we don't want to upgrade any other -> get the one with most resources
+    {
+      int maxRes = int.MinValue;
+      foreach (CoalMineTileScript source in mySources)
+        if (source.GetResourceCount() > maxRes)
+        {
+          maxRes = source.GetResourceCount();
+          bestSource = source;
+        }
+    }
+
+    ObjectManager.ChooseTile(bestSource);
+
+  }
+
+  public override void ChooseBarrel()
+  {
+    //Debug.Log("AI Choosing barrel");
+    List<BreweryTileScript> breweriesWithBarrels = new();
+    if (ActionManager.currentAction == ACTION.SELL)
+    {
+      List<BarrelSpace> merchantBarrels = ObjectManager.GetAllAvailableMerchantBarrels(chosenTile.builtOnSpace.myLocation, chosenTile); //Barrel from merchant
+      if (merchantBarrels.Count > 0)
+      {
+        ObjectManager.BarrelSpaceClicked(merchantBarrels[0]); /*Debug.Log("AI Chose barrel succesfully");*/
+        return;
+      }
+
+      List<IndustrySpace> brewerySpacesWithBarrels = ObjectManager.GetAllSpacesWithAvailableBarrels(chosenTile.builtOnSpace.myLocation); //Barrel from brewery
+
+      if (brewerySpacesWithBarrels.Count <= 0) { CantChooseBarrel(); return; }
+
+
+      foreach (IndustrySpace space in brewerySpacesWithBarrels)
+      {
+        if (space.myTile is not BreweryTileScript)
+        {
+          Debug.LogError("Found space with barrel which is not Brewery");
+          return;
+        }
+        breweriesWithBarrels.Add((BreweryTileScript)space.myTile);
+      }
+      //Debug.Log($"Choosing {breweriesWithBarrels[0]} as barrel source");
+
+      //Debug.Log("AI Chose barrel succesfully");
+    }
+    else if (ActionManager.currentAction == ACTION.NETWORK)
+    {
+      List<IndustrySpace> brewerySpacesWithBarrels = ObjectManager.GetAllSpacesWithAvailableBarrels(chosenNetworkSpace);
+      if (brewerySpacesWithBarrels.Count <= 0) { CantChooseBarrel(); return; }
+
+
+      foreach (IndustrySpace space in brewerySpacesWithBarrels)
+      {
+        if (space.myTile is not BreweryTileScript)
+        {
+          Debug.LogError("Found space with barrel which is not Brewery");
+          return;
+        }
+        breweriesWithBarrels.Add((BreweryTileScript)space.myTile);
+      }
+      //Debug.Log($"Choosing {breweriesWithBarrels[0]} as barrel source");
+
+      //Debug.Log("AI Chose barrel succesfully");
+    }
+    else
+    {
+      Debug.LogError("AI can't choose barrel in other action than sell or network!");
+      return;
+    }
+
+
+    List<BreweryTileScript> myBreweries = new();
+    List<BreweryTileScript> otherBreweries = new();
+
+    foreach (BreweryTileScript brewery in breweriesWithBarrels)
+    {
+      if (brewery.ownerPlayerIndex == myAIPlayer.index)
+        myBreweries.Add(brewery);
+
+      else
+        otherBreweries.Add(brewery);
+    }
+
+    BreweryTileScript bestBrewery = breweriesWithBarrels[0];
+    if (myBreweries.Count > 0) //If we have sources -> we want the emptied -> get the one with least resources
+    {
+      int minRes = int.MaxValue;
+      foreach (BreweryTileScript brewery in myBreweries)
+        if (brewery.GetResourceCount() < minRes)
+        {
+          minRes = brewery.GetResourceCount();
+          bestBrewery = brewery;
+        }
+    }
+    else //If we don't have any source, we don't want to upgrade any other -> get the one with most resources
+    {
+      int maxRes = int.MinValue;
+      foreach (BreweryTileScript brewery in myBreweries)
+        if (brewery.GetResourceCount() > maxRes)
+        {
+          maxRes = brewery.GetResourceCount();
+          bestBrewery = brewery;
+        }
+    }
+
+    ObjectManager.ChooseTile(bestBrewery);
+
+  }
+
+  public override void ChooseNetwork()
+  {
+    if (GameManager.currentEra == ERA.TRAIN && chosenNetworkSpace is not null &&
+      !GameManager.ActivePlayerHasEnoughMoney(Constants.train2Cost) && ActionManager.IsActionFinishable())
+    { DoneAction(); return; }
+
+
+    //Check enoguh money
+    if ((GameManager.currentEra == ERA.BOAT && !GameManager.ActivePlayerHasEnoughMoney(Constants.boatCost))|| 
+      (GameManager.currentEra == ERA.TRAIN && !GameManager.ActivePlayerHasEnoughMoney(Constants.train1Cost)))
+    { NotEnoughMoney(); return; }
+
+
+    List<NetworkSpace> possibleNetworks = ObjectManager.GetMyNetworkNeighborConnections(myAIPlayer.index);
+
+    if (GameManager.currentEra == ERA.TRAIN) //For trains check coal availability
+    {
+      List<NetworkSpace> possibleNetworksWithCoals = new();
+      foreach (NetworkSpace space in possibleNetworks)
+      {
+        if (CoalCheck(space))
+        {
+          if (chosenNetworkSpace is null || BarrelCheckTiles(space)) //For second train check barrel
+            possibleNetworksWithCoals.Add(space);
+        }
+      }
+
+      possibleNetworks = possibleNetworksWithCoals;
+    }
+
+    if (possibleNetworks.Count <= 0)
+    {
+      if (ActionManager.IsActionFinishable()) { DoneAction(); return; }
+      else { CantChooseNetwork(); return; }
+    }
+
+    float maxUtility = float.MinValue;
+    NetworkSpace bestNetworkSpace = possibleNetworks[0];
+
+    foreach (NetworkSpace network in possibleNetworks)
+    {
+      float curUtility = GetNetworkSpaceUtility(network);
+      if(curUtility > maxUtility)
+      {
+        maxUtility = curUtility;
+        bestNetworkSpace = network;
+      }
+    }
+
+    chosenNetworkSpace = bestNetworkSpace;
+    ObjectManager.ChoseNetwork(chosenNetworkSpace);
+  }
+
+  float GetNetworkSpaceUtility(NetworkSpace space)
+  {
+    const float utilityRemovedForDistToMerchant = 0.1f;
+    const float utilityForConnectingMerchant = 5;
+
+    float utility = 0;
+
+    //Add utility for each built tile on adjacent locations -> potential points for network
+    foreach (LocationScript location in space.connectsLocations)
+    {
+      if (location.myType == LocationType.CITY)
+        foreach (IndustrySpace indSpace in ObjectManager.GetAllIndustrySpacesInLocation(location))
+        {
+          if (indSpace.myTile is not null)
+          {
+            float tileUtility = indSpace.myTile.upgradeNetworkVicPtsReward;
+            if (!indSpace.myTile.isUpgraded) tileUtility = tileUtility / 2f;
+
+
+            //Add utility for new source of resources
+            if (ObjectManager.IsLocationPartOfMyNetwork(location, myAIPlayer.index))
+            {
+              if (indSpace.myTile.industryType == INDUSTRY_TYPE.BREWERY) tileUtility += 1; //Add utility for brewery -> new available barrel source
+              else if (indSpace.myTile.industryType == INDUSTRY_TYPE.COALMINE) tileUtility += 0.5f; //Add utility for coalMine -> new available coal source
+            }
+            utility += tileUtility;
+          }
+        }
+      else
+        utility += utilityForConnectingMerchant;
+    }
+
+
+    //Remove a little utility for distance to nearest unconnected merchant -> network leading to merchant connection is better
+    ObjectManager.GetNearestUnconnectedMerchant(space, out int distToNearestUnconnectedMerchant);
+
+    utility -= distToNearestUnconnectedMerchant * utilityRemovedForDistToMerchant;
+
+    return utility;
+
+  }
 }

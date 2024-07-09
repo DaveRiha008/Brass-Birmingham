@@ -28,7 +28,9 @@ public class LeaderBoardText : MonoBehaviour
       textMeshUI.text = "Koneèné poøadí";
       for (int i = 0; i < GameManager.numOfPlayers; i++)
       {
-        textMeshUI.text += $"\n {(i + 1).ToString()} : {GameManager.playerWinningOrder[i].name} ({GameManager.playerWinningOrder[i].victoryPoints})";
+        Player curPlayer = GameManager.playerWinningOrder[i];
+        textMeshUI.text += $"\n {(i + 1).ToString()} : " + $"{curPlayer.name} \t Vízených bodù { curPlayer.victoryPoints} \t Peníze { curPlayer.money} \t Pøíjmových bodù { curPlayer.income}";
+;
       }
     }
 

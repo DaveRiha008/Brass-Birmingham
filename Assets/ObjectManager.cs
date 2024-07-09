@@ -254,12 +254,15 @@ public class ObjectManager : MonoBehaviour, ISaveable
   static void SetVictoryTokenPosition(int playerIndex, int victoryPoints)
   {
     //Debug.Log($"Victory token {VPTokens[playerIndex]}");
+    if (VPTokens.Count <= playerIndex + 1) return;
     VPTokens[playerIndex].transform.position = mainBoard.transform.Find(Constants.VPSpacesName).GetChild(victoryPoints%99).position
       + Constants.victoryTokenOffset + Constants.playerTokenOffsets[playerIndex];
   }
 
   static void SetIncomeTokenPosition(int playerIndex, int income)
   {
+    if (incomeTokens.Count <= playerIndex + 1) return;
+
     Vector3 destination = mainBoard.transform.Find(Constants.VPSpacesName).transform.GetChild(income%99).position
       + Constants.incomeTokenOffset + Constants.playerTokenOffsets[playerIndex]; 
     //Debug.Log($"Setting position of {incomeTokens[playerIndex]} to {destination}");
@@ -1190,7 +1193,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
   {
     //if (!canChooseSpace) return;
 
-    Debug.Log($"Building {itemInHand}");
+    //Debug.Log($"Building {itemInHand}");
 
 
     //SPEND MONEY WHEN CHOOSING - BETTER FOR PAYING FOR REASOURCES LATER
@@ -1210,7 +1213,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     chosenBuildSpace.builtIndustry = itemInHand.industryType;
     itemInHand.transform.position = chosenBuildSpace.transform.position;
-    Debug.Log($"Moved {itemInHand} to position of {chosenBuildSpace}");
+    //Debug.Log($"Moved {itemInHand} to position of {chosenBuildSpace}");
     itemInHand.builtOnSpace = chosenBuildSpace;
 
     if(chosenBuildSpace.myTile is not null)
@@ -1297,6 +1300,48 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
   }
 
+  static public TileScript GetLowestLevelTileOFType(INDUSTRY_TYPE type, int playerIndex)
+  {
+    List<TileScript> correctTiles;
+    int index;
+    switch (type)
+    {
+      case INDUSTRY_TYPE.BREWERY:
+        index = firstUnbuiltBreweryIndeces[playerIndex];
+        correctTiles = allBreweries[playerIndex];
+        break;
+      case INDUSTRY_TYPE.COALMINE:
+        index = firstUnbuiltCoalMineIndeces[playerIndex];
+        correctTiles = allCoalMines[playerIndex];
+        break;
+      case INDUSTRY_TYPE.COTTONMILL:
+        index = firstUnbuiltCottonMillIndeces[playerIndex];
+        correctTiles = allCottonMills[playerIndex];
+        break;
+      case INDUSTRY_TYPE.IRONWORKS:
+        index = firstUnbuiltIronWorksIndeces[playerIndex];
+        correctTiles = allIronWorks[playerIndex];
+        break;
+      case INDUSTRY_TYPE.MANUFACTURER:
+        index = firstUnbuiltManufacturerIndeces[playerIndex];
+        correctTiles = allManufacturers[playerIndex];
+        break;
+      case INDUSTRY_TYPE.POTTERY:
+        index = firstUnbuiltPotteryIndeces[playerIndex];
+        correctTiles = allPotteries[playerIndex];
+        break;
+      case INDUSTRY_TYPE.NONE:
+      default:
+        return null;
+    }
+
+    if (index >= correctTiles.Count)//Edge case where there are no more unbuilt tiles
+      return null;
+
+    return correctTiles[index];
+
+
+  }
   static public TileScript GetTileOfNextLevel(TileScript tile)
   {
     List<TileScript> tilesOfCorrectType;
@@ -2073,6 +2118,22 @@ public class ObjectManager : MonoBehaviour, ISaveable
     return myNetworkSpaces;
   }
 
+  static public bool IsLocationPartOfMyNetwork(LocationScript location, int playerIndex)
+  {
+    if (location.myType == LocationType.CITY)
+      foreach (IndustrySpace space in locationSpacesDict[location])
+        if (space.myTile is not null && space.myTile.ownerPlayerIndex == playerIndex) return true;
+
+    List<NetworkSpace> neighborNetwork;
+    if (GameManager.currentEra == ERA.BOAT) neighborNetwork = locationNetworkSpacesDictBoat[location];
+    else neighborNetwork = locationNetworkSpacesDictTrain[location];
+
+    foreach (NetworkSpace network in neighborNetwork)
+      if (network.IsOccupied() && network.GetVehicle().ownerPlayerIndex == playerIndex) return true;
+
+    return false;
+  }
+
   static bool AreLocationsConnectedDirectly(LocationScript loc1, LocationScript loc2)
   {
     Dictionary<LocationScript, List<NetworkSpace>> correctDict;
@@ -2084,6 +2145,55 @@ public class ObjectManager : MonoBehaviour, ISaveable
     return false;
   }
 
+  static public LocationScript GetNearestUnconnectedMerchant(NetworkSpace networkSpace, out int distance)
+  {
+    List<MerchantTileSpace> connectedMerchants = GetAllConnectedMerchantTiles(networkSpace);
+
+    Queue<(LocationScript, int)> locationsQueue = new();
+    foreach(LocationScript location in networkSpace.connectsLocations)
+      locationsQueue.Enqueue((location,0));
+    List<LocationScript> locationsVisited = new();
+
+    while (locationsQueue.Count > 0)
+    {
+      List<LocationScript> neighbors;
+
+      (LocationScript,int) curTuple = locationsQueue.Dequeue();
+
+      LocationScript curLocation = curTuple.Item1;
+      int curDistance = curTuple.Item2;
+
+      if (locationsVisited.Contains(curLocation)) continue; //Skip if already visited
+      
+      if (GameManager.currentEra == ERA.BOAT) neighbors = curLocation.neighborsBoats;
+      else neighbors = curLocation.neighborsTrains;
+      foreach (LocationScript neighbor in neighbors)
+      {
+
+        if (locationsVisited.Contains(neighbor)) continue;
+        //Debug.Log("Neighbor is " + neighbor);
+        if (neighbor.myType == LocationType.MERCHANT)
+        {
+          bool connected = false;
+          foreach (MerchantTileSpace tile in neighbor.myMerchants)
+          {
+            if (connectedMerchants.Contains(tile)) connected = true;
+          }
+          if (!connected)
+          {
+            distance = curDistance;
+            return neighbor;
+          }
+        }
+        else locationsQueue.Enqueue((neighbor, curDistance+1));
+      }
+
+      locationsVisited.Add(curLocation);
+    }
+
+    distance = int.MaxValue;
+    return null;
+  }
   static public List<MerchantTileSpace> GetAllConnectedMerchantTiles(LocationScript location)
   {
     Queue<LocationScript> locationsQueue = new();

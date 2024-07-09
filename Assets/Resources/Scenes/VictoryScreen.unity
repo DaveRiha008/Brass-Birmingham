@@ -196,7 +196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_LocalScale.x
@@ -240,11 +240,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -240
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -170
+      value: -44
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -807,11 +807,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -384
+      value: -44
       objectReference: {fileID: 0}
     - target: {fileID: 2618122305861259228, guid: 3354c3cccb7f77549a77ef30b4c031b0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -879,7 +879,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -602, y: -79}
+  m_AnchoredPosition: {x: 0, y: -335}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1414928579
@@ -902,17 +902,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Final leaderboad
-
-
-    1: "Player1"
-
-    2: "Player2"
-
-    3: "Player3"
-
-    4:
-    "Player4"'
+  m_text: "Kone\u010Dn\xE9 po\u0159ad\xED:\nPlayer 1: V\xEDt\u011Bzn\xFDch bod\u016F
+    25    Pen\xEDze 10\tP\u0159\xEDjem 5\nPlayer 1: V\xEDt\u011Bzn\xFDch bod\u016F
+    25    Pen\xEDze 10\tP\u0159\xEDjem 5\nPlayer 1: V\xEDt\u011Bzn\xFDch bod\u016F
+    25    Pen\xEDze 10\tP\u0159\xEDjem 5\nPlayer 1: V\xEDt\u011Bzn\xFDch bod\u016F
+    25    Pen\xEDze 10\tP\u0159\xEDjmov\xFDch bod\u016F 5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -939,15 +933,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.4
-  m_fontSizeBase: 36
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -975,7 +969,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -188.8526, y: 0, z: -185.99957, w: -424.92328}
+  m_margin: {x: -900, y: -150, z: -900, w: -150}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

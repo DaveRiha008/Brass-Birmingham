@@ -82,7 +82,7 @@ public class CurrentProblemLabelScript : Clickable
 
   void FadeAway()
   {
-    Debug.Log("Fade called");
+    //Debug.Log("Fade called");
     myTM.DOFade(0, fadeDuration);
   }
 

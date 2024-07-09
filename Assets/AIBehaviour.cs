@@ -237,7 +237,14 @@ public class AIBehaviour
 
   public virtual void ChooseIndustrySpace()
   {
-    List<IndustrySpace> possibleSpaces = ObjectManager.GetAllViableBuildSpaces(chosenCard);
+    List<IndustrySpace> possibleSpaces;
+
+    if (chosenTile is not null)
+      possibleSpaces = ObjectManager.GetMyNetworkFreeSpacesForItemInHand(myAIPlayer.index);
+
+    else
+      possibleSpaces = ObjectManager.GetAllViableBuildSpaces(chosenCard);
+    
     //Debug.Log($"Possible spaces: {possibleSpaces.Count}");
     if (possibleSpaces.Count <= 0) { CantChooseSpace(); return; }
     chosenSpace = possibleSpaces[0];

@@ -27,6 +27,8 @@ public class BreweryTileScript : TileScript
   }
 
   public bool HasBarrel() => myBarrels.Count > 0;
+  public int GetResourceCount() => myBarrels.Count;
+
 
   public void RemoveBarrel()
   {

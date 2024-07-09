@@ -455,7 +455,7 @@ public class ActionManager : MonoBehaviour
 
   static void EndBuildAction()
   {
-    Debug.Log($"Ending build action succesfully - building {ObjectManager.itemInHand} on {ObjectManager.chosenBuildSpace}");
+    //Debug.Log($"Ending build action succesfully - building {ObjectManager.itemInHand} on {ObjectManager.chosenBuildSpace}");
     currentState = ACTION_STATE.NONE;
 
     ObjectManager.BuildHeldIndustry();
