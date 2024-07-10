@@ -55,7 +55,7 @@ public class CardManager : MonoBehaviour, ISaveable
   private void Start()
   {
 
-    Debug.Log("CardManager Start called!");
+    //Debug.Log("CardManager Start called!");
 
     try
     {
@@ -374,8 +374,13 @@ public class CardManager : MonoBehaviour, ISaveable
       //Debug.Log("Draw deck already empty!! Cannot draw another card");
       return;
     }
-    if (drawWildCard && ActionManager.currentAction == ACTION.SCOUT)
-      ActionManager.ScoutChoseWildCard();
+    if (drawWildCard)
+    {
+      if (ActionManager.currentAction == ACTION.SCOUT)
+        ActionManager.ScoutChoseWildCard();
+      else if (PlayerHasWildCard(playerIndex))
+        Debug.Log("Multiplicating wild card!");
+    }
     playerHands[playerIndex].Add(drawnCard);
     RemakeHandView(playerIndex);
   }
@@ -548,6 +553,15 @@ public class CardManager : MonoBehaviour, ISaveable
   {
     if (!canChooseCard) return;
 
+    if(card.myState != CARD_STATE.IN_HAND)
+    {
+      Debug.Log($"Chose card {card}, that is not in hand but {card.myState}");
+    }
+    else if (!playerHands[GameManager.activePlayerIndex].Contains(card))
+    {
+      Debug.Log($"Chose card {card} from different hand than mine");
+    }
+
     chosenCards.Add(card);
     DiscardCard(card, GameManager.activePlayerIndex);
 
@@ -562,11 +576,16 @@ public class CardManager : MonoBehaviour, ISaveable
 
   public static void ReturnCardFromDiscard(CardScript card, int playerIndex)
   {
-    canDrawWildCards = true;
     if (card.myType == CARD_TYPE.WILD_INDUSTRY)
-      PlayerDrawCard(playerIndex, CardDeckType.WILD_INDUSTRY);
+    {
+      playerHands[playerIndex].Add(card);
+      wildIndustryDrawDeck.RemoveCard(card);
+    }
     else if (card.myType == CARD_TYPE.WILD_LOCATION)
-      PlayerDrawCard(playerIndex, CardDeckType.WILD_LOCATION);
+    {
+      playerHands[playerIndex].Add(card);
+      wildLocationDrawDeck.RemoveCard(card);
+    }
     else
     {
       playerDiscards[playerIndex].Remove(card);
@@ -585,10 +604,12 @@ public class CardManager : MonoBehaviour, ISaveable
     playerHands[playerIndex].Remove(card);
     if (card.myType == CARD_TYPE.WILD_LOCATION)
     {
+      //Debug.Log("Discarding wild location");
       wildLocationDrawDeck.AddCard(card);
     }
     else if (card.myType == CARD_TYPE.WILD_INDUSTRY)
     {
+      //Debug.Log("Discarding wild industry");
       wildIndustryDrawDeck.AddCard(card);
     }
     else

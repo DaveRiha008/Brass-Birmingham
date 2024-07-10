@@ -125,7 +125,7 @@ public class AIBehaviour
 
     CancelAction();
   }
-  protected virtual void NotEnoughMoney()
+  protected virtual void NotEnoughMoney(MISSING_MONEY_REASON reason)
   {
     //Debug.Log("AI had no Money");
 
@@ -153,7 +153,7 @@ public class AIBehaviour
   {
     if(myAIPlayer.income < Constants.loanIncomeCost)
     {
-      unFinishableActions.Add(ACTION.LOAN); NotEnoughIncome(); return;
+      unFinishableActions.Add(ACTION.LOAN); NotEnoughIncome(); return;  //Definitely unfinishable -> no point in trying any other options
     }
     ActionManager.DoAction(ACTION.LOAN);
     //Debug.Log("AI Called Loan action!");
@@ -162,7 +162,7 @@ public class AIBehaviour
   {
     if (CardManager.PlayerHasWildCard(GameManager.activePlayerIndex))
     {
-      unFinishableActions.Add(ACTION.SCOUT);
+      unFinishableActions.Add(ACTION.SCOUT); //Definitely unfinishable -> no point in trying any other options
       CancelAction();
       return;
     }
@@ -179,8 +179,8 @@ public class AIBehaviour
     if ((GameManager.currentEra == ERA.TRAIN && GameManager.GetActivePlayer().money < Constants.train1Cost)
     || (GameManager.currentEra == ERA.BOAT && GameManager.GetActivePlayer().money < Constants.boatCost))
     { // Catch not enough money right away
-      unFinishableActions.Add(ACTION.NETWORK);
-      NotEnoughMoney();
+      unFinishableActions.Add(ACTION.NETWORK); //Definitely unfinishable -> no point in trying any other options
+      NotEnoughMoney(MISSING_MONEY_REASON.NETWORK_VEHICLE);
       return;
     }
     ActionManager.DoAction(ACTION.NETWORK);
@@ -193,15 +193,18 @@ public class AIBehaviour
     chosenTile = null;
     chosenNetworkSpace = null;
 
-    unFinishableActions.Add(ActionManager.currentAction);
+    if(ActionManager.currentAction != ACTION.NONE) //If action is none -> action hasn't even started -> is unfinishable right away -> NONE is always finishable
+      unFinishableActions.Add(ActionManager.currentAction);
     //Debug.Log($"AI added {ActionManager.currentAction} to unfinishableActions");
     ActionManager.CancelAction();
     //Debug.Log("AI Called Cancel action!");
   }
 
+
+
   public virtual void ChooseCard()
   {
-    List<CardScript> possibleCards = CardManager.GetPlayerCards(myAIPlayer.index);
+    List<CardScript> possibleCards = GetPossibleCards();
 
     if(possibleCards.Count <= 0) { CantChooseCard(); return; }
 
@@ -214,7 +217,7 @@ public class AIBehaviour
   }
   public virtual void ChooseTile()
   {
-    List<TileScript> possibleTiles = ObjectManager.GetViableTilesForCurrentAction();
+    List<TileScript> possibleTiles = GetPossibleTiles();
     if (possibleTiles.Count <= 0) {
       if ((ActionManager.currentAction == ACTION.SELL || ActionManager.currentAction == ACTION.DEVELOP) && ActionManager.IsActionFinishable())
       { DoneAction(); return; }
@@ -223,11 +226,10 @@ public class AIBehaviour
     }
     if (ActionManager.currentAction == ACTION.DEVELOP)
     {
-      List<IronWorksTileScript> possibleIronSources = ObjectManager.GetAllIronWorksWithFreeIron();
-      if (possibleIronSources.Count <= 0 && !GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetIronStoragePrice()))
+      if (!IronCheck())
       {
         if (ActionManager.IsActionFinishable()) { DoneAction(); return; }
-        else { NotEnoughMoney(); return; }
+        else { NotEnoughMoney(MISSING_MONEY_REASON.IRON); return; }
       }
     }
     chosenTile = possibleTiles[0];
@@ -237,13 +239,7 @@ public class AIBehaviour
 
   public virtual void ChooseIndustrySpace()
   {
-    List<IndustrySpace> possibleSpaces;
-
-    if (chosenTile is not null)
-      possibleSpaces = ObjectManager.GetMyNetworkFreeSpacesForItemInHand(myAIPlayer.index);
-
-    else
-      possibleSpaces = ObjectManager.GetAllViableBuildSpaces(chosenCard);
+    List<IndustrySpace> possibleSpaces = GetPossibleIndustrySpaces();
     
     //Debug.Log($"Possible spaces: {possibleSpaces.Count}");
     if (possibleSpaces.Count <= 0) { CantChooseSpace(); return; }
@@ -253,29 +249,30 @@ public class AIBehaviour
 
   public virtual void ChooseIron()
   {
-    List<IronWorksTileScript> possibleSources = ObjectManager.GetAllIronWorksWithFreeIron();
+    List<IronWorksTileScript> possibleSources = GetPossibleIronSources();
     if (possibleSources.Count <= 0)
     {
       if (myAIPlayer.money >= ObjectManager.GetIronStoragePrice())
         ObjectManager.ChoseIronStorage();
       else
-      { NotEnoughMoney(); return; }
+      { NotEnoughMoney(MISSING_MONEY_REASON.IRON); return; }
     }
     else ObjectManager.ChooseTile(possibleSources[0]);
   }
+
 
   public virtual void ChooseCoal()
   {
     List<CoalMineTileScript> possibleSources;
     if (ActionManager.currentAction == ACTION.BUILD)
     {
-      possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenSpace.myLocation);
+      possibleSources = GetPossibleCoalSources(chosenSpace.myLocation);
       if (possibleSources.Count <= 0)
       {
         if (ObjectManager.GetAllConnectedMerchantTiles(chosenSpace.myLocation).Count > 0)
         {
           if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice()) ObjectManager.ChoseCoalStorage();
-          else { NotEnoughMoney(); return; }
+          else { NotEnoughMoney(MISSING_MONEY_REASON.COAL); return; }
         }
         else { CantChooseCoal(); return; }
       }
@@ -284,13 +281,13 @@ public class AIBehaviour
 
     else if (ActionManager.currentAction == ACTION.NETWORK)
     {
-      possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenNetworkSpace);
+      possibleSources = GetPossibleCoalSources(chosenNetworkSpace);
       if (possibleSources.Count <= 0)
       {
         if (ObjectManager.GetAllConnectedMerchantTiles(chosenNetworkSpace).Count > 0)
         {
           if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice()) ObjectManager.ChoseCoalStorage();
-          else NotEnoughMoney();
+          else NotEnoughMoney(MISSING_MONEY_REASON.COAL);
         }
         else { CantChooseCoal(); return; }
       }
@@ -326,28 +323,14 @@ public class AIBehaviour
     }
   }
 
+
   public virtual void ChooseNetwork()
   {
     if(GameManager.currentEra == ERA.TRAIN && chosenNetworkSpace is not null &&
       !GameManager.ActivePlayerHasEnoughMoney(Constants.train2Cost) && ActionManager.IsActionFinishable())
     { DoneAction(); return; }
 
-    List<NetworkSpace> possibleNetworks = ObjectManager.GetMyNetworkNeighborConnections(myAIPlayer.index);
-
-    if (GameManager.currentEra == ERA.TRAIN) //For trains check coal availability
-    {
-      List<NetworkSpace> possibleNetworksWithCoals = new();
-      foreach (NetworkSpace space in possibleNetworks)
-      {
-        if (CoalCheck(space))
-        {
-          if (chosenNetworkSpace is null || BarrelCheckTiles(space)) //For second train check barrel
-            possibleNetworksWithCoals.Add(space);
-        }
-      }
-
-      possibleNetworks = possibleNetworksWithCoals;
-    }
+    List<NetworkSpace> possibleNetworks = GetPossibleNetworkSpaces();
 
     if (possibleNetworks.Count<=0) 
     {
@@ -366,6 +349,61 @@ public class AIBehaviour
       Debug.Log("AI tried to finish not done action");
   }
 
+  protected virtual List<CardScript> GetPossibleCards()
+  {
+    return CardManager.GetPlayerCards(myAIPlayer.index);
+  }
+  protected virtual List<TileScript> GetPossibleTiles()
+  {
+    return ObjectManager.GetViableTilesForCurrentAction();
+  }
+
+  protected virtual List<IndustrySpace> GetPossibleIndustrySpaces()
+  {
+    if (chosenTile is not null)
+      return ObjectManager.GetMyNetworkFreeSpacesForItemInHand(myAIPlayer.index);
+
+    else
+      return ObjectManager.GetAllViableBuildSpaces(chosenCard);
+  }
+
+  protected virtual List<IronWorksTileScript> GetPossibleIronSources()
+  {
+    return ObjectManager.GetAllIronWorksWithFreeIron();
+  }
+
+
+  protected virtual List<CoalMineTileScript> GetPossibleCoalSources(LocationScript location)
+  {
+    return ObjectManager.GetNearestCoalMinesWithFreeCoal(location);
+  }
+  protected virtual List<CoalMineTileScript> GetPossibleCoalSources(NetworkSpace networkSpace)
+  {
+    return ObjectManager.GetNearestCoalMinesWithFreeCoal(networkSpace);
+  }
+  protected virtual List<NetworkSpace> GetPossibleNetworkSpaces()
+  {
+    List<NetworkSpace> possibleNetworks = ObjectManager.GetMyNetworkNeighborConnections(myAIPlayer.index);
+
+    if (GameManager.currentEra == ERA.TRAIN) //For trains check coal availability
+    {
+      List<NetworkSpace> possibleNetworksWithCoals = new();
+      foreach (NetworkSpace space in possibleNetworks)
+      {
+        if (CoalCheck(space))
+        {
+          if (chosenNetworkSpace is null || BarrelCheckTiles(space)) //For second train check barrel
+            possibleNetworksWithCoals.Add(space);
+        }
+      }
+
+      possibleNetworks = possibleNetworksWithCoals;
+    }
+
+    return possibleNetworks;
+  }
+
+
   protected bool CoalCheck(LocationScript location)
   {
     List<CoalMineTileScript> possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(location);
@@ -382,7 +420,7 @@ public class AIBehaviour
   }
   protected bool IronCheck()
   {
-    List<IronWorksTileScript> possibleSources = ObjectManager.GetAllIronWorksWithFreeIron();
+    List<IronWorksTileScript> possibleSources = GetPossibleIronSources();
     if (possibleSources.Count <= 0)
     {
       if (myAIPlayer.money >= ObjectManager.GetCoalStoragePrice()) return true;
@@ -424,4 +462,8 @@ public class AIBehaviour
       return true;
     return false;
   }
+
+
+  protected enum MISSING_MONEY_REASON { COAL, IRON, NETWORK_VEHICLE};
 }
+

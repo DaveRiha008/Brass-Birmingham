@@ -18,6 +18,11 @@ public class CurrentProblemLabelScript : Clickable
   // Update is called once per frame
   void Update()
   {
+    ShowUpdate();
+  }
+
+  public void ShowUpdate()
+  {
     string text = myTM.text;
     if (ActionManager.curMisRes != ACTION_MISSING_RESOURCE.NONE)
     {
@@ -69,7 +74,7 @@ public class CurrentProblemLabelScript : Clickable
         text = Constants.misResTextBarrel;
         break;
       case ACTION_MISSING_RESOURCE.NONE:
-        if(myTM.alpha == 1)
+        if (myTM.alpha == 1)
         {
           FadeAway();
         }

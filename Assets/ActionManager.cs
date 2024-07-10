@@ -93,9 +93,9 @@ public class ActionManager : MonoBehaviour
     CardManager.canChooseCard = true;
     List<CardScript> possibleCards = CardManager.GetPlayerCards(GameManager.activePlayerIndex);
 
-    if (possibleCards.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.CARD;
-    
-    CardManager.HighlightCards(possibleCards);
+    if (possibleCards.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.CARD; HelpFunctions.HUDProblemUpdate();}
+
+      CardManager.HighlightCards(possibleCards);
     //Debug.Log("Setting action state to CHOOSING_CARD");
     currentState = ACTION_STATE.CHOOSING_CARD;
 
@@ -146,7 +146,7 @@ public class ActionManager : MonoBehaviour
         currentState = ACTION_STATE.NONE;
         if (GameManager.GameRunning())
         {
-          Debug.Log("Calling EndTurn from empty action -> after discard");
+          //Debug.Log("Calling EndTurn from empty action -> after discard");
           GameManager.EndTurn();
 
         }
@@ -176,9 +176,10 @@ public class ActionManager : MonoBehaviour
 
       List<IndustrySpace> viableSpaces = ObjectManager.GetAllViableBuildSpaces(card);
 
-      if (viableSpaces.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.SPACE_BUILD;
+      if (viableSpaces.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.SPACE_BUILD; HelpFunctions.HUDProblemUpdate(); }
 
-      ObjectManager.HighlightIndustrySpaces(viableSpaces);
+
+        ObjectManager.HighlightIndustrySpaces(viableSpaces);
       ObjectManager.MakeCorrectIndustrySpacesClickable(card);
       ObjectManager.canChooseSpace = true;
     }
@@ -190,7 +191,8 @@ public class ActionManager : MonoBehaviour
 
       List<TileScript> viableTiles = ObjectManager.GetAllViableTiles(card);
 
-      if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_BUILD;
+      if (viableTiles.Count <= 0) {curMisRes = ACTION_MISSING_RESOURCE.TILE_BUILD; HelpFunctions.HUDProblemUpdate();}
+
 
       ObjectManager.HighlightTiles(viableTiles);
       ObjectManager.canPickUpTile = true;
@@ -218,9 +220,10 @@ public class ActionManager : MonoBehaviour
     ObjectManager.MakeCorrectIndustrySpacesClickable();
     List<IndustrySpace> viableSpaces = ObjectManager.GetMyNetworkFreeSpacesForItemInHand(GameManager.activePlayerIndex);
 
-    if (viableSpaces.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.SPACE_BUILD;
+    if (viableSpaces.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.SPACE_BUILD; HelpFunctions.HUDProblemUpdate(); }
 
-    ObjectManager.HighlightIndustrySpaces(viableSpaces);
+
+      ObjectManager.HighlightIndustrySpaces(viableSpaces);
   }
 
   static public void BuildChoseIndustrySpace()
@@ -242,9 +245,9 @@ public class ActionManager : MonoBehaviour
     ObjectManager.canPickUpTile = true;
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-    if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_BUILD;
+    if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_BUILD; HelpFunctions.HUDProblemUpdate(); }
 
-    ObjectManager.HighlightTiles(viableTiles);
+      ObjectManager.HighlightTiles(viableTiles);
   }
   static void BuildRequireCoal()
   {
@@ -259,10 +262,11 @@ public class ActionManager : MonoBehaviour
           ObjectManager.MakeCoalStorageClickable();
           ObjectManager.HighlightCoalStorage();
         }
-        else curMisRes = ACTION_MISSING_RESOURCE.MONEY_COAL;
-      } 
-      else // Else there is not any coal to get
-        curMisRes = ACTION_MISSING_RESOURCE.COAL;
+        else { curMisRes = ACTION_MISSING_RESOURCE.MONEY_COAL; HelpFunctions.HUDProblemUpdate(); }
+        }
+      else
+      // Else there is not any coal to get
+      { curMisRes = ACTION_MISSING_RESOURCE.COAL; HelpFunctions.HUDProblemUpdate();}
     }
     else
     {
@@ -284,7 +288,8 @@ public class ActionManager : MonoBehaviour
         ObjectManager.HighlightIronStorage();
       }
       else
-        curMisRes = ACTION_MISSING_RESOURCE.MONEY_IRON;
+      { curMisRes = ACTION_MISSING_RESOURCE.MONEY_IRON; HelpFunctions.HUDProblemUpdate(); }
+
     }
     else
     {
@@ -370,6 +375,8 @@ public class ActionManager : MonoBehaviour
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_COAL;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough money to buy coal from storage");
       CancelAction();
     }
@@ -428,6 +435,8 @@ public class ActionManager : MonoBehaviour
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_IRON;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough money to buy iron from storage");
       CancelAction();
     }
@@ -483,9 +492,9 @@ public class ActionManager : MonoBehaviour
     ObjectManager.canSellTile = true;
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-    if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL;
+    if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL; HelpFunctions.HUDProblemUpdate(); }
 
-    ObjectManager.HighlightTiles(viableTiles);
+      ObjectManager.HighlightTiles(viableTiles);
   }
 
   static public void SellChoseTile(TileScript tile)
@@ -498,11 +507,12 @@ public class ActionManager : MonoBehaviour
     currentState = ACTION_STATE.CHOOSING_BARREL;
 
     ObjectManager.FillBarrelsForSell(tile.builtOnSpace.myLocation, tile);
-    
-    if (ObjectManager.GetAllAvailableMerchantBarrels(tile.builtOnSpace.myLocation, tile).Count <= 0 &&
-      ObjectManager.GetAllSpacesWithAvailableBarrels(tile.builtOnSpace.myLocation).Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.BARREL;
 
-    ObjectManager.HighlightBarrelsForSell();
+    if (ObjectManager.GetAllAvailableMerchantBarrels(tile.builtOnSpace.myLocation, tile).Count <= 0 &&
+      ObjectManager.GetAllSpacesWithAvailableBarrels(tile.builtOnSpace.myLocation).Count <= 0)
+    { curMisRes = ACTION_MISSING_RESOURCE.BARREL; HelpFunctions.HUDProblemUpdate(); }
+
+      ObjectManager.HighlightBarrelsForSell();
 
   }
 
@@ -522,9 +532,9 @@ public class ActionManager : MonoBehaviour
 
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-    if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL;
+    if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL; HelpFunctions.HUDProblemUpdate(); }
 
-    currentState = ACTION_STATE.CHOOSING_TILE;
+      currentState = ACTION_STATE.CHOOSING_TILE;
     ObjectManager.HighlightTiles(viableTiles);
     //EndSellAction(); //Uncomment for a single time sell action
   }
@@ -546,8 +556,8 @@ public class ActionManager : MonoBehaviour
     ObjectManager.DestroyAllBorders();
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-    if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL;
-    currentState = ACTION_STATE.CHOOSING_TILE;
+    if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL; HelpFunctions.HUDProblemUpdate(); }
+      currentState = ACTION_STATE.CHOOSING_TILE;
 
     ObjectManager.HighlightTiles(viableTiles);
     //EndSellAction(); //Uncomment for a single time sell action
@@ -566,6 +576,8 @@ public class ActionManager : MonoBehaviour
 
     {
       curMisRes = ACTION_MISSING_RESOURCE.INCOME_LOAN;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough income for loan action!");
       CancelAction();
       return;
@@ -593,6 +605,7 @@ public class ActionManager : MonoBehaviour
     if (CardManager.PlayerHasWildCard(GameManager.activePlayerIndex))
     {
       curMisRes = ACTION_MISSING_RESOURCE.WILD_CARD_ALREADY_IN_HAND;
+      HelpFunctions.HUDProblemUpdate();
       Debug.Log("Can't scout when wild card is already in hand");
       CancelAction();
       return;
@@ -640,9 +653,9 @@ public class ActionManager : MonoBehaviour
 
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-    if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP;
+    if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP; HelpFunctions.HUDProblemUpdate(); }
 
-    ObjectManager.HighlightTiles(viableTiles);
+      ObjectManager.HighlightTiles(viableTiles);
     ObjectManager.canPickUpTile = true;
 
   }
@@ -704,9 +717,9 @@ public class ActionManager : MonoBehaviour
       ObjectManager.DestroyAllTileBorders();
       List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-      if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP;
+      if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP; HelpFunctions.HUDProblemUpdate(); }
 
-      ObjectManager.HighlightTiles(viableTiles);
+        ObjectManager.HighlightTiles(viableTiles);
 
       CameraScript camera = Camera.main.GetComponent<CameraScript>();
       camera.MoveToPersonalBoard();
@@ -736,6 +749,8 @@ public class ActionManager : MonoBehaviour
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_IRON;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough money to buy iron from storage");
       CancelAction();
     }
@@ -751,9 +766,9 @@ public class ActionManager : MonoBehaviour
       ObjectManager.DestroyAllTileBorders();
       List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
-      if (viableTiles.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP;
+      if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP; HelpFunctions.HUDProblemUpdate(); }
 
-      ObjectManager.HighlightTiles(viableTiles);
+        ObjectManager.HighlightTiles(viableTiles);
 
       CameraScript camera = Camera.main.GetComponent<CameraScript>();
       camera.MoveToPersonalBoard();
@@ -797,9 +812,9 @@ public class ActionManager : MonoBehaviour
 
     List<NetworkSpace> viableSpaces = ObjectManager.GetMyNetworkNeighborConnections(GameManager.activePlayerIndex);
 
-    if (viableSpaces.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.NETWORK_SPACE;
+    if (viableSpaces.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.NETWORK_SPACE; HelpFunctions.HUDProblemUpdate(); }
 
-    ObjectManager.HighlightNetworkSpaces(viableSpaces);
+      ObjectManager.HighlightNetworkSpaces(viableSpaces);
 
   }
 
@@ -820,10 +835,10 @@ public class ActionManager : MonoBehaviour
           ObjectManager.HighlightCoalStorage();
         }
         else
-          curMisRes = ACTION_MISSING_RESOURCE.MONEY_COAL;
+        { curMisRes = ACTION_MISSING_RESOURCE.MONEY_COAL; HelpFunctions.HUDProblemUpdate(); }
       }
       else // Else there is not any coal to get
-        curMisRes = ACTION_MISSING_RESOURCE.COAL;
+      { curMisRes = ACTION_MISSING_RESOURCE.COAL; HelpFunctions.HUDProblemUpdate(); }
     }
     else
     {
@@ -852,6 +867,8 @@ public class ActionManager : MonoBehaviour
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_NETWORK;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough money for network!");
       CancelAction();
       return;
@@ -889,9 +906,9 @@ public class ActionManager : MonoBehaviour
 
       List<NetworkSpace> viableSpaces = ObjectManager.GetMyNetworkNeighborConnections(GameManager.activePlayerIndex);
 
-      if (viableSpaces.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.NETWORK_SPACE;
+      if (viableSpaces.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.NETWORK_SPACE; HelpFunctions.HUDProblemUpdate(); }
 
-      ObjectManager.HighlightNetworkSpaces(viableSpaces);
+        ObjectManager.HighlightNetworkSpaces(viableSpaces);
     }
 
     else
@@ -911,6 +928,8 @@ public class ActionManager : MonoBehaviour
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_COAL;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough money to buy coal from storage");
       CancelAction();
     }
@@ -927,9 +946,9 @@ public class ActionManager : MonoBehaviour
       ObjectManager.MakeCorrectNetworkSpacesClickable();
       List<NetworkSpace> viableSpaces = ObjectManager.GetMyNetworkNeighborConnections(GameManager.activePlayerIndex);
 
-      if (viableSpaces.Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.NETWORK_SPACE;
+      if (viableSpaces.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.NETWORK_SPACE; HelpFunctions.HUDProblemUpdate(); }
 
-      ObjectManager.HighlightNetworkSpaces(viableSpaces);
+        ObjectManager.HighlightNetworkSpaces(viableSpaces);
     }
 
     else
@@ -946,6 +965,8 @@ public class ActionManager : MonoBehaviour
     if (!enoughMoney)
     {
       curMisRes = ACTION_MISSING_RESOURCE.MONEY_NETWORK;
+      HelpFunctions.HUDProblemUpdate();
+
       Debug.Log("Not enough money for network!");
       CancelAction();
       return;
@@ -962,9 +983,9 @@ public class ActionManager : MonoBehaviour
     ObjectManager.DestroyAllBorders();
     ObjectManager.FillCurrentSpacesWithBarrelsForNetwork(space);
 
-    if (ObjectManager.GetAllSpacesWithAvailableBarrels(space).Count <= 0) curMisRes = ACTION_MISSING_RESOURCE.BARREL;
+    if (ObjectManager.GetAllSpacesWithAvailableBarrels(space).Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.BARREL; HelpFunctions.HUDProblemUpdate(); }
 
-    ObjectManager.HighlightCurrentSpacesWithBarrelsForNetwork();
+      ObjectManager.HighlightCurrentSpacesWithBarrelsForNetwork();
     ObjectManager.MakeAllNetworkSpacesUnclickable();
   }
 

@@ -62,6 +62,12 @@ public class HelpFunctions
         break;
     }
   }
+
+  static public void HUDProblemUpdate()
+  {
+    CurrentProblemLabelScript problemLabel = GameObject.Find(Constants.HUDPath).transform.Find(Constants.problemLabelName).GetComponent<CurrentProblemLabelScript>();
+    problemLabel.ShowUpdate();
+  }
 }
 
 public enum INFO_MESSAGE { PLAYER_CHANGED, ACTION_CANCELED, BUILD_SUCCESS, SELL_SUCCESS, LOAN_SUCCESS, SCOUT_SUCCESS, DEVELOP_SUCCESS, NETWORK_SUCCESS }

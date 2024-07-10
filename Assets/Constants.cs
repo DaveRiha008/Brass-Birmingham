@@ -371,6 +371,7 @@ public struct Constants
 
   readonly public static string HUDPath = "HUD";
   readonly public static string mainInfoLabelPath = "InfoLabel";
+  readonly public static string problemLabelName = "CurrentProblem";
 
 
   //Scene object names

@@ -66,7 +66,7 @@ public class VictoryDataManager
 
     if (FileManager.LoadFromFile(Constants.vicFileName, out var json))
     {
-      Debug.Log($"Loading from JSON: {json}");
+      //Debug.Log($"Loading from JSON: {json}");
 
       loadedVicData.LoadFromJson(json);
 
@@ -96,12 +96,12 @@ public class VictoryDataManager
 
       loadedVicData.gamesCounter++;
 
-      Debug.Log("Load complete");
+      //Debug.Log("Load complete");
 
     }
     else
     {
-      Debug.LogError("Loading from file failed! \n Creating new victory data");
+      //Debug.LogError("Loading from file failed! \n Creating new victory data");
       loadedVicData.player1VicPoints = newVicData.player1VicPoints;
       loadedVicData.player1Victories = newVicData.player1Victories;
       loadedVicData.player1Seconds = newVicData.player1Seconds;
@@ -166,8 +166,8 @@ public class VictoryDataManager
 
     if (FileManager.WriteToFile(Constants.vicFileName, loadedVicData.ToJson()))
     {
-      Debug.Log($"Saved {loadedVicData.ToJson()}");
-      Debug.Log("Save successful");
+      //Debug.Log($"Saved {loadedVicData.ToJson()}");
+      //Debug.Log("Save successful");
     }
   }
 }

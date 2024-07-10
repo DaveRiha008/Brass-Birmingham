@@ -147,7 +147,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
   private void Start()
   {
-    Debug.Log("ObjectManager Start called!");
+    //Debug.Log("ObjectManager Start called!");
     mainBoard = GameObject.Find(Constants.mainBoardName);
 
     LoadAllStaticObjects();
@@ -164,7 +164,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
   public static void InitializeObjects()
   {
-    Debug.Log("Initializing objects");
+    //Debug.Log("Initializing objects");
     DestroyAllObjects();
 
     CreateAllObjects();
@@ -978,7 +978,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     loadedTiles = HelpFunctions.GetShuffledList(loadedTiles);
     allMerchantTiles = loadedTiles;
-    Debug.Log("Loaded total of " + loadedTiles.Count.ToString() + " merchant tiles");
+    //Debug.Log("Loaded total of " + loadedTiles.Count.ToString() + " merchant tiles");
     int tileIndex = 0;
     foreach (LocationScript merchant in allMerchants)
     {
@@ -2439,7 +2439,23 @@ public class ObjectManager : MonoBehaviour, ISaveable
   static public void MakeCoalStorageClickable() => coalStorage.BecomeClickable();
   static public void MakeCoalStorageUnClickable() => coalStorage.BecomeUnclickable();
 
+  static public List<BreweryTileScript> GetAllBreweriesWithFreeBarrels()
+  {
+    List<BreweryTileScript> finalTiles = new();
+    foreach (List<TileScript> breweriesPerPlayer in allBreweries)
+      foreach (TileScript tile in breweriesPerPlayer)
+      {
+        if (tile is not BreweryTileScript)
+        {
+          Debug.LogError("Detected non-Brewery tile in coalMines list");
+          continue;
+        }
+        BreweryTileScript brewery = (BreweryTileScript)tile;
+        if (brewery.HasBarrel()) finalTiles.Add(brewery);
 
+      }
+    return finalTiles;
+  }
   static public List<IndustrySpace> GetAllSpacesWithAvailableBarrels(LocationScript curLocation)
   {
     List<LocationScript> connectedLocations = GetAllConnectedLocations(curLocation);

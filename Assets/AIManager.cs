@@ -13,7 +13,7 @@ public class AIManager:MonoBehaviour
 
   static AIBehaviour[] strategiesPerPlayer = { 
     new AIChooseBetter(GameManager.GetPlayer(0)),
-    new AIChooseBetterCard(GameManager.GetPlayer(1)),
+    new AIChooseRepeatedly(GameManager.GetPlayer(1)),
     new AIChooseBetterTile(GameManager.GetPlayer(2)),
     new AIBehaviour(GameManager.GetPlayer(3)) };
 
@@ -45,7 +45,7 @@ public class AIManager:MonoBehaviour
 
   static void LoadPlayerStrategies()
   {
-    Debug.Log("LoadPlayerStrategies called");
+    //Debug.Log("LoadPlayerStrategies called");
     for (int i = 0; i < GameManager.numOfPlayers; i++)
     {
       Player player = GameManager.GetPlayer(i);
@@ -71,7 +71,6 @@ public class AIManager:MonoBehaviour
   }
   public static AI_STRATEGY GetPlayerStrategy(int playerIndex) => playerStrategies[playerIndex];
 
-  //TODO: Implement correct AI turn by a certaion strategy
   //TODO: Make the game locked for real players while AI plays
   //TODO: For better player experience -> make pauses between each AI action to better show what is going on
   public static void PlayTurn()

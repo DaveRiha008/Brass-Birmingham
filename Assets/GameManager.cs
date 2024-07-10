@@ -370,7 +370,7 @@ public class GameManager : MonoBehaviour, ISaveable
 
     if (vicPts + amount < 0)
     {
-      Debug.LogError("Victory points can't be less than 0!");
+      //Debug.LogError("Victory points can't be less than 0!");
       playerList[playerIndex].victoryPoints = 0;
     }
     else if (vicPts + amount > Constants.maxVP)
@@ -451,7 +451,7 @@ public class GameManager : MonoBehaviour, ISaveable
     switch (currentEra)
     {
       case ERA.BOAT:
-        Debug.Log($"Changing era from BOAT to TRAIN");
+        //Debug.Log($"Changing era from BOAT to TRAIN");
         currentEra = ERA.TRAIN;
         ObjectManager.RemoveAllBuiltBoatTiles();
         ObjectManager.FillMerchantBarrels();
@@ -473,7 +473,7 @@ public class GameManager : MonoBehaviour, ISaveable
         }
         break;
       case ERA.TRAIN:
-        Debug.Log($"Changing era from train -> END GAME");
+        //Debug.Log($"Changing era from train -> END GAME");
         EndGame();
         break;
       default:

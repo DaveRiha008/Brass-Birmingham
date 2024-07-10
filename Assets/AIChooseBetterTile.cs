@@ -82,16 +82,16 @@ public class AIChooseBetterTile : AIBehaviour
     chosenCard = bestCard;
   }
 
-  public override void ChooseWildCard()
-  {
-    int wildLocPoss = ObjectManager.GetViableBuildSpacesWildLocationCard().Count + ObjectManager.GetViableTilesWildLocationCard().Count;
-    int wildIndPoss = ObjectManager.GetViableBuildSpacesWildIndustryCard().Count + ObjectManager.GetViableTilesWildIndustryCard().Count;
+  //public override void ChooseWildCard()
+  //{
+  //  int wildLocPoss = ObjectManager.GetViableBuildSpacesWildLocationCard().Count + ObjectManager.GetViableTilesWildLocationCard().Count;
+  //  int wildIndPoss = ObjectManager.GetViableBuildSpacesWildIndustryCard().Count + ObjectManager.GetViableTilesWildIndustryCard().Count;
 
-    if (wildLocPoss > wildIndPoss)
-      CardManager.ActivePlayerDrawCard(CardDeckType.WILD_LOCATION);
-    else
-      CardManager.ActivePlayerDrawCard(CardDeckType.WILD_INDUSTRY);
-  }
+  //  if (wildLocPoss > wildIndPoss)
+  //    CardManager.ActivePlayerDrawCard(CardDeckType.WILD_LOCATION);
+  //  else
+  //    CardManager.ActivePlayerDrawCard(CardDeckType.WILD_INDUSTRY);
+  //}
   public override void ChooseTile()
   {
     List<TileScript> possibleTiles = ObjectManager.GetViableTilesForCurrentAction();
@@ -110,7 +110,7 @@ public class AIChooseBetterTile : AIBehaviour
       if (possibleIronSources.Count <= 0 && !GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetIronStoragePrice()))
       {
         if (ActionManager.IsActionFinishable()) { DoneAction(); return; }
-        else { NotEnoughMoney(); return; }
+        else { NotEnoughMoney(MISSING_MONEY_REASON.IRON); return; }
       }
     }
 

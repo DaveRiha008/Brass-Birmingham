@@ -49,6 +49,8 @@ public class CardDeck : Clickable
     myCards.RemoveAt(0);
     returnCard.Draw();
 
+    if (myCards.Count <= 0)
+      isEmpty = true;
     //Debug.Log("Drawing card from Normal drawDeck");
 
     return returnCard;
@@ -58,6 +60,21 @@ public class CardDeck : Clickable
   {
     myCards = new();
     isEmpty = true;
+  }
+
+  public void RemoveCard(CardScript card)
+  {
+    if(!myCards.Contains(card) )
+    {
+      Debug.LogError("Can't remove card, which is not in this deck");
+      return;
+    }
+
+    myCards.Remove(card);
+    card.Draw();
+    if (myCards.Count <= 0)
+      isEmpty = true;
+
   }
 
   public int GetNumberOfCardsInDeck() => myCards.Count;

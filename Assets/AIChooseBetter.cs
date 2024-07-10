@@ -12,7 +12,7 @@ public class AIChooseBetter : AIBehaviour
 
   public override void ChooseCard()
   {
-    List<CardScript> possibleCards = CardManager.GetPlayerCards(myAIPlayer.index);
+    List<CardScript> possibleCards = GetPossibleCards();
 
     if (possibleCards.Count <= 0) { CantChooseCard(); return; }
 
@@ -94,7 +94,7 @@ public class AIChooseBetter : AIBehaviour
   }
   public override void ChooseTile()
   {
-    List<TileScript> possibleTiles = ObjectManager.GetViableTilesForCurrentAction();
+    List<TileScript> possibleTiles = GetPossibleTiles();
     if (possibleTiles.Count <= 0)
     {
       if ((ActionManager.currentAction == ACTION.SELL || ActionManager.currentAction == ACTION.DEVELOP) && ActionManager.IsActionFinishable())
@@ -106,11 +106,10 @@ public class AIChooseBetter : AIBehaviour
     //If developing - forward check whether we can afford the iron - later the action can't be finished
     if (ActionManager.currentAction == ACTION.DEVELOP)
     {
-      List<IronWorksTileScript> possibleIronSources = ObjectManager.GetAllIronWorksWithFreeIron();
-      if (possibleIronSources.Count <= 0 && !GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetIronStoragePrice()))
+      if (!IronCheck())
       {
         if (ActionManager.IsActionFinishable()) { DoneAction(); return; }
-        else { NotEnoughMoney(); return; }
+        else { NotEnoughMoney(MISSING_MONEY_REASON.IRON); return; }
       }
     }
 
@@ -136,7 +135,7 @@ public class AIChooseBetter : AIBehaviour
   float GetTileBuildUtility(TileScript tile)
   {
     float costFraction = tile.buildCost / (float)myAIPlayer.money;
-    float utility = tile.upgradeNetworkVicPtsReward + tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
+    float utility = tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
     utility *= 1 - costFraction; //The more expensive tile has lower utility
 
     return utility;
@@ -217,13 +216,7 @@ public class AIChooseBetter : AIBehaviour
   public override void ChooseIndustrySpace()
   {
     //Industry space is chosen only in build action -> no need to specialize
-    List<IndustrySpace> possibleSpaces;
-
-    if (chosenTile is not null)
-      possibleSpaces = ObjectManager.GetMyNetworkFreeSpacesForItemInHand(myAIPlayer.index);
-
-    else
-      possibleSpaces = ObjectManager.GetAllViableBuildSpaces(chosenCard);
+    List<IndustrySpace> possibleSpaces = GetPossibleIndustrySpaces();
 
 
     //Debug.Log($"Possible spaces: {possibleSpaces.Count}");
@@ -399,7 +392,7 @@ public class AIChooseBetter : AIBehaviour
 
   public override void ChooseIron()
   {
-    List<IronWorksTileScript> possibleSources = ObjectManager.GetAllIronWorksWithFreeIron();
+    List<IronWorksTileScript> possibleSources = GetPossibleIronSources();
     if (possibleSources.Count <= 0)
     {
       if (myAIPlayer.money >= ObjectManager.GetIronStoragePrice())
@@ -408,7 +401,7 @@ public class AIChooseBetter : AIBehaviour
         return;
       }
       else
-      { NotEnoughMoney(); return; }
+      { NotEnoughMoney(MISSING_MONEY_REASON.IRON); return; }
     }
 
 
@@ -454,7 +447,7 @@ public class AIChooseBetter : AIBehaviour
     List<CoalMineTileScript> possibleSources;
     if (ActionManager.currentAction == ACTION.BUILD)
     {
-      possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenSpace.myLocation);
+      possibleSources = GetPossibleCoalSources(chosenSpace.myLocation);
       if (possibleSources.Count <= 0)
       {
         if (ObjectManager.GetAllConnectedMerchantTiles(chosenSpace.myLocation).Count > 0)
@@ -464,7 +457,7 @@ public class AIChooseBetter : AIBehaviour
             ObjectManager.ChoseCoalStorage();
             return;
           }
-          else { NotEnoughMoney(); return; }
+          else { NotEnoughMoney(MISSING_MONEY_REASON.COAL); return; }
         }
         else { CantChooseCoal(); return; }
       }
@@ -472,7 +465,7 @@ public class AIChooseBetter : AIBehaviour
 
     else if (ActionManager.currentAction == ACTION.NETWORK)
     {
-      possibleSources = ObjectManager.GetNearestCoalMinesWithFreeCoal(chosenNetworkSpace);
+      possibleSources = GetPossibleCoalSources(chosenNetworkSpace);
       if (possibleSources.Count <= 0)
       {
         if (ObjectManager.GetAllConnectedMerchantTiles(chosenNetworkSpace).Count > 0)
@@ -482,7 +475,7 @@ public class AIChooseBetter : AIBehaviour
             ObjectManager.ChoseCoalStorage();
             return;
           }
-          else { NotEnoughMoney(); return; }
+          else { NotEnoughMoney(MISSING_MONEY_REASON.COAL); return; }
         }
         else { CantChooseCoal(); return; }
       }
@@ -635,28 +628,7 @@ public class AIChooseBetter : AIBehaviour
     { DoneAction(); return; }
 
 
-    //Check enoguh money
-    if ((GameManager.currentEra == ERA.BOAT && !GameManager.ActivePlayerHasEnoughMoney(Constants.boatCost))|| 
-      (GameManager.currentEra == ERA.TRAIN && !GameManager.ActivePlayerHasEnoughMoney(Constants.train1Cost)))
-    { NotEnoughMoney(); return; }
-
-
-    List<NetworkSpace> possibleNetworks = ObjectManager.GetMyNetworkNeighborConnections(myAIPlayer.index);
-
-    if (GameManager.currentEra == ERA.TRAIN) //For trains check coal availability
-    {
-      List<NetworkSpace> possibleNetworksWithCoals = new();
-      foreach (NetworkSpace space in possibleNetworks)
-      {
-        if (CoalCheck(space))
-        {
-          if (chosenNetworkSpace is null || BarrelCheckTiles(space)) //For second train check barrel
-            possibleNetworksWithCoals.Add(space);
-        }
-      }
-
-      possibleNetworks = possibleNetworksWithCoals;
-    }
+    List<NetworkSpace> possibleNetworks = GetPossibleNetworkSpaces();
 
     if (possibleNetworks.Count <= 0)
     {
