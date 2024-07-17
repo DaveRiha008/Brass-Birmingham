@@ -11,7 +11,8 @@ public class CardDeck : Clickable
   List<CardScript> myCards = new();
 
   public CardDeckType myType = CardDeckType.NORMAL;
-  // Start is called before the first frame update
+
+
   void Start()
   {
     mySpriteRenderer = GetComponent<SpriteRenderer>();
@@ -37,6 +38,10 @@ public class CardDeck : Clickable
     isEmpty = false;
   }
 
+  /// <summary>
+  /// Removes card from this deck
+  /// </summary>
+  /// <returns>Drawn card</returns>
   public CardScript DrawCard()
   {
     if (myCards.Count <= 0)
@@ -56,12 +61,19 @@ public class CardDeck : Clickable
     return returnCard;
   }
 
+  /// <summary>
+  /// Deck forgets all card - but cards remain active objects
+  /// </summary>
   public void RemoveAllCards()
   {
     myCards = new();
     isEmpty = true;
   }
 
+  /// <summary>
+  /// Deck forgets the given card and sets its state to -> IN_HAND
+  /// </summary>
+  /// <param name="card">Card to be removed</param>
   public void RemoveCard(CardScript card)
   {
     if(!myCards.Contains(card) )

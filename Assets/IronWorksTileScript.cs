@@ -5,6 +5,10 @@ using UnityEngine;
 public class IronWorksTileScript : TileScript
 {
   List<GameObject> myIrons = new();
+
+  /// <summary>
+  /// Creates iron and places it on the correct position on this tile
+  /// </summary>
   GameObject CreateIron()
   {
     if(builtOnSpace is null || builtOnSpace == null) //Double check since it happened :)
@@ -30,8 +34,6 @@ public class IronWorksTileScript : TileScript
       Debug.LogError("Tried to add Iron to non-IronWorks tile");
       return;
     }
-
-    if (myIrons.Count <= 0 && isUpgraded) Downgrade();
 
     var newIron = CreateIron();
     myIrons.Add(newIron);
@@ -67,7 +69,7 @@ public class IronWorksTileScript : TileScript
 
       for (int i = 0; i < Constants.ironWorksIronCount[level-1]; i++)
       {
-        if (ObjectManager.HasIronStorageSpace())
+        if (ObjectManager.HasIronStorageFreeSpace())
         {
           int moneyGained = ObjectManager.AddIronToStorage();
           GameManager.PlayerGainMoney(ownerPlayerIndex, moneyGained);
@@ -78,6 +80,26 @@ public class IronWorksTileScript : TileScript
         Upgrade();
     }
     //BecomeUnclickable();
+  }
+
+  public override void BecomeUnbuilt()
+  {
+    base.BecomeUnbuilt();
+
+    int ironsToRemove = myIrons.Count;
+    int ironsToRemoveFromStorage = Constants.ironWorksIronCount[level - 1] - ironsToRemove;
+
+    for (int i = 0; i < ironsToRemoveFromStorage; i++)
+    {
+      ObjectManager.GetIronFromStorage(out _).SetActive(false);
+    }
+
+    for (int i = 0; i < ironsToRemove; i++)
+    {
+      RemoveIron();
+    }
+
+    if (isUpgraded) Downgrade();
   }
 
   public override void Remove()
@@ -122,7 +144,7 @@ public class IronWorksTileScript : TileScript
           transform.position = dataSpace.transform.position;
           builtOnSpace = dataSpace;
           dataSpace.myTile = this;
-          dataSpace.builtIndustry = industryType;
+          dataSpace.industryTypeOfBuiltTile = industryType;
         }
         else if (builtOnSpace is not null)
         {

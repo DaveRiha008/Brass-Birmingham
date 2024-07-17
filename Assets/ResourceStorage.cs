@@ -7,7 +7,7 @@ public class ResourceStorage : Clickable, ISaveable
   List<ResourceStorageSpace> mySpaces = new();
   public RESOURCE_TYPE myType = RESOURCE_TYPE.COAL;
   public int maxPriceIfEmpty = 6;
-  // Start is called before the first frame update
+
   void Start()
   {
     LoadAllChildrenSpaces();
@@ -22,7 +22,7 @@ public class ResourceStorage : Clickable, ISaveable
     }
   }
 
-  // Update is called once per frame
+
   void Update()
   {
         
@@ -104,7 +104,7 @@ public class ResourceStorage : Clickable, ISaveable
   public void RemoveAllResources()
   {
     foreach (ResourceStorageSpace space in mySpaces)
-      if(space.HasResource()) space.RemoveResource().SetActive(false);
+      if(space.HasResource()) space.DestroyResource();
   }
   public bool HasFreeSpace() => !mySpaces[0].HasResource();
 

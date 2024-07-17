@@ -7,16 +7,27 @@ public class TileScript : Clickable, ISaveable
 {
   public int id = 0;
 
-  public Sprite basicSprite;
-  public Sprite upgradedSprite;
-
-
-  public Vector3 basicScale;
-  public Vector3 upgradedScale;
-
   public IndustrySpace builtOnSpace;
 
   public bool alreadyBuilt = false;
+
+
+  public int buildCost = 0;
+  public int buildIronReq = 0;
+  public int buildCoalReq = 0;
+
+  public int upgradeIncomeReward = 0;
+  public int upgradeVicPtsReward = 0;
+  public int upgradeNetworkVicPtsReward = 0;
+
+
+  //Everything bellow should be set manually from inspector -> in prefab
+
+  public Sprite basicSprite;
+  public Sprite upgradedSprite;
+
+  public Vector3 basicScale;
+  public Vector3 upgradedScale;
 
   public INDUSTRY_TYPE industryType;
   public int level = 1;
@@ -28,15 +39,6 @@ public class TileScript : Clickable, ISaveable
   public bool canBeBuiltInTrainEra = true;
 
   public int ownerPlayerIndex = -1;
-
-
-  public int buildCost = 0;
-  public int buildIronReq = 0;
-  public int buildCoalReq = 0;
-
-  public int upgradeIncomeReward = 0;
-  public int upgradeVicPtsReward = 0;
-  public int upgradeNetworkVicPtsReward = 0;
 
   // Start is called before the first frame update
   void Start()
@@ -114,6 +116,21 @@ public class TileScript : Clickable, ISaveable
   // Update is called once per frame
   void Update()
   {
+    
+    if (builtOnSpace is not null && !isDeveloped && alreadyBuilt)
+    {
+      if (isDeveloped || !alreadyBuilt) builtOnSpace = null;
+      else if (builtOnSpace.myTile is not null)
+      {
+        if (builtOnSpace.myTile != this)
+        {
+          Debug.Log($"My space has another :'( - I am {this}");
+        }
+      }
+      else
+        builtOnSpace.myTile = this;
+
+    }
   }
 
   public override void OnClick()
@@ -130,6 +147,12 @@ public class TileScript : Clickable, ISaveable
     alreadyBuilt = true;
 
     
+  }
+
+  public virtual void BecomeUnbuilt()
+  {
+    alreadyBuilt = false;
+
   }
 
   public void Upgrade(bool gainIncome=true)
@@ -219,7 +242,7 @@ public class TileScript : Clickable, ISaveable
           transform.position = dataSpace.transform.position;
           builtOnSpace = dataSpace;
           dataSpace.myTile = this;
-          dataSpace.builtIndustry = industryType;
+          dataSpace.industryTypeOfBuiltTile = industryType;
         }
         else if (builtOnSpace is not null)
         {

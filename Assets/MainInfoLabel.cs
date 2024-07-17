@@ -7,7 +7,6 @@ using DG.Tweening;
 public class MainInfoLabel : MonoBehaviour
 {
   TextMeshProUGUI myTM;
-  float timeShown;
   const float maxShowTime = 5;
   
 

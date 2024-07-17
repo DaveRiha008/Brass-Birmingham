@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This script should be attached to HUD object
+
 public class CancelHiding : MonoBehaviour
 {
 
@@ -9,6 +11,6 @@ public class CancelHiding : MonoBehaviour
   void Update()
   {
     bool isShown = ActionManager.currentAction != ACTION.NONE;
-    transform.Find("Cancel").gameObject.SetActive(isShown); //Fixed object name!!
+    transform.Find(Constants.cancelButtonName).gameObject.SetActive(isShown); //Fixed object name!!
   }
 }

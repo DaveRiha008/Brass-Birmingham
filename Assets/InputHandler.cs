@@ -103,28 +103,28 @@ public class InputHandler : MonoBehaviour
         camera.MoveDown(Input.GetAxis("Mouse Y"));
       }
     }
-    //Game testing
+    //Game testing -> comment everything below for user gaming version
 
 
-    if (Input.GetKey(KeyCode.X) || Input.GetKeyDown(KeyCode.Y))
-    {
-      if (SceneManager.GetActiveScene().name == "Game")
-        AIManager.AIDoNextPart();
-      else
-      {
-        SceneManager.LoadScene("Game");
-        GameManager.StartGame();
-        Debug.Log("Game start!");
-      }
+    //if (Input.GetKey(KeyCode.X) || Input.GetKeyDown(KeyCode.Y))
+    //{
+    //  if (SceneManager.GetActiveScene().name == "Game")
+    //    AIManager.AIDoNextPart();
+    //  else
+    //  {
+    //    SceneManager.LoadScene("Game");
+    //    GameManager.StartGame();
+    //    Debug.Log("Game start!");
+    //  }
 
-    }
-    if (Input.GetKeyDown(KeyCode.Tab))
-      AIManager.playFreely = !AIManager.playFreely;
+    //}
+    //if (Input.GetKeyDown(KeyCode.Tab))
+    //  AIManager.playFreely = !AIManager.playFreely;
 
-    if (Input.GetKeyDown(KeyCode.T))
-    {
-      camera.lockMainBoard = !camera.lockMainBoard;
-    }
+    //if (Input.GetKeyDown(KeyCode.T))
+    //{
+    //  camera.lockMainBoard = !camera.lockMainBoard;
+    //}
 
     ////if (Input.GetKeyDown(KeyCode.E))
     ////{

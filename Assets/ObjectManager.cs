@@ -6,8 +6,15 @@ public class ObjectManager : MonoBehaviour, ISaveable
 {
   public static ObjectManager instance;
 
+
+  /// <summary>
+  /// Chosen tile for current action
+  /// </summary>
   public static TileScript itemInHand;
 
+  /// <summary>
+  /// Chosen industry space for current action
+  /// </summary>
   public static IndustrySpace chosenBuildSpace;
 
   static bool alreadyCreatedObjects = false;
@@ -48,20 +55,56 @@ public class ObjectManager : MonoBehaviour, ISaveable
   static List<TileScript> whiteManufacturers = new List<TileScript>();
   static List<TileScript> purpleManufacturers = new List<TileScript>();
 
-
+  /// <summary>
+  /// All breweries seperated per player
+  /// </summary>
   static List<TileScript>[] allBreweries = { redBreweries, yellowBreweries, whiteBreweries, purpleBreweries };
+  /// <summary>
+  /// All coalMines seperated per player
+  /// </summary>
   static List<TileScript>[] allCoalMines = { redCoalMines, yellowCoalMines, whiteCoalMines, purpleCoalMines };
+  /// <summary>
+  /// All cottonMills seperated per player
+  /// </summary>
   static List<TileScript>[] allCottonMills = { redCottonMills, yellowCottonMills, whiteCottonMills, purpleCottonMills };
+  /// <summary>
+  /// All ironWorks seperated per player
+  /// </summary>
   static List<TileScript>[] allIronWorks = { redIronWorks, yellowIronWorks, whiteIronWorks, purpleIronWorks };
+  /// <summary>
+  /// All potteries seperated per player
+  /// </summary>
   static List<TileScript>[] allPotteries = { redPotteries, yellowPotteries, whitePotteries, purplePotteries };
+  /// <summary>
+  /// All manufacturers seperated per player
+  /// </summary>
   static List<TileScript>[] allManufacturers = { redManufacturers, yellowManufacturers, whiteManufacturers, purpleManufacturers };
 
+  /// <summary>
+  /// All tile of red player seperated by type
+  /// </summary>
   static List<TileScript>[] allRedTiles = { redBreweries, redCoalMines, redCottonMills, redIronWorks, redManufacturers, redPotteries };
+  /// <summary>
+  /// All tile of yellow player seperated by type
+  /// </summary>
   static List<TileScript>[] allYellowTiles = { yellowBreweries, yellowCoalMines, yellowCottonMills, yellowIronWorks, yellowManufacturers, yellowPotteries };
+  /// <summary>
+  /// All tile of white player seperated by type
+  /// </summary>
   static List<TileScript>[] allWhiteTiles = { whiteBreweries, whiteCoalMines, whiteCottonMills, whiteIronWorks, whiteManufacturers, whitePotteries };
+  /// <summary>
+  /// All tile of purple player seperated by type
+  /// </summary>
   static List<TileScript>[] allPurpleTiles = { purpleBreweries, purpleCoalMines, purpleCottonMills, purpleIronWorks, purpleManufacturers, purplePotteries };
 
+  /// <summary>
+  /// All tiles seperated per player seperated per industry
+  /// </summary>
   static List<TileScript>[][] allTilesPerPlayer = { allRedTiles, allYellowTiles, allWhiteTiles, allPurpleTiles };
+
+  /// <summary>
+  /// All tiles seperated per industry seperated per player
+  /// </summary>
   static List<TileScript>[][] allTilesPerIndustry = { allBreweries, allCoalMines, allCottonMills, allIronWorks, allManufacturers, allPotteries };
 
   public static List<GameObject> allSpaceBorders = new List<GameObject>();
@@ -69,7 +112,13 @@ public class ObjectManager : MonoBehaviour, ISaveable
   public static List<GameObject> allTileBorders = new List<GameObject>();
   public static List<GameObject>[] allBorders = { allSpaceBorders, allNetworkBorders, allTileBorders };
 
+  /// <summary>
+  /// All players' victory points tokens
+  /// </summary>
   static List<GameObject> VPTokens = new();
+  /// <summary>
+  /// All players' income tokens
+  /// </summary>
   static List<GameObject> incomeTokens = new();
 
 
@@ -111,21 +160,6 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
   private static GameObject mainBoard;
 
-  //private void Awake()
-  //{
-  //  CreateSingleton();
-  //}
-  //void CreateSingleton()
-  //{
-  //  if (instance == null)
-  //    instance = this;
-  //  else
-  //    Destroy(gameObject);
-
-
-  //  //DontDestroyOnLoad(gameObject);
-  //}
-
 
   static bool firstCall = true;
   // Update is called once per frame
@@ -142,7 +176,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
   private void OnDestroy()
   {
     firstCall = true;
-    ClearAllMemory();
+    ClearAllLocalMemory();
   }
 
   private void Start()
@@ -278,6 +312,9 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
   }
 
+  /// <summary>
+  /// Choose a tile for build action
+  /// </summary>
   public static void BuildPickUpTile(TileScript item)
   {
     DropItem();
@@ -324,6 +361,10 @@ public class ObjectManager : MonoBehaviour, ISaveable
     tile.Undevelop();
 
   }
+
+  /// <summary>
+  /// Disable given tile and forget it
+  /// </summary>
   static public void RemoveTile(TileScript tile)
   {
     List<TileScript>[] allPlayersLists = null; 
@@ -375,7 +416,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
   }
 
-  // Bool returned is whether resource was succesfully chosen
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
   static bool NetworkBarrelTileChoosing(TileScript tile)
   {
     //Network barrel choosing
@@ -384,17 +426,18 @@ public class ObjectManager : MonoBehaviour, ISaveable
     {
       //Debug.Log("Barrel space choosing");
       //Debug.Log($"Tile is {tile}");
-      if (currentSpacesWithBarrelsForNetwork.Contains(tile.builtOnSpace) && tile is BreweryTileScript script)
+      if (currentSpacesWithBarrelsForNetwork.Contains(tile.builtOnSpace) && tile is BreweryTileScript brewery)
       {
-        BreweryTileScript brewery = script;
         brewery.RemoveBarrel();
-        ActionManager.NetworkChoseBarrel(tile);
+        ActionManager.NetworkChoseBarrel(brewery);
         return true;
       }
     }
     return false;
   }
-  // Bool returned is whether resource was succesfully chosen
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
+
   static bool NetworkCoalTileChoosing(TileScript tile)
   {
     //Network barrel choosing
@@ -410,7 +453,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     return false;
   }
 
-  // Bool returned is whether resource was succesfully chosen
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
   static bool SellBarrelTileChoosing(TileScript tile) {
     //Sell barrel choosing
     if (sellReqBarrel)
@@ -427,7 +471,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     return false;
   }
 
-  // Bool returned is whether resource was succesfully chosen
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
   static bool DevelopIronTileChoosing(TileScript tile)
   {
     UpdateFreeIronTiles();
@@ -441,6 +486,9 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return false;
   }
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
+
   static bool BuildCoalTileChoosing(TileScript tile)
   {
     if (tile is not CoalMineTileScript) return false;
@@ -453,6 +501,9 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return false;
   }
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
+
   static bool BuildIronTileChoosing(TileScript tile)
   {
     UpdateFreeIronTiles();
@@ -466,6 +517,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return false;
   }
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
 
   static bool PickTileFromPersonalBoard(TileScript tile)
   {
@@ -490,6 +543,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     
     return false;
   }
+  /// <param name="tile"></param>
+  /// <returns>Bool returned is whether resource was succesfully chosen</returns>
 
   static bool SellTileChoosing(TileScript tile)
   {
@@ -517,6 +572,10 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return false;
   }
+
+  /// <summary>
+  /// Tile was chosen -> this function sorts the choosing based on current action and state
+  /// </summary>
   public static void ChooseTile(TileScript tile)
   {
     if (NetworkCoalTileChoosing(tile)) return;
@@ -535,6 +594,10 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
 
   }
+
+  /// <summary>
+  /// Forgets chosen item and returns it to its original position
+  /// </summary>
   public static void DropItem()
   {
     if (itemInHand is null) return;
@@ -560,7 +623,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
     if (buildCoalReq > 0)
       ActionManager.BuildChoseCoalStorage();
   }
-  public static void ClearAllMemory()
+  public static void ClearAllLocalMemory()
   {
     overBuiltTile = null;
 
@@ -798,9 +861,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     CreateTokens();
     UpdateHelpingArrays();
   }
-  public static void CreateAllBuildingTiles()
+  static void InitFirstUnbuiltindeces()
   {
-
     for (int i = 0; i < GameManager.numOfPlayers; i++)
     {
       firstUnbuiltBreweryIndeces.Add(0);
@@ -810,8 +872,11 @@ public class ObjectManager : MonoBehaviour, ISaveable
       firstUnbuiltPotteryIndeces.Add(0);
       firstUnbuiltManufacturerIndeces.Add(0);
     }
+  }
+  public static void CreateAllBuildingTiles()
+  {
 
-
+    InitFirstUnbuiltindeces();
 
     GameObject player1Board = GameObject.Find(Constants.player1PersonalBoardName);
     GameObject player2Board = GameObject.Find(Constants.player2PersonalBoardName);
@@ -826,16 +891,17 @@ public class ObjectManager : MonoBehaviour, ISaveable
     foreach (GameObject playerBoard in playerBoards)
     {
       //Debug.Log($"Player board is {playerBoard}");
-      GameObject industrySpaces = playerBoard.transform.Find("IndustrySpaces").gameObject;
+      GameObject industrySpaces = playerBoard.transform.Find(Constants.IndustrySpacesOnPersonalBoardParentName).gameObject;
 
-      GameObject breweries = industrySpaces.transform.Find("Breweries").gameObject;
-      GameObject manufacturers = industrySpaces.transform.Find("Manufacturers").gameObject;
-      GameObject cottonMills = industrySpaces.transform.Find("CottonMills").gameObject;
-      GameObject potteries = industrySpaces.transform.Find("Potteries").gameObject;
-      GameObject ironWorks = industrySpaces.transform.Find("IronWorks").gameObject;
-      GameObject coalMines = industrySpaces.transform.Find("CoalMines").gameObject;
+      GameObject breweries = industrySpaces.transform.Find(Constants.breweriesParentName).gameObject;
+      GameObject manufacturers = industrySpaces.transform.Find(Constants.manufacturersParentName).gameObject;
+      GameObject cottonMills = industrySpaces.transform.Find(Constants.cottonMillsParentName).gameObject;
+      GameObject potteries = industrySpaces.transform.Find(Constants.potteriesParentName).gameObject;
+      GameObject ironWorks = industrySpaces.transform.Find(Constants.ironWorksParentName).gameObject;
+      GameObject coalMines = industrySpaces.transform.Find(Constants.coalMinesParentName).gameObject;
 
 
+      //Create each industry seperately -> add id based on type, index, level and ownerPlayerIndex
 
       int levelCounter = 0;
       foreach (Transform brewerySource in breweries.transform)
@@ -1022,6 +1088,8 @@ public class ObjectManager : MonoBehaviour, ISaveable
     {
       AddIronToStorage();
     }
+
+    //Based on rules -> initially iron storage is missing 2 irons
     GetIronFromStorage(out _).SetActive(false);
     GetIronFromStorage(out _).SetActive(false);
 
@@ -1032,28 +1100,45 @@ public class ObjectManager : MonoBehaviour, ISaveable
     {
       AddCoalToStorage();
     }
+    //Based on rules -> initially coal storage is missing 1 coal
     GetCoalFromStorage(out _).SetActive(false);
   }
   public static int GetCoalStoragePrice() => coalStorage.CurrentPrice();
   public static int GetIronStoragePrice() => ironStorage.CurrentPrice();
+  /// <summary>
+  /// Get cheapest coal from storage -> doesn't destroy the coal object
+  /// </summary>
   public static GameObject GetCoalFromStorage(out int price)
   {
     return coalStorage.GetCheapestResource(out price);
   }
+  /// <summary>
+  /// Get cheapest iron from storage -> doesn't destroy the iron object
+  /// </summary>
   public static GameObject GetIronFromStorage(out int price)
   {
     return ironStorage.GetCheapestResource(out price);
   }
+  /// <summary>
+  /// Adds coal to storage
+  /// </summary>
+  /// <param name="coal">If given coal is not given or is null -> storage creates a new coal object</param>
+  /// <returns>Price for which the coal was added</returns>
   public static int AddCoalToStorage(GameObject coal = null)
   {
     return coalStorage.AddMostExpensiveResource(coal);
   }
+  /// <summary>
+  /// Adds iron to storage
+  /// </summary>
+  /// <param name="iron">If given iron is not given or is null -> storage creates a new iron object</param>
+  /// <returns>Price for which the iron was added</returns>
   public static int AddIronToStorage(GameObject iron = null)
   {
     return ironStorage.AddMostExpensiveResource(iron);
   }
-  public static bool HasCoalStorageSpace() => coalStorage.HasFreeSpace();
-  public static bool HasIronStorageSpace() => ironStorage.HasFreeSpace();
+  public static bool HasCoalStorageFreeSpace() => coalStorage.HasFreeSpace();
+  public static bool HasIronStorageFreeSpace() => ironStorage.HasFreeSpace();
   public static void ChoseNetwork(NetworkSpace space, int playerIndex = -1)
   {
     if (space.IsOccupied())
@@ -1116,6 +1201,10 @@ public class ObjectManager : MonoBehaviour, ISaveable
     return Instantiate(barrelResource) as GameObject;
   }
 
+  /// <summary>
+  /// Adds unbuilt index to active player based on tile industry type -> next in line to be built could be a level higher
+  /// </summary>
+  /// <param name="succesful">Whether the addition was succesful -> could be out of range</param>
   static void AddFirstUnbuiltIndex(TileScript tile, out bool succesful)
   {
     int activePlayerIndex = GameManager.activePlayerIndex;
@@ -1152,6 +1241,10 @@ public class ObjectManager : MonoBehaviour, ISaveable
         break;
     }
   }
+  /// <summary>
+  /// Subtracts unbuilt index to active player based on tile industry type -> next in line to be built could be a level lower
+  /// </summary>
+  /// <param name="succesful">Whether the subtraction was succesful -> could be out of range</param>
   static void SubtractFirstUnbuiltIndex(TileScript tile, out bool succesful)
   {
     int activePlayerIndex = GameManager.activePlayerIndex;
@@ -1159,29 +1252,29 @@ public class ObjectManager : MonoBehaviour, ISaveable
     switch (tile.industryType)
     {
       case INDUSTRY_TYPE.BREWERY:
-        if (firstUnbuiltBreweryIndeces[activePlayerIndex] < 0) succesful = false;
+        if (firstUnbuiltBreweryIndeces[activePlayerIndex] <= 0) succesful = false;
         firstUnbuiltBreweryIndeces[activePlayerIndex]--;
         //Debug.Log("Increased index of brewery to " + firstUnbuiltBreweryIndeces[activePlayerIndex].ToString());
         //PrintLevels(allBreweries);
         break;
       case INDUSTRY_TYPE.COALMINE:
-        if (firstUnbuiltCoalMineIndeces[activePlayerIndex] < 0) succesful = false;
+        if (firstUnbuiltCoalMineIndeces[activePlayerIndex] <= 0) succesful = false;
         firstUnbuiltCoalMineIndeces[activePlayerIndex]--;
         break;
       case INDUSTRY_TYPE.COTTONMILL:
-        if (firstUnbuiltCottonMillIndeces[activePlayerIndex] < 0) succesful = false;
+        if (firstUnbuiltCottonMillIndeces[activePlayerIndex] <= 0) succesful = false;
         firstUnbuiltCottonMillIndeces[activePlayerIndex]--;
         break;
       case INDUSTRY_TYPE.IRONWORKS:
-        if (firstUnbuiltIronWorksIndeces[activePlayerIndex] < 0) succesful = false;
+        if (firstUnbuiltIronWorksIndeces[activePlayerIndex] <= 0) succesful = false;
         firstUnbuiltIronWorksIndeces[activePlayerIndex]--;
         break;
       case INDUSTRY_TYPE.MANUFACTURER:
-        if (firstUnbuiltManufacturerIndeces[activePlayerIndex] < 0) succesful = false;
+        if (firstUnbuiltManufacturerIndeces[activePlayerIndex] <= 0) succesful = false;
         firstUnbuiltManufacturerIndeces[activePlayerIndex]--;
         break;
       case INDUSTRY_TYPE.POTTERY:
-        if (firstUnbuiltPotteryIndeces[activePlayerIndex] < 0) succesful = false;
+        if (firstUnbuiltPotteryIndeces[activePlayerIndex] <= 0) succesful = false;
         firstUnbuiltPotteryIndeces[activePlayerIndex]--;
         break;
       default:
@@ -1191,19 +1284,6 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
   static public void BuildHeldIndustry()
   {
-    //if (!canChooseSpace) return;
-
-    //Debug.Log($"Building {itemInHand}");
-
-
-    //SPEND MONEY WHEN CHOOSING - BETTER FOR PAYING FOR REASOURCES LATER
-    //GameManager.ActivePlayerSpendMoney(itemInHand.buildCost, out bool enoughMoney);
-    //if (!enoughMoney)
-    //{
-    //  Debug.Log("Not enough money to build held industry");
-    //  return;
-    //}
-
     AddFirstUnbuiltIndex(itemInHand, out bool success);
     if (!success)
     {
@@ -1211,17 +1291,91 @@ public class ObjectManager : MonoBehaviour, ISaveable
       return;
     }
 
-    chosenBuildSpace.builtIndustry = itemInHand.industryType;
+    if (chosenBuildSpace.myTile is not null)
+      overBuiltTile = chosenBuildSpace.myTile;
+
+    chosenBuildSpace.industryTypeOfBuiltTile = itemInHand.industryType;
     itemInHand.transform.position = chosenBuildSpace.transform.position;
     //Debug.Log($"Moved {itemInHand} to position of {chosenBuildSpace}");
     itemInHand.builtOnSpace = chosenBuildSpace;
 
-    if(chosenBuildSpace.myTile is not null)
-      overBuiltTile = chosenBuildSpace.myTile;
+
     chosenBuildSpace.myTile = itemInHand;
 
     itemInHand.BecomeBuilt();
-    DropItem();
+    //DropItem();
+  }
+  static public void UnBuildHeldIndustry()
+  {
+    if (itemInHand is null || !itemInHand.alreadyBuilt) return;
+
+    SubtractFirstUnbuiltIndex(itemInHand, out bool success);
+    if (!success)
+    {
+      Debug.LogError("Can't unBuild tile with level under 1");
+      return;
+    }
+
+    if(chosenBuildSpace is not null)
+      chosenBuildSpace.RemoveBuiltIndustry();
+    if(overBuiltTile is not null)
+    {
+      chosenBuildSpace.industryTypeOfBuiltTile = overBuiltTile.industryType;
+      chosenBuildSpace.myTile = overBuiltTile;
+    }
+
+    itemInHand.transform.position = GetPositionOfTileSource(itemInHand, GameManager.activePlayerIndex);
+    itemInHand.BecomeUnbuilt();
+
+  }
+  /// <summary>
+  /// Get the position of player personal board, where the given tile comes from
+  /// </summary>
+  static Vector3 GetPositionOfTileSource(TileScript tile, int playerIndex)
+  {
+    GameObject playerBoard;
+    if (playerIndex == 0) playerBoard = GameObject.Find(Constants.player1PersonalBoardName);
+    else if (playerIndex == 1) playerBoard = GameObject.Find(Constants.player2PersonalBoardName);
+    else if (playerIndex == 2) playerBoard = GameObject.Find(Constants.player3PersonalBoardName);
+    else playerBoard = GameObject.Find(Constants.player4PersonalBoardName);
+
+    GameObject industrySpaces = playerBoard.transform.Find(Constants.IndustrySpacesOnPersonalBoardParentName).gameObject;
+
+
+    GameObject sources;
+
+
+    switch (tile.industryType)
+    {
+      case INDUSTRY_TYPE.BREWERY:
+        sources = industrySpaces.transform.Find(Constants.breweriesParentName).gameObject;
+        break;
+      case INDUSTRY_TYPE.COALMINE:
+        sources = industrySpaces.transform.Find(Constants.coalMinesParentName).gameObject;
+        break;
+      case INDUSTRY_TYPE.COTTONMILL:
+        sources = industrySpaces.transform.Find(Constants.cottonMillsParentName).gameObject;
+        break;
+      case INDUSTRY_TYPE.IRONWORKS:
+        sources = industrySpaces.transform.Find(Constants.ironWorksParentName).gameObject;
+        break;
+      case INDUSTRY_TYPE.MANUFACTURER:
+        sources = industrySpaces.transform.Find(Constants.manufacturersParentName).gameObject;
+        break;
+      case INDUSTRY_TYPE.POTTERY:
+        sources = industrySpaces.transform.Find(Constants.potteriesParentName).gameObject;
+        break;
+      case INDUSTRY_TYPE.NONE:
+      default:
+        Debug.LogError("Can't get position of source of tile with type NONE");
+        return Vector3.zero;
+    }
+
+    Transform source = sources.transform.GetChild(tile.level-1);
+
+
+    return source.position;
+
   }
 
   public static void ChooseSpace(IndustrySpace space)
@@ -1300,33 +1454,71 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
   }
 
-  static public TileScript GetLowestLevelTileOFType(INDUSTRY_TYPE type, int playerIndex)
+  static public TileScript GetLowestLevelTileOfType(INDUSTRY_TYPE type, int playerIndex)
   {
     List<TileScript> correctTiles;
-    int index;
+    int index = int.MaxValue;
     switch (type)
     {
       case INDUSTRY_TYPE.BREWERY:
+
+        if (firstUnbuiltBreweryIndeces.Count <= 0)
+        {
+          //Debug.LogError("FirstUnbuiltIndeces not yet initialized!");
+          return null;
+        }
+
         index = firstUnbuiltBreweryIndeces[playerIndex];
+
         correctTiles = allBreweries[playerIndex];
         break;
       case INDUSTRY_TYPE.COALMINE:
+        if (firstUnbuiltCoalMineIndeces.Count <= 0)
+        {
+          //Debug.LogError("FirstUnbuiltIndeces not yet initialized!");
+          return null;
+        }
+
         index = firstUnbuiltCoalMineIndeces[playerIndex];
         correctTiles = allCoalMines[playerIndex];
         break;
       case INDUSTRY_TYPE.COTTONMILL:
+        if (firstUnbuiltCottonMillIndeces.Count <= 0)
+        {
+          //Debug.LogError("FirstUnbuiltIndeces not yet initialized!");
+          return null;
+        }
+
         index = firstUnbuiltCottonMillIndeces[playerIndex];
         correctTiles = allCottonMills[playerIndex];
         break;
       case INDUSTRY_TYPE.IRONWORKS:
+        if (firstUnbuiltIronWorksIndeces.Count <= 0)        
+        {
+          //Debug.LogError("FirstUnbuiltIndeces not yet initialized!");
+          return null;
+        }
+
         index = firstUnbuiltIronWorksIndeces[playerIndex];
         correctTiles = allIronWorks[playerIndex];
         break;
       case INDUSTRY_TYPE.MANUFACTURER:
+        if (firstUnbuiltManufacturerIndeces.Count <= 0)        
+        {
+          //Debug.LogError("FirstUnbuiltIndeces not yet initialized!");
+          return null;
+        }
+
         index = firstUnbuiltManufacturerIndeces[playerIndex];
         correctTiles = allManufacturers[playerIndex];
         break;
       case INDUSTRY_TYPE.POTTERY:
+        if (firstUnbuiltPotteryIndeces.Count <= 0)        
+        {
+          //Debug.LogError("FirstUnbuiltIndeces not yet initialized!");
+          return null;
+        }
+
         index = firstUnbuiltPotteryIndeces[playerIndex];
         correctTiles = allPotteries[playerIndex];
         break;
@@ -1335,9 +1527,11 @@ public class ObjectManager : MonoBehaviour, ISaveable
         return null;
     }
 
-    if (index >= correctTiles.Count)//Edge case where there are no more unbuilt tiles
+    if (index >= correctTiles.Count)//Edge case where there are no more unbuilt
+    {
+      //Debug.Log("No more tiles to be built!");
       return null;
-
+    }
     return correctTiles[index];
 
 
@@ -1845,9 +2039,11 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     return returnList;
   }
+  /// <summary>
+  /// Get all network space where the given player has a vehicle
+  /// </summary>
   static public List<NetworkSpace> GetAllMyNetworkSpaces(int playerIndex)
   {
-    //Get all locations which are connected by the players vehicles
     List<NetworkSpace> myNetworkSpaces = new();
 
     List<NetworkSpace> allCurrentNetworkSpaces;
@@ -1916,7 +2112,9 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     return locations;
   }
-
+  /// <summary>
+  /// Tells whether the given space has only one industry that can be built there 
+  /// </summary>
   static bool IsIndustrySpacePure(IndustrySpace industrySpace)
   {
     int industriesAmount = 0;
@@ -1947,7 +2145,9 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
     return false;
   }
-
+  /// <summary>
+  /// Gets all industry space which are part of given players network but don't have any tile built on them yet
+  /// </summary>
   static public List<IndustrySpace> GetMyNetworkFreeSpaces(int playerIndex)
   {
     List<LocationScript> myNetworkLocations = GetMyNetworkLocations(playerIndex);
@@ -1986,6 +2186,10 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return myNetworkFreeSpaces;
   }
+  /// <summary>
+  /// Gets all industry space which are part of given players network but don't
+  /// have any tile built on them yet and where can be built the currently chosen tile
+  /// </summary>
   static public List<IndustrySpace> GetMyNetworkFreeSpacesForItemInHand(int playerIndex)
   {
     List<LocationScript> myNetworkLocations = GetMyNetworkLocations(playerIndex);
@@ -2040,7 +2244,9 @@ public class ObjectManager : MonoBehaviour, ISaveable
     }
     return myNetworkFreeSpaces;
   }
-
+  /// <summary>
+  /// Gets all networkSpaces which are neighboring with given players network
+  /// </summary>
   static public List<NetworkSpace> GetMyNetworkNeighborConnections(int playerIndex)
   {
     List<LocationScript> myNetworkLocations = GetMyNetworkLocations(playerIndex);
@@ -2134,6 +2340,56 @@ public class ObjectManager : MonoBehaviour, ISaveable
     return false;
   }
 
+  static public bool IsLocationConnectedToMyNetwork(LocationScript location, int playerIndex)
+  {
+    Queue<LocationScript> locationsQueue = new();
+    locationsQueue.Enqueue(location);
+    List<LocationScript> locationsVisited = new();
+
+    Dictionary<LocationScript, List<NetworkSpace>> correctLocNetDict;
+    if (GameManager.currentEra == ERA.BOAT) correctLocNetDict = locationNetworkSpacesDictBoat;
+    else correctLocNetDict = locationNetworkSpacesDictTrain;
+
+    while (locationsQueue.Count > 0)
+    {
+      List<LocationScript> neighbors;
+
+      LocationScript curLocation = locationsQueue.Dequeue();
+
+      if (GameManager.currentEra == ERA.BOAT) neighbors = curLocation.neighborsBoats;
+      else neighbors = curLocation.neighborsTrains;
+      foreach (LocationScript neighbor in neighbors)
+      {
+        if (!AreLocationsConnectedDirectly(curLocation, neighbor)) continue;
+
+        if (locationsQueue.Contains(neighbor) || locationsVisited.Contains(neighbor)) continue;
+        //Debug.Log("Neighbor is " + neighbor);
+
+        if (neighbor.myType == LocationType.MERCHANT) continue;
+
+        foreach(IndustrySpace space in locationSpacesDict[neighbor])
+        {
+          if (space.myTile is not null && space.myTile.ownerPlayerIndex == playerIndex)
+            return true;
+        }
+        foreach(NetworkSpace netSpace in correctLocNetDict[neighbor])
+        {
+          if (netSpace.IsOccupied() && netSpace.GetVehicle().ownerPlayerIndex == playerIndex)
+            return true;
+        }
+
+
+        locationsQueue.Enqueue(neighbor);
+      }
+
+      locationsVisited.Add(curLocation);
+    }
+
+    return false;
+  }
+  /// <summary>
+  /// Tells whether the given locations are neighbors and networkSpace between them is occupied
+  /// </summary>
   static bool AreLocationsConnectedDirectly(LocationScript loc1, LocationScript loc2)
   {
     Dictionary<LocationScript, List<NetworkSpace>> correctDict;
@@ -2147,6 +2403,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
 
   static public LocationScript GetNearestUnconnectedMerchant(NetworkSpace networkSpace, out int distance)
   {
+    //DFS
     List<MerchantTileSpace> connectedMerchants = GetAllConnectedMerchantTiles(networkSpace);
 
     Queue<(LocationScript, int)> locationsQueue = new();
@@ -2196,6 +2453,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
   }
   static public List<MerchantTileSpace> GetAllConnectedMerchantTiles(LocationScript location)
   {
+    //DFS
     Queue<LocationScript> locationsQueue = new();
     locationsQueue.Enqueue(location);
     List<LocationScript> locationsVisited = new();
@@ -2264,6 +2522,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
   }
   static public List<(LocationScript, int)> GetAllConnectedLocationsDistances(LocationScript location)
   {
+    //DFS
     List<(LocationScript, int)> finalList = new();
 
     Queue<LocationScript> locationsQueue = new();
@@ -2732,7 +2991,7 @@ public class ObjectManager : MonoBehaviour, ISaveable
   public static void LoadFromSaveDataStatic(SaveData sd)
   {
     DestroyAllObjects();
-    ClearAllMemory();
+    ClearAllLocalMemory();
     LoadAllStaticObjects();
     InitializeObjects();
 

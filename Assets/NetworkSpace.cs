@@ -58,6 +58,9 @@ public class NetworkSpace : Clickable, ISaveable
 
   }
 
+  /// <summary>
+  /// Disables built vehichle and forgets it 
+  /// </summary>
   public void DestroyMyVehicle()
   {
     if (!IsOccupied()) return;

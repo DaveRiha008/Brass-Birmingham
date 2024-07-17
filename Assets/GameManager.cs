@@ -12,31 +12,68 @@ public class GameManager : MonoBehaviour, ISaveable
 
   public static ERA currentEra = ERA.BOAT;
 
+  /// <summary>
+  /// All 4 possible players
+  /// </summary>
   static List<Player> allPlayersList = new List<Player> { new Player(0, "Player 1"), new Player(1, "Player 2"),
     new Player(2, "Player 3"), new Player(3, "Player 4") };
+
+  /// <summary>
+  /// Only the players set to be in game
+  /// </summary>
   static List<Player> playerList = new List<Player>() { new Player(0, "Player 1"), new Player(1, "Player 2"),
     new Player(2, "Player 3"), new Player(3, "Player 4") };
 
+
+  /// <summary>
+  /// The order in which currently the players should take turns
+  /// </summary>
   public static List<int> playerTurns = new List<int> { 0, 1, 2, 3 };
 
+  /// <summary>
+  /// Current order of players based on their victory points
+  /// </summary>
   public static readonly List<Player> playerWinningOrder = new() { new Player(0, "Player 1"), new Player(1, "Player 2"),
     new Player(2, "Player 3"), new Player(3, "Player 4") };
 
+
+  /// <summary>
+  /// How many money players get with each certain amount of income points
+  /// </summary>
   static List<int> incomeValues = new();
 
+  /// <summary>
+  /// Current active player index
+  /// </summary>
   public static int activePlayerIndex = 0;
+  /// <summary>
+  /// Current active player index in player turns
+  /// </summary>
   public static int activePlayerTurnIndex = 0;
+
+  /// <summary>
+  /// Number of players in game
+  /// </summary>
   static public int numOfPlayers = 4;
-  static public int numOfAI = 4;
 
-  static int minPlayers = 2;
-  static int maxPlayers = 4;
+  /// <summary>
+  /// Number of player replace by AI
+  /// </summary>
+  static public int numOfAI = 2;
 
+  const int minPlayers = 2;
+  const int maxPlayers = 4;
+
+  /// <summary>
+  /// Seed deciding the random generator -> not set initially -> call SetSeedOfGame to set a fixed seed
+  /// </summary>
   static int randomSeed = 100;
 
   static public bool firstEverRound = true;
   static bool gameRunning = false;
   static public bool waitingForNextEra = false;
+
+  static public int gamesCounter = 0;
 
   void Start()
   {
@@ -106,8 +143,10 @@ public class GameManager : MonoBehaviour, ISaveable
     currentEra = ERA.BOAT;
     ObjectManager.DestroyAllObjects();
     CardManager.DestroyAllCards();
+
+    gamesCounter++;
     SceneManager.LoadScene("VictoryScreen");
-    if (Constants.instantGameRestart)
+    if (Constants.instantGameRestart /*Remove next part for gaming version*/ /*&& gamesCounter<Constants.maxGames*/ )
     {
       SceneManager.LoadScene("Game");
       StartGame();
@@ -167,7 +206,7 @@ public class GameManager : MonoBehaviour, ISaveable
 
   public static int GetGameSeed() => randomSeed;
 
-  static void UpdateNumOfPlayersNumbers()
+  static void CorrectNumOfPlayersNumbers()
   {
     numOfPlayers = Mathf.Clamp(numOfPlayers, minPlayers, maxPlayers);
     numOfAI = Mathf.Clamp(numOfAI, 0, numOfPlayers - 1);
@@ -184,24 +223,24 @@ public class GameManager : MonoBehaviour, ISaveable
   static public void AddPlayer()
   {
     numOfPlayers++;
-    UpdateNumOfPlayersNumbers();
+    CorrectNumOfPlayersNumbers();
   }
   static public void RemovePlayer()
   {
     numOfPlayers--;
-    UpdateNumOfPlayersNumbers();
+    CorrectNumOfPlayersNumbers();
   }
 
   static public void AddAI()
   {
     numOfAI++;
-    UpdateNumOfPlayersNumbers();
+    CorrectNumOfPlayersNumbers();
     UpdateAIReplacement();
   }
   static public void RemoveAI()
   {
     numOfAI--;
-    UpdateNumOfPlayersNumbers();
+    CorrectNumOfPlayersNumbers();
     UpdateAIReplacement();
   }
 
@@ -444,7 +483,8 @@ public class GameManager : MonoBehaviour, ISaveable
 
   static public void ChangeEra()
   {
-    ActionManager.CancelAction();
+    if(ActionManager.currentAction != ACTION.NONE)
+      ActionManager.CancelAction();
     AwardVictoryPoints();
 
     ObjectManager.DestroyAllNetwork();
@@ -481,6 +521,9 @@ public class GameManager : MonoBehaviour, ISaveable
     }
   }
 
+  /// <summary>
+  /// Call if the players are ready to enter the next era (mainly between boat and train)
+  /// </summary>
   static public void NextEraReady()
   {
     CameraScript camera = Camera.main.GetComponent<CameraScript>();
@@ -656,18 +699,12 @@ public class GameManager : MonoBehaviour, ISaveable
   }
   static public void ResetActivePlayerToStateBeforeAction()
   {
-    GetActivePlayer().victoryPoints = ActionManager.vicPtsBeforeAction;
-    GetActivePlayer().income = ActionManager.incomeBeforeAction;
-    GetActivePlayer().money = ActionManager.moneyBeforeAction;
-    GetActivePlayer().moneySpentThisTurn = ActionManager.moneySpentThisTurnBeforeAction;
+    ActionManager.ResetActivePlayerToStateBeforeAction();
   }
 
   static public void UpdateActivePlayerPropertiesBeforeAction()
   {
-    ActionManager.vicPtsBeforeAction = GetActivePlayer().victoryPoints;
-    ActionManager.incomeBeforeAction = GetActivePlayer().income;
-    ActionManager.moneyBeforeAction = GetActivePlayer().money;
-    ActionManager.moneySpentThisTurnBeforeAction = GetActivePlayer().moneySpentThisTurn;
+    ActionManager.UpdateActivePlayerStateBeforeAction();
   }
 }
 

@@ -6,9 +6,18 @@ public class CardManager : MonoBehaviour, ISaveable
 {
   public static CardManager instance;
 
+  /// <summary>
+  /// Whether player can choose card from hand
+  /// </summary>
   public static bool canChooseCard = false;
+  /// <summary>
+  /// Whether player can choose wild card deck and get the wild card
+  /// </summary>
   public static bool canDrawWildCards = false;
 
+  /// <summary>
+  /// Chosen cards in the current action
+  /// </summary>
   public static List<CardScript> chosenCards = new();
 
   public static CardDeck drawDeck;
@@ -57,16 +66,11 @@ public class CardManager : MonoBehaviour, ISaveable
 
     //Debug.Log("CardManager Start called!");
 
-    try
-    {
-      LoadDrawDecks();
-    }
-    catch
-    {
-      Debug.LogError("Failed to find DrawDecks in main board");
-    }
 
-    drawDeck.BecomeUnclickable(); //Normal deck can't be clicked - no reason
+    LoadDrawDecks();
+
+
+    drawDeck.BecomeUnclickable(); //Normal deck can't be clicked - no reason since card drawing is automatic
     try
     {
       LoadHandBoards();
@@ -76,6 +80,22 @@ public class CardManager : MonoBehaviour, ISaveable
     {
       Debug.LogError(e.Message);
     }
+
+    InitializeLocalMemory();
+
+    InitializeCards();
+  }
+
+  private void Update()
+  {
+
+  }
+
+  /// <summary>
+  /// Sets correct init values in local memory
+  /// </summary>
+  static void InitializeLocalMemory()
+  {
     alreadyCreatedCards = false;
 
     //canChooseCard = false;
@@ -110,15 +130,11 @@ public class CardManager : MonoBehaviour, ISaveable
     playerDiscards[1] = player2Discard;
     playerDiscards[2] = player3Discard;
     playerDiscards[3] = player4Discard;
-
-    InitializeCards();
   }
-
-  private void Update()
-  {
-
-  }
-
+  /// <summary>
+  /// Manages card creation and destruction of previous card objects.
+  /// Also gives players the initial 8 cards 
+  /// </summary>
   public static void InitializeCards()
   {
     DestroyAllCards();
@@ -251,12 +267,17 @@ public class CardManager : MonoBehaviour, ISaveable
     }
 
     PutAllCardsInDrawDecks();
+
+    //Random shuffle
     ShuffleDrawDeck();
 
     alreadyCreatedCards = true;
 
   }
 
+  /// <summary>
+  /// Puts all card in their according draw decks
+  /// </summary>
   public static void PutAllCardsInDrawDecks()
   {
     foreach (CardScript card in allLocationCards)
@@ -283,25 +304,26 @@ public class CardManager : MonoBehaviour, ISaveable
     }
   }
 
+  /// <summary>
+  /// Randomly shuffle the general draw deck
+  /// </summary>
   public static void ShuffleDrawDeck()
   {
     drawDeck.RandomlyShuffle();
   }
 
+  /// <summary>
+  /// Destroys all card objects and clears all memory of them
+  /// </summary>
   public static void DestroyAllCards()
   {
     if (!alreadyCreatedCards)
       return;
-    foreach(CardScript card in allCards)
-    {
-      card.gameObject.SetActive(false);
-    }
 
     alreadyCreatedCards = false;
 
     ClearChosenCards();
 
-    allCards.Clear();
     allLocationCards.Clear();
     allIndustryCards.Clear();
     allWildIndustryCards.Clear();
@@ -315,6 +337,12 @@ public class CardManager : MonoBehaviour, ISaveable
     drawDeck.RemoveAllCards();
     wildIndustryDrawDeck.RemoveAllCards();
     wildLocationDrawDeck.RemoveAllCards();
+
+    foreach (CardScript card in allCards)
+    {
+      card.gameObject.SetActive(false);
+    }
+    allCards.Clear();
 
     DestroyAllBorders();
 
@@ -335,6 +363,9 @@ public class CardManager : MonoBehaviour, ISaveable
       if (hand.Count > 0) return false;
     return true;
   }
+  /// <summary>
+  /// Fills given players hand until they have 8 cards in hand
+  /// </summary>
   public static void FillPlayerHand(int playerIndex)
   {
     while (!drawDeck.isEmpty && playerHands[playerIndex].Count < 8 )
@@ -345,10 +376,13 @@ public class CardManager : MonoBehaviour, ISaveable
     PlayerDrawCard(GameManager.activePlayerIndex, type);
   }
 
+  /// <summary>
+  /// Definitely adds a card form given deck to player hand
+  /// </summary>
   public static void PlayerDrawCard(int playerIndex, CardDeckType type)
   {
     CardScript drawnCard;
-    bool drawWildCard = false;
+    bool drewWildCard = false;
     switch (type)
     {
       case CardDeckType.NORMAL:
@@ -356,12 +390,14 @@ public class CardManager : MonoBehaviour, ISaveable
         break;
       case CardDeckType.WILD_INDUSTRY:
         if (!canDrawWildCards) return;
-        drawWildCard = true;
+        //Debug.Log($"Player {playerIndex} gained wild location");
+        drewWildCard = true;
         drawnCard = wildIndustryDrawDeck.DrawCard();
         break;
       case CardDeckType.WILD_LOCATION:
         if (!canDrawWildCards) return;
-        drawWildCard = true;
+        //Debug.Log($"Player {playerIndex} gained wild industry");
+        drewWildCard = true;
         drawnCard = wildLocationDrawDeck.DrawCard();
         break;
       default:
@@ -374,17 +410,23 @@ public class CardManager : MonoBehaviour, ISaveable
       //Debug.Log("Draw deck already empty!! Cannot draw another card");
       return;
     }
-    if (drawWildCard)
+
+    playerHands[playerIndex].Add(drawnCard);
+    RemakeHandView(playerIndex);
+    
+    if (drewWildCard)
     {
       if (ActionManager.currentAction == ACTION.SCOUT)
-        ActionManager.ScoutChoseWildCard();
+        ActionManager.ScoutChoseWildCard(drawnCard);
       else if (PlayerHasWildCard(playerIndex))
         Debug.Log("Multiplicating wild card!");
     }
-    playerHands[playerIndex].Add(drawnCard);
-    RemakeHandView(playerIndex);
+
   }
 
+  /// <summary>
+  /// Corrects the positions of cards in players hand to form a nice rectangle
+  /// </summary>
   private static void RemakeHandView(int playerIndex)
   {
     List<CardScript> hand = playerHands[playerIndex];
@@ -396,7 +438,9 @@ public class CardManager : MonoBehaviour, ISaveable
 
     RemakeView(hand, board);
   }
-
+  /// <summary>
+  /// Corrects the positions of cards in players discard pile to form a nice rectangle
+  /// </summary>
   private static void RemakeDiscardView(int playerIndex)
   {
     List<CardScript> discard = playerDiscards[playerIndex];
@@ -413,7 +457,9 @@ public class CardManager : MonoBehaviour, ISaveable
 
     RemakeView(discard, board);
   }
-
+  /// <summary>
+  /// Corrects the positions of given cards on given board to form a nice rectangle
+  /// </summary>
   private static void RemakeView(List<CardScript> cardList, GameObject board)
   {
     SortCardsByID(cardList);
@@ -534,7 +580,9 @@ public class CardManager : MonoBehaviour, ISaveable
     }
   }
 
-
+  /// <summary>
+  /// Whether given player is holding a wild card or not 
+  /// </summary>
   public static bool PlayerHasWildCard(int playerIndex)
   {
     bool doesHaveWildCard = false;
@@ -549,6 +597,10 @@ public class CardManager : MonoBehaviour, ISaveable
     return doesHaveWildCard;
   }
 
+  /// <summary>
+  /// Call for the given card to be chosen for current action
+  /// </summary>
+  /// <param name="card">Chosen card</param>
   public static void ChooseCardFromHand(CardScript card)
   {
     if (!canChooseCard) return;
@@ -569,11 +621,18 @@ public class CardManager : MonoBehaviour, ISaveable
 
   }
 
+  /// <summary>
+  /// Clears memory of recently chosen cards
+  /// </summary>
   public static void ClearChosenCards()
   {
     chosenCards.Clear();
   }
-
+  /// <summary>
+  /// Puts a discarded card back into players hand
+  /// </summary>
+  /// <param name="card">Card to be returned</param>
+  /// <param name="playerIndex">Player to which the card should be returned</param>
   public static void ReturnCardFromDiscard(CardScript card, int playerIndex)
   {
     if (card.myType == CARD_TYPE.WILD_INDUSTRY)
@@ -633,6 +692,7 @@ public class CardManager : MonoBehaviour, ISaveable
     if (playerIndex >= GameManager.numOfPlayers || playerDiscards[playerIndex].Count <= 0) return null;
     else return playerDiscards[playerIndex][playerDiscards[playerIndex].Count-1];
   }
+
   public void PopulateSaveData(SaveData sd) => PopulateSaveDataStatic(sd);
   public static void PopulateSaveDataStatic(SaveData sd)
   {

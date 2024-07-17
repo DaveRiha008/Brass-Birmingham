@@ -96,6 +96,7 @@ public class VictoryDataManager
 
       loadedVicData.gamesCounter++;
 
+      GameManager.gamesCounter = loadedVicData.gamesCounter; //REMOVE FOR USER VERSION
       //Debug.Log("Load complete");
 
     }

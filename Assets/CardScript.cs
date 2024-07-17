@@ -5,10 +5,18 @@ using UnityEngine;
 public class CardScript : Clickable, ISaveable
 {
   public int id = 0;
-  public CARD_TYPE myType = CARD_TYPE.LOCATION;
   public CARD_STATE myState = CARD_STATE.NONE;
 
+  //SET MANUALLY IN INSPECTOR
+  public CARD_TYPE myType = CARD_TYPE.LOCATION;
+
+  /// <summary>
+  /// If this is industry card -> all present industries
+  /// </summary>
   public List<INDUSTRY_TYPE> myIndustries = new();
+  /// <summary>
+  /// If this is location card -> name of location on card
+  /// </summary>
   public string myLocation = "";
   public override void OnClick()
   {

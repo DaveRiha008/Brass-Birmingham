@@ -130,6 +130,12 @@ public class SaveData
 
 public interface ISaveable
 {
+  /// <summary>
+  /// Add information to correct struct in given saveData
+  /// </summary>
   void PopulateSaveData(SaveData a_SaveData);
+  /// <summary>
+  /// Load information from correct struct in given saveData
+  /// </summary>
   void LoadFromSaveData(SaveData a_SaveData);
 }

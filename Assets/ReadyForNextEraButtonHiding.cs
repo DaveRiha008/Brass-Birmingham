@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This script should be attached to HUD
 public class ReadyForNextEraButtonHiding : MonoBehaviour
 {
 
@@ -16,6 +17,6 @@ public class ReadyForNextEraButtonHiding : MonoBehaviour
   void Update()
   {
     bool isShown = GameManager.waitingForNextEra;
-    transform.Find("EraChangeReady").gameObject.SetActive(isShown); //Fixed object name!!
+    transform.Find(Constants.changerEraReadyButtonName).gameObject.SetActive(isShown); //Fixed object name!!
   }
 }

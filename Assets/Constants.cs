@@ -5,9 +5,10 @@ using UnityEngine;
 public struct Constants
 {
   //Game parameters
-  readonly public static bool instantGameRestart = true;
-  readonly public static bool initMainBoardLock = true;
+  readonly public static bool instantGameRestart = false;
+  readonly public static bool initMainBoardLock = false;
   readonly public static bool initAIFreePlay = true;
+  readonly public static int maxGames = 200;
 
   readonly public static int boatCost = 3;
   readonly public static int train1Cost = 5;
@@ -382,6 +383,33 @@ public struct Constants
   readonly public static string player2PersonalBoardName = "Personal board - Player 2";
   readonly public static string player3PersonalBoardName = "Personal board - Player 3";
   readonly public static string player4PersonalBoardName = "Personal board - Player 4";
+  readonly public static string[] playerPersonalBoardNames = { player1PersonalBoardName, player2PersonalBoardName, player3PersonalBoardName, player4PersonalBoardName };
+
+  readonly public static string helpBoardName = "Help Board";
+
+  readonly public static string midEraScreenName = "EraChangeScreen";
+
+  readonly public static string boardBackgroundName = "Background";
+
+
+  readonly public static string personalBoardHandName = "Hand";
+  readonly public static string personalBoardDiscardName = "Discard";
+
+  readonly public static string personalBoardNameLabelName = "PlayerName";
+  readonly public static string personalBoardMoneyLabelName = "Money";
+  readonly public static string personalBoardIncomeLabelName = "Income";
+  readonly public static string personalBoardIncomePointsLabelName = "IncomePoints";
+  readonly public static string personalBoardVictoryPointsLabelName = "VictoryPoints";
+
+
+  //Industries
+  readonly public static string IndustrySpacesOnPersonalBoardParentName = "IndustrySpaces";
+  readonly public static string breweriesParentName = "Breweries";
+  readonly public static string manufacturersParentName = "Manufacturers";
+  readonly public static string cottonMillsParentName = "CottonMills";
+  readonly public static string potteriesParentName = "Potteries";
+  readonly public static string ironWorksParentName = "IronWorks";
+  readonly public static string coalMinesParentName = "CoalMines";
 
   //Network
   readonly public static string boatNetworkParentName = "Network Boat";
@@ -398,13 +426,22 @@ public struct Constants
   readonly public static string player2HandBoardName = "Hand Preview - Player 2";
   readonly public static string player3HandBoardName = "Hand Preview - Player 3";
   readonly public static string player4HandBoardName = "Hand Preview - Player 4";
+  readonly public static string[] playerHandBoardNames = { player1HandBoardName, player2HandBoardName, player3HandBoardName, player4HandBoardName };
+
+
   readonly public static string player1DiscardBoardName = "Discard Preview - Player 1";
   readonly public static string player2DiscardBoardName = "Discard Preview - Player 2";
   readonly public static string player3DiscardBoardName = "Discard Preview - Player 3";
   readonly public static string player4DiscardBoardName = "Discard Preview - Player 4";
+  readonly public static string[] playerDiscardBoardNames = { player1DiscardBoardName, player2DiscardBoardName, player3DiscardBoardName, player4DiscardBoardName };
+
 
   //VP spaces
   readonly public static string VPSpacesName = "VP spaces";
 
+  //Buttons
+
+  readonly public static string cancelButtonName = "Cancel";
+  readonly public static string changerEraReadyButtonName = "EraChangeReady";
 
 }

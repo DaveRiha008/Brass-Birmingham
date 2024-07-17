@@ -15,11 +15,11 @@ public class PersonalInfoLabels : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
-    playerName = transform.Find("PlayerName").gameObject.GetComponent<TextMeshPro>();
-    playerMoney = transform.Find("Money").gameObject.GetComponent<TextMeshPro>();
-    playerIncome = transform.Find("Income").gameObject.GetComponent<TextMeshPro>();
-    playerIncomePts = transform.Find("IncomePoints").gameObject.GetComponent<TextMeshPro>();
-    playerVicPts = transform.Find("VictoryPoints").gameObject.GetComponent<TextMeshPro>();
+    playerName = transform.Find(Constants.personalBoardNameLabelName).gameObject.GetComponent<TextMeshPro>();
+    playerMoney = transform.Find(Constants.personalBoardMoneyLabelName).gameObject.GetComponent<TextMeshPro>();
+    playerIncome = transform.Find(Constants.personalBoardIncomeLabelName).gameObject.GetComponent<TextMeshPro>();
+    playerIncomePts = transform.Find(Constants.personalBoardIncomePointsLabelName).gameObject.GetComponent<TextMeshPro>();
+    playerVicPts = transform.Find(Constants.personalBoardVictoryPointsLabelName).gameObject.GetComponent<TextMeshPro>();
 
     playerName.color = Constants.playerColors[playerIndex];
     playerMoney.color = Constants.playerColors[playerIndex];

@@ -5,6 +5,9 @@ using UnityEngine;
 public class CoalMineTileScript : TileScript
 {
   List<GameObject> myCoals = new();
+  /// <summary>
+  /// Creates coal and places it on the correct position on this tile
+  /// </summary>
   GameObject CreateCoal()
   {
     var coalResource = HelpFunctions.LoadPrefabFromFile(Constants.coalSmallPath);
@@ -26,7 +29,6 @@ public class CoalMineTileScript : TileScript
       return;
     }
 
-    if (myCoals.Count <= 0 && isUpgraded) Downgrade();
 
     var newCoal = CreateCoal();
     myCoals.Add(newCoal);
@@ -57,24 +59,41 @@ public class CoalMineTileScript : TileScript
   {
     alreadyBuilt = true;
 
-    if (industryType == INDUSTRY_TYPE.COALMINE)
+    for (int i = 0; i < Constants.coalMineCoalCount[level-1]; i++)
     {
-      //Debug.Log("Creating barrel on built brewery");
-
-      for (int i = 0; i < Constants.coalMineCoalCount[level-1]; i++)
+      if (ObjectManager.GetAllConnectedMerchantTiles(builtOnSpace.myLocation).Count>0 && ObjectManager.HasCoalStorageFreeSpace())
       {
-        if (ObjectManager.GetAllConnectedMerchantTiles(builtOnSpace.myLocation).Count>0 && ObjectManager.HasCoalStorageSpace())
-        {
-          int moneyGained = ObjectManager.AddCoalToStorage();
-          GameManager.PlayerGainMoney(ownerPlayerIndex, moneyGained);
-        }
-        else AddCoal();
+        int moneyGained = ObjectManager.AddCoalToStorage();
+        GameManager.PlayerGainMoney(ownerPlayerIndex, moneyGained);
       }
-      if (myCoals.Count <= 0)
-        Upgrade();
+      else AddCoal();
     }
-    //BecomeUnclickable();
+    if (myCoals.Count <= 0)
+      Upgrade();
+
   }
+
+  public override void BecomeUnbuilt()
+  {
+    base.BecomeUnbuilt();
+
+    int coalsToRemove = myCoals.Count;
+    int coalsToRemoveFromStorage = Constants.coalMineCoalCount[level - 1] - coalsToRemove;
+
+    for (int i = 0; i < coalsToRemoveFromStorage; i++)
+    {
+      ObjectManager.GetCoalFromStorage(out _).SetActive(false);
+    }
+
+    for (int i = 0; i < coalsToRemove; i++)
+    {
+      RemoveCoal();
+    }
+
+    if (isUpgraded) Downgrade();
+
+  }
+
   public override void Remove()
   {
     int removeCount = myCoals.Count;
@@ -118,7 +137,7 @@ public class CoalMineTileScript : TileScript
           transform.position = dataSpace.transform.position;
           builtOnSpace = dataSpace;
           dataSpace.myTile = this;
-          dataSpace.builtIndustry = industryType;
+          dataSpace.industryTypeOfBuiltTile = industryType;
         }
 
         else if (builtOnSpace is not null)

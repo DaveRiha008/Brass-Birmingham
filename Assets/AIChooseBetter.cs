@@ -164,7 +164,7 @@ public class AIChooseBetter : AIBehaviour
     TileScript bestTile = possibleTiles[0];
     foreach(TileScript tile in possibleTiles)
     {
-      int utility = tile.upgradeNetworkVicPtsReward + tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
+      int utility = tile.upgradeNetworkVicPtsReward/2 + tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
       if(utility > maxUtility)
       {
         maxUtility = utility;
@@ -245,6 +245,8 @@ public class AIChooseBetter : AIBehaviour
 
     float utility = 0f;
     INDUSTRY_TYPE bestTileType = INDUSTRY_TYPE.NONE;
+
+    //If we haven't chosen a tile yet -> consider all possible tiles
     if (chosenTile is null)
     {
       if (space.hasBrew)
@@ -261,7 +263,7 @@ public class AIChooseBetter : AIBehaviour
       {
         float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.COALMINE);
         if(potentialUtility > utility){
-        utility = potentialUtility;
+          utility = potentialUtility;
           bestTileType= INDUSTRY_TYPE.COALMINE;
         }
       }
@@ -269,7 +271,7 @@ public class AIChooseBetter : AIBehaviour
       { 
         float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.COTTONMILL);
         if(potentialUtility > utility){
-        utility = potentialUtility;
+          utility = potentialUtility;
           bestTileType= INDUSTRY_TYPE.COTTONMILL;
         }
       }
@@ -277,7 +279,7 @@ public class AIChooseBetter : AIBehaviour
       { 
         float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.IRONWORKS);
         if(potentialUtility > utility){
-        utility = potentialUtility;
+          utility = potentialUtility;
           bestTileType= INDUSTRY_TYPE.IRONWORKS;
         }
       }
@@ -285,7 +287,7 @@ public class AIChooseBetter : AIBehaviour
       { 
         float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.MANUFACTURER);
         if(potentialUtility > utility){
-        utility = potentialUtility;
+          utility = potentialUtility;
           bestTileType= INDUSTRY_TYPE.MANUFACTURER;
         }
       }
@@ -293,7 +295,7 @@ public class AIChooseBetter : AIBehaviour
       { 
        float potentialUtility = GetIndustrySpacePotentialTileUtility(space, INDUSTRY_TYPE.POTTERY);
         if(potentialUtility > utility){
-        utility = potentialUtility;
+          utility = potentialUtility;
           bestTileType= INDUSTRY_TYPE.POTTERY;
         }
       }
@@ -305,6 +307,7 @@ public class AIChooseBetter : AIBehaviour
     }
 
     // If the best tile is tradeable -> add utility if merchant is connected
+    //  Or coalMine -> gives access to storage through merchant
     if (bestTileType == INDUSTRY_TYPE.COTTONMILL || bestTileType == INDUSTRY_TYPE.COALMINE || bestTileType == INDUSTRY_TYPE.POTTERY || bestTileType == INDUSTRY_TYPE.MANUFACTURER) 
     {
       List<MerchantTileSpace> connectedMerchants = ObjectManager.GetAllConnectedMerchantTiles(space.myLocation);
@@ -326,6 +329,22 @@ public class AIChooseBetter : AIBehaviour
         }
       }
     }
+    
+
+    //If we are overbuilding - lower utility if current tile is ours, add utility if it isn't
+    if (space.myTile is not null)
+    {
+      if(space.myTile.ownerPlayerIndex == myAIPlayer.index)
+      {
+        utility -= GetOverBuiltTileUtility(space.myTile);
+      }
+
+      else
+      {
+        utility += GetOverBuiltTileUtility(space.myTile) / 4;
+      }
+
+    }
 
     return utility;
   }
@@ -337,7 +356,7 @@ public class AIChooseBetter : AIBehaviour
       case INDUSTRY_TYPE.BREWERY:
         if (space.hasBrew)
         {
-          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.BREWERY, myAIPlayer.index);
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOfType(INDUSTRY_TYPE.BREWERY, myAIPlayer.index);
           if (potentialBuiltTile is not null)
             return GetTileBuildUtility(potentialBuiltTile);
         }
@@ -345,7 +364,7 @@ public class AIChooseBetter : AIBehaviour
       case INDUSTRY_TYPE.COALMINE:
         if (space.hasCoal)
         {
-          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.COALMINE, myAIPlayer.index);
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOfType(INDUSTRY_TYPE.COALMINE, myAIPlayer.index);
           if (potentialBuiltTile is not null)
             return GetTileBuildUtility(potentialBuiltTile);
         }
@@ -353,7 +372,7 @@ public class AIChooseBetter : AIBehaviour
       case INDUSTRY_TYPE.COTTONMILL:
         if (space.hasCot)
         {
-          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.COTTONMILL, myAIPlayer.index);
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOfType(INDUSTRY_TYPE.COTTONMILL, myAIPlayer.index);
           if (potentialBuiltTile is not null)
             return GetTileBuildUtility(potentialBuiltTile);
         }
@@ -361,7 +380,7 @@ public class AIChooseBetter : AIBehaviour
       case INDUSTRY_TYPE.IRONWORKS:
         if (space.hasIron)
         {
-          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.IRONWORKS, myAIPlayer.index);
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOfType(INDUSTRY_TYPE.IRONWORKS, myAIPlayer.index);
           if (potentialBuiltTile is not null)
             return GetTileBuildUtility(potentialBuiltTile);
         }
@@ -369,7 +388,7 @@ public class AIChooseBetter : AIBehaviour
       case INDUSTRY_TYPE.MANUFACTURER:
         if (space.hasMan)
         {
-          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.MANUFACTURER, myAIPlayer.index);
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOfType(INDUSTRY_TYPE.MANUFACTURER, myAIPlayer.index);
           if (potentialBuiltTile is not null)
             return GetTileBuildUtility(potentialBuiltTile);
         }
@@ -377,7 +396,7 @@ public class AIChooseBetter : AIBehaviour
       case INDUSTRY_TYPE.POTTERY:
         if (space.hasPot)
         {
-          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOFType(INDUSTRY_TYPE.POTTERY, myAIPlayer.index);
+          TileScript potentialBuiltTile = ObjectManager.GetLowestLevelTileOfType(INDUSTRY_TYPE.POTTERY, myAIPlayer.index);
           if (potentialBuiltTile is not null)
             return GetTileBuildUtility(potentialBuiltTile);
         }
@@ -390,8 +409,20 @@ public class AIChooseBetter : AIBehaviour
     return 0;
   }
 
+  float GetOverBuiltTileUtility(TileScript tile)
+  {
+    float value = tile.upgradeVicPtsReward + tile.upgradeIncomeReward;
+    if (tile.isUpgraded) value *= 1;
+    else value *= 0.5f;
+
+
+    return value;
+  }
+
   public override void ChooseIron()
   {
+    //Choose mainly our own iron
+
     List<IronWorksTileScript> possibleSources = GetPossibleIronSources();
     if (possibleSources.Count <= 0)
     {
@@ -567,7 +598,8 @@ public class AIChooseBetter : AIBehaviour
       {
         if (space.myTile is not BreweryTileScript)
         {
-          Debug.LogError("Found space with barrel which is not Brewery");
+
+          Debug.LogError($"Found space {space} with barrel which is not Brewery but {space.myTile}");
           return;
         }
         breweriesWithBarrels.Add((BreweryTileScript)space.myTile);
@@ -673,7 +705,7 @@ public class AIChooseBetter : AIBehaviour
 
 
             //Add utility for new source of resources
-            if (ObjectManager.IsLocationPartOfMyNetwork(location, myAIPlayer.index))
+            if (!ObjectManager.IsLocationPartOfMyNetwork(location, myAIPlayer.index))
             {
               if (indSpace.myTile.industryType == INDUSTRY_TYPE.BREWERY) tileUtility += 1; //Add utility for brewery -> new available barrel source
               else if (indSpace.myTile.industryType == INDUSTRY_TYPE.COALMINE) tileUtility += 0.5f; //Add utility for coalMine -> new available coal source

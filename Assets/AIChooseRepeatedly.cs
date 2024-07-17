@@ -4,17 +4,34 @@ using UnityEngine;
 
 public class AIChooseRepeatedly : AIChooseBetter
 {
+  /// <summary>
+  /// Cards which should not be considered in the next try
+  /// </summary>
   protected List<CardScript> blockedCards = new();
+  /// <summary>
+  /// Tiles which should not be considered in the next try
+  /// </summary>
   protected List<TileScript> blockedTiles = new();
+    /// <summary>
+  /// Industry spaces which should not be considered in the next try
+  /// </summary>
   protected List<IndustrySpace> blockedIndSpaces= new();
+  /// <summary>
+  /// Network spaces which should not be considered in the next try
+  /// </summary>
   protected List<NetworkSpace> blockedNetSpaces = new();
 
   CardScript previouslyChosenCard = null;
   TileScript previouslyChosenTile = null;
   IndustrySpace previouslyChosenIndSpace = null;
   NetworkSpace previouslyChosenNetSpace = null;
-
-  const int maxResets = 50;
+  /// <summary>
+  /// Maximum limit of tries -> after this many tries try another action
+  /// </summary>
+  const int maxResets = 20;
+  /// <summary>
+  /// Tries made so far in one action
+  /// </summary>
   int resetCounter = 0;
 
   public AIChooseRepeatedly(Player playerWithThisBehaviour) : base(playerWithThisBehaviour)
@@ -216,7 +233,7 @@ public class AIChooseRepeatedly : AIChooseBetter
 
   // No need to override NotEnoughIncome -> only called in loan action and we can't choose anything there
 
-
+  //Add the restriction of blocked Cards
   protected override List<CardScript> GetPossibleCards()
   {
     List<CardScript> possibleCards = CardManager.GetPlayerCards(myAIPlayer.index);
@@ -226,6 +243,7 @@ public class AIChooseRepeatedly : AIChooseBetter
 
     return viableCards;
   }
+  //Add the restriction of blocked Tiles
   protected override List<TileScript> GetPossibleTiles()
   {
     List<TileScript> possibleTiles = ObjectManager.GetViableTilesForCurrentAction();
@@ -235,7 +253,7 @@ public class AIChooseRepeatedly : AIChooseBetter
 
     return viableTiles;
   }
-
+  //Add the restriction of blocked Industry spaces
   protected override List<IndustrySpace> GetPossibleIndustrySpaces()
   {
     List<IndustrySpace> possibleSpaces;
@@ -255,6 +273,8 @@ public class AIChooseRepeatedly : AIChooseBetter
   //Resource sources don't need to be overriden ->
   //        By choosing different resource we won't change the finishibility of action
 
+
+  //Add the restriction of blocked Network spaces
   protected override List<NetworkSpace> GetPossibleNetworkSpaces()
   {
     List<NetworkSpace> possibleNetworks = ObjectManager.GetMyNetworkNeighborConnections(myAIPlayer.index);
@@ -281,6 +301,9 @@ public class AIChooseRepeatedly : AIChooseBetter
     return viableNetworks;
   }
 
+  /// <summary>
+  /// Different version of CancelAction -> this one doesn't make the action unfinishable -> only chosen choices
+  /// </summary>
   void ResetAction()
   {
     previouslyChosenCard = chosenCard;

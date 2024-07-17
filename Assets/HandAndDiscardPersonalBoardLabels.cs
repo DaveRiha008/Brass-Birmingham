@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PersonalInfo : MonoBehaviour
+//This script should be attached directly to personal board
+public class HandAndDiscardPersonalBoardLabels : MonoBehaviour
 {
   public int playerIndex = 0;
 
@@ -11,8 +12,8 @@ public class PersonalInfo : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
-    hand = transform.Find("Hand").gameObject.GetComponent<ClickThroughHand>();
-    discard = transform.Find("Discard").gameObject.GetComponent<ClickThroughHand>();
+    hand = transform.Find(Constants.personalBoardHandName).gameObject.GetComponent<ClickThroughHand>();
+    discard = transform.Find(Constants.personalBoardDiscardName).gameObject.GetComponent<ClickThroughHand>();
   }
 
   // Update is called once per frame
@@ -32,7 +33,7 @@ public class PersonalInfo : MonoBehaviour
     else
     {
       discard.GetComponent<SpriteRenderer>().sprite = lastCardInDiscard.GetComponent<SpriteRenderer>().sprite;
-      discard.transform.localScale = lastCardInDiscard.transform.localScale * 1;   
+      discard.transform.localScale = lastCardInDiscard.transform.localScale * 1;
     }
   }
 }

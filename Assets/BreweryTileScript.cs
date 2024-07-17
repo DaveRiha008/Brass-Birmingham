@@ -5,6 +5,9 @@ using UnityEngine;
 public class BreweryTileScript : TileScript
 {
   List<GameObject> myBarrels = new();
+  /// <summary>
+  /// Creates barrel and places it on the correct position on this tile
+  /// </summary>
   GameObject CreateBarrel()
   {
     var barrelResource = HelpFunctions.LoadPrefabFromFile(Constants.barrelPath);
@@ -19,8 +22,6 @@ public class BreweryTileScript : TileScript
   public void AddBarrel()
   {
     if (industryType != INDUSTRY_TYPE.BREWERY) return;
-
-    if (myBarrels.Count <= 0 && isUpgraded) Downgrade();
 
     var newBarrel = CreateBarrel();
     myBarrels.Add(newBarrel);
@@ -62,6 +63,21 @@ public class BreweryTileScript : TileScript
     }
     //BecomeUnclickable();
   }
+
+  public override void BecomeUnbuilt()
+  {
+    base.BecomeUnbuilt();
+
+    int barrelsToRemove = myBarrels.Count;
+
+
+    for (int i = 0; i < barrelsToRemove; i++)
+    {
+      RemoveBarrel();
+    }
+
+  }
+
   public override void Remove()
   {
     int removeCount = myBarrels.Count;
@@ -106,7 +122,7 @@ public class BreweryTileScript : TileScript
           transform.position = dataSpace.transform.position;
           builtOnSpace = dataSpace;
           dataSpace.myTile = this;
-          dataSpace.builtIndustry = industryType;
+          dataSpace.industryTypeOfBuiltTile = industryType;
         }
         else if (builtOnSpace is not null)
         {

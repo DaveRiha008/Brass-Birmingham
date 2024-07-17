@@ -7,7 +7,13 @@ public class LocationScript : MonoBehaviour
   public string locationName = "";
   public LocationType myType = LocationType.CITY;
 
+  /// <summary>
+  /// Neighbor locations in boat era
+  /// </summary>
   public List<LocationScript> neighborsBoats = new List<LocationScript>();
+  /// <summary>
+  /// Neighbor locations in boat era
+  /// </summary>
   public List<LocationScript> neighborsTrains = new List<LocationScript>();
   public List<MerchantTileSpace> myMerchants = new();
   // Start is called before the first frame update
@@ -15,6 +21,7 @@ public class LocationScript : MonoBehaviour
   {
     if(myType == LocationType.MERCHANT)
     {
+      //Load merchant rewards
       MerchantReward myReward = null; //Should always be intantiated in the end - Mechant must have a reward as a child
       foreach (Transform child in transform)
       {
@@ -22,6 +29,7 @@ public class LocationScript : MonoBehaviour
         //Debug.Log("Succesfully found merchant reward");
         myReward = reward;
       }
+      //Load merchant spaces
       foreach (Transform child in transform)
       {
         if (!child.TryGetComponent(out MerchantTileSpace merchant)) continue;

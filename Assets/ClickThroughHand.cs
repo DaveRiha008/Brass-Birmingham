@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//This script is used to move to hand or discard through clicking on object it is attached to
 public class ClickThroughHand : Clickable
 {
   public CARD_STATE myType = CARD_STATE.IN_HAND;

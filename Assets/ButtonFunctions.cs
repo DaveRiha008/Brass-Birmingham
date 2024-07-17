@@ -111,7 +111,7 @@ public class ButtonFunctions : MonoBehaviour
   public void DoneAction()
   {
     ActionManager.CancelAction(true);
-    Debug.Log("Called Cancel action!");
+    Debug.Log("Called Done action!");
   }
 
   public void HelpBoard()

@@ -4,14 +4,33 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+  /// <summary>
+  /// speed with which camera moves through the scene -> set manually in inspector
+  /// </summary>
   public int speed = 1;
+
+  /// <summary>
+  /// speed with which camera zooms in and out -> set manually in inspector
+  /// </summary>
   public int zoomSpeed = 1;
+
+  /// <summary>
+  /// Current camera position
+  /// </summary>
   public Vector3 position;
 
-  public float mainBoardZoom = 5;
-  public float personalBoardZoom = 2.8f;
+  /// <summary>
+  /// Default zoom on main board
+  /// </summary>
+  public const float mainBoardZoom = 5;
+
+  /// <summary>
+  /// Default zoom on personal board
+  /// </summary>
+  public const float personalBoardZoom = 2.8f;
 
   Camera myCamera;
+
 
   float currentResetSize;
   float originalCameraSize;
@@ -27,7 +46,13 @@ public class CameraScript : MonoBehaviour
   float yMaxBoundary = 1000;
   float yMinBoundary = -1000;
 
+  /// <summary>
+  /// Whether camera is locked on main board and can't move to any other
+  /// </summary>
   public bool lockMainBoard = false;
+  /// <summary>
+  /// Whether camera is locken on the current screen and can't move to any other
+  /// </summary>
   public bool lockScreenChange = false;
 
 
@@ -182,11 +207,11 @@ public class CameraScript : MonoBehaviour
 
   void MoveToBoard(string boardName)
   {
-    if (lockMainBoard && boardName != "Main Board") return;
+    if (lockMainBoard && boardName != Constants.mainBoardName) return;
     if (lockScreenChange) return;
     GameObject board = GameObject.Find(boardName); 
     Vector3 boardPosition = board.transform.position;
-    BoxCollider2D boardCollider = board.transform.Find("Background").gameObject.GetComponent<BoxCollider2D>(); //Fixed name of object!!
+    BoxCollider2D boardCollider = board.transform.Find(Constants.boardBackgroundName).gameObject.GetComponent<BoxCollider2D>();
     SetBoundaries(boardPosition, boardCollider);
     SetPosition(boardPosition);
     ResetZoom();
@@ -196,33 +221,33 @@ public class CameraScript : MonoBehaviour
   public void MoveToMainBoard()
   {
     currentResetSize = mainBoardZoom;
-    MoveToBoard("Main Board"); //Fixed name of object!!
+    MoveToBoard(Constants.mainBoardName);
     GameManager.currentlyOnBoard = BOARD.MAIN;
   }
 
   public void MoveToPersonalBoard()
   {
     currentResetSize = personalBoardZoom;
-    string boardName = "Personal board - Player " + (GameManager.activePlayerIndex + 1).ToString(); //Fixed name of object!! Player index must be count from 0
+    string boardName = Constants.playerPersonalBoardNames[GameManager.activePlayerIndex]; 
     MoveToBoard(boardName);
     GameManager.currentlyOnBoard = BOARD.PERSONAL;
   }
   public void MoveToHelpBoard()
   {
     currentResetSize = originalCameraSize;
-    MoveToBoard("Help Board"); //Fixed name of object!!
+    MoveToBoard(Constants.helpBoardName); 
     GameManager.currentlyOnBoard = BOARD.HELP;
   }
   public void MoveToCardPreviewHand()
   {
     currentResetSize = originalCameraSize;
-    MoveToBoard("Hand Preview - Player " + (GameManager.activePlayerIndex+1).ToString()); //Fixed name of object!!
+    MoveToBoard(Constants.playerHandBoardNames[GameManager.activePlayerIndex]);
     GameManager.currentlyOnBoard = BOARD.HAND;
   }
   public void MoveToCardPreviewDiscard()
   {
     currentResetSize = originalCameraSize;
-    MoveToBoard("Discard Preview - Player " + (GameManager.activePlayerIndex + 1).ToString()); //Fixed name of object!!
+    MoveToBoard(Constants.playerDiscardBoardNames[GameManager.activePlayerIndex]);
     GameManager.currentlyOnBoard = BOARD.DISCARD;
   }
 
@@ -230,7 +255,7 @@ public class CameraScript : MonoBehaviour
   {
     Debug.Log("Changing camera to EraChange");
     currentCameraSize = originalCameraSize;
-    MoveToBoard("EraChangeScreen"); //Fixed name of object!!
+    MoveToBoard(Constants.midEraScreenName);
     GameManager.currentlyOnBoard = BOARD.ERA_CHANGE;
   }
 }

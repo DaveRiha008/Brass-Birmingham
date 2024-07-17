@@ -6,20 +6,37 @@ public class ActionManager : MonoBehaviour
 {
   public static ActionManager instance;
 
+  /// <summary>
+  /// Action that is currently being done
+  /// </summary>
   public static ACTION currentAction = ACTION.NONE;
+  /// <summary>
+  /// State of action -> for example choosing card or choosing tile
+  /// </summary>
   public static ACTION_STATE currentState = ACTION_STATE.NONE;
+  /// <summary>
+  /// Missing resource - in case current action is unfinishable this tells the reason why
+  /// </summary>
   public static ACTION_MISSING_RESOURCE curMisRes = ACTION_MISSING_RESOURCE.NONE;
 
 
 
   //TODO: Actions and their logical system
-  static public int vicPtsBeforeAction = 0;
-  static public int incomeBeforeAction = 0;
-  static public int moneyBeforeAction = 0;
-  static public int moneySpentThisTurnBeforeAction = 0;
 
+
+  static int vicPtsBeforeAction = 0;
+  static int incomeBeforeAction = 0;
+  static int moneyBeforeAction = 0;
+  static int moneySpentThisTurnBeforeAction = 0;
+
+  /// <summary>
+  /// Number of successfully finished actions this turn
+  /// </summary>
   static public int actionsPlayed = 0;
 
+  /// <summary>
+  /// Number of develop actions to do after current action -> from merchant reward
+  /// </summary>
   static public int developActionsToDo = 0;
 
 
@@ -35,6 +52,9 @@ public class ActionManager : MonoBehaviour
     CreateSingleton();
   }
 
+  /// <summary>
+  /// Make this object a singleton
+  /// </summary>
   void CreateSingleton()
   {
     if (instance == null)
@@ -47,11 +67,39 @@ public class ActionManager : MonoBehaviour
   }
 
 
+  /// <summary>
+  /// Set player attributes to values before current action -> in case of unsuccessful finish
+  /// </summary>
+  static public void ResetActivePlayerToStateBeforeAction()
+  {
+    GameManager.GetActivePlayer().victoryPoints = vicPtsBeforeAction;
+    GameManager.GetActivePlayer().income = incomeBeforeAction;
+    GameManager.GetActivePlayer().money = moneyBeforeAction;
+    GameManager.GetActivePlayer().moneySpentThisTurn = moneySpentThisTurnBeforeAction;
+  }
 
 
+  /// <summary>
+  /// Set new values of player attributes before action (save changes) -> in case of successful finish
+  /// </summary>
+  static public void UpdateActivePlayerStateBeforeAction()
+  {
+    vicPtsBeforeAction = GameManager.GetActivePlayer().victoryPoints;
+    incomeBeforeAction = GameManager.GetActivePlayer().income;
+    moneyBeforeAction = GameManager.GetActivePlayer().money;
+    moneySpentThisTurnBeforeAction = GameManager.GetActivePlayer().moneySpentThisTurn;
+  }
+
+  /// <summary>
+  /// Make active player start given action
+  /// </summary>
+  /// <param name="action">Action to be done</param>
   static public void DoAction(ACTION action)
   {
+    //Don't do any action if player already played all actions
     if (PlayerDoneAllActions()) return;
+
+    //If any other action is being done -> can't start another
     if (currentAction != ACTION.NONE) return;
     //CancelAction();
     switch (action)
@@ -87,6 +135,7 @@ public class ActionManager : MonoBehaviour
         break;
     }
   }
+  
 
   static public void ChooseCardForAction()
   {
@@ -99,12 +148,16 @@ public class ActionManager : MonoBehaviour
     //Debug.Log("Setting action state to CHOOSING_CARD");
     currentState = ACTION_STATE.CHOOSING_CARD;
 
-
+    //Move camera to hand -> tells player to choose card
     CameraScript camera = Camera.main.GetComponent<CameraScript>();
     camera.MoveToCardPreviewHand();
 
   }
-
+  
+  /// <summary>
+  /// Function called after card was chosen
+  /// </summary>
+  /// <param name="card">Chosen card</param>
   static public void ChoseCard(CardScript card)
   {
     currentState = ACTION_STATE.NONE;
@@ -141,6 +194,8 @@ public class ActionManager : MonoBehaviour
         NetworkAfterCard();
         break;
       case ACTION.NONE:
+        //Card chosen for discard -> wanted to end turn
+
         //Debug.Log("Card discarded for no action");
         actionsPlayed++;
         currentState = ACTION_STATE.NONE;
@@ -164,10 +219,15 @@ public class ActionManager : MonoBehaviour
     ChooseCardForAction();
   }
 
+  /// <summary>
+  /// Build action after a card was selected
+  /// </summary>
+  /// <param name="card">Selected card</param>
   static void BuildWithCard(CardScript card)
   {
     CameraScript camera = Camera.main.GetComponent<CameraScript>();
 
+    //If card is a location - first choose space
     if (card.myType == CARD_TYPE.LOCATION || card.myType == CARD_TYPE.WILD_LOCATION)
     {
       camera.MoveToMainBoard();
@@ -183,6 +243,8 @@ public class ActionManager : MonoBehaviour
       ObjectManager.MakeCorrectIndustrySpacesClickable(card);
       ObjectManager.canChooseSpace = true;
     }
+
+    //If card is industry - first choose tile
     else
     {
       camera.MoveToPersonalBoard();
@@ -200,12 +262,16 @@ public class ActionManager : MonoBehaviour
 
   }
 
+  /// <summary>
+  /// Build action after a building tile was chosen
+  /// </summary>
   static public void BuildPickedUpItem()
   {
 
     CameraScript camera = Camera.main.GetComponent<CameraScript>();
     camera.MoveToMainBoard();
 
+    //If space already chosen - we have everything
     if (ObjectManager.chosenBuildSpace is not null)
     {
       currentState = ACTION_STATE.NONE;
@@ -214,6 +280,7 @@ public class ActionManager : MonoBehaviour
       return;
     }
 
+    //else choose space
     currentState = ACTION_STATE.CHOOSING_SPACE;
     ObjectManager.DestroyAllSpaceBorders();
     ObjectManager.canChooseSpace = true;
@@ -221,13 +288,14 @@ public class ActionManager : MonoBehaviour
     List<IndustrySpace> viableSpaces = ObjectManager.GetMyNetworkFreeSpacesForItemInHand(GameManager.activePlayerIndex);
 
     if (viableSpaces.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.SPACE_BUILD; HelpFunctions.HUDProblemUpdate(); }
-
-
       ObjectManager.HighlightIndustrySpaces(viableSpaces);
   }
-
+  /// <summary>
+  /// Build action after industrySpace was chosen
+  /// </summary>
   static public void BuildChoseIndustrySpace()
   {
+    //If tile already chosen - we have everything
 
     if (ObjectManager.itemInHand is not null)
     {
@@ -236,6 +304,8 @@ public class ActionManager : MonoBehaviour
       BuildSpaceAndTileChosen();
       return;
     }
+
+    //else choose tile
 
     CameraScript camera = Camera.main.GetComponent<CameraScript>();
     camera.MoveToPersonalBoard();
@@ -246,18 +316,20 @@ public class ActionManager : MonoBehaviour
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
     if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_BUILD; HelpFunctions.HUDProblemUpdate(); }
-
-      ObjectManager.HighlightTiles(viableTiles);
+    ObjectManager.HighlightTiles(viableTiles);
   }
+  /// <summary>
+  /// Building requires coal
+  /// </summary>
   static void BuildRequireCoal()
   {
     currentState = ACTION_STATE.CHOOSING_COAL;
 
-    if (ObjectManager.GetNearestCoalMinesWithFreeCoal(ObjectManager.chosenBuildSpace.myLocation).Count <= 0)
+    if (ObjectManager.GetNearestCoalMinesWithFreeCoal(ObjectManager.chosenBuildSpace.myLocation).Count <= 0) //Check whether there is connected coalMine with coal
     {
       if (ObjectManager.GetAllConnectedMerchantTiles(ObjectManager.chosenBuildSpace.myLocation).Count > 0) //Check whether buildSpace is connected to any merchant
       {
-        if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetCoalStoragePrice()))
+        if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetCoalStoragePrice())) //Check whether player has money for coal
         {
           ObjectManager.MakeCoalStorageClickable();
           ObjectManager.HighlightCoalStorage();
@@ -268,21 +340,24 @@ public class ActionManager : MonoBehaviour
       // Else there is not any coal to get
       { curMisRes = ACTION_MISSING_RESOURCE.COAL; HelpFunctions.HUDProblemUpdate();}
     }
-    else
+    else //There is connected coalMine
     {
       ObjectManager.UpdateNearestFreeCoalTiles(ObjectManager.chosenBuildSpace.myLocation);
       ObjectManager.HighlightNearestFreeCoalSpaces();
     }
   }
+  /// <summary>
+  /// Building requires iron
+  /// </summary>
 
   static void BuildRequireIron()
   {
     currentState = ACTION_STATE.CHOOSING_IRON;
 
 
-    if (ObjectManager.GetAllIronWorksWithFreeIron().Count <= 0)
+    if (ObjectManager.GetAllIronWorksWithFreeIron().Count <= 0) //Check whether there is ironWorks with iron
     {
-      if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetIronStoragePrice()))
+      if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetIronStoragePrice())) //If not - check whether player has money for iron
       {
         ObjectManager.MakeIronStorageClickable();
         ObjectManager.HighlightIronStorage();
@@ -291,14 +366,16 @@ public class ActionManager : MonoBehaviour
       { curMisRes = ACTION_MISSING_RESOURCE.MONEY_IRON; HelpFunctions.HUDProblemUpdate(); }
 
     }
-    else
+    else //There is ironWorks with iron
     {
       ObjectManager.UpdateFreeIronTiles();
       ObjectManager.HighlightFreeIronSpaces();
     }
   }
 
-
+  /// <summary>
+  /// Both building and space were chosen for build action
+  /// </summary>
   static public void BuildSpaceAndTileChosen()
   {
     currentState = ACTION_STATE.NONE;
@@ -307,6 +384,8 @@ public class ActionManager : MonoBehaviour
     ObjectManager.canPickUpTile = false;
 
     ObjectManager.DestroyAllBorders();
+
+    //Pay required resources for building
 
     int requiredCoal = ObjectManager.itemInHand.buildCoalReq;
     int requiredIron = ObjectManager.itemInHand.buildIronReq;
@@ -325,10 +404,19 @@ public class ActionManager : MonoBehaviour
       BuildRequireIron();
     }
 
+    //If no resources are needed - build successful
     else EndBuildAction();
 
   }
+
+  /// <summary>
+  /// coalMines used for building
+  /// </summary>
   static List<CoalMineTileScript> buildCoalSources = new();
+  /// <summary>
+  /// coalMine chosen as coal source for Build action
+  /// </summary>
+  /// <param name="coalSource">Chosen coalMine</param>
   static public void BuildChoseCoal(CoalMineTileScript coalSource)
   {
     currentState = ACTION_STATE.NONE;
@@ -338,6 +426,8 @@ public class ActionManager : MonoBehaviour
     buildCoalSources.Add(coalSource);
 
     ObjectManager.DestroyAllBorders();
+
+    //Require remaining resources
 
     if (ObjectManager.buildCoalReq > 0)
     {
@@ -352,11 +442,19 @@ public class ActionManager : MonoBehaviour
       BuildRequireIron();
     }
 
+    //If no more resources are needed - build successful
     else EndBuildAction();
 
   }
 
+  /// <summary>
+  /// Amount of coal purchased from coalStorage
+  /// </summary>
   static int buildCoalTakenFromStorage = 0;
+
+  /// <summary>
+  /// Chose coalStorage as source for build action
+  /// </summary>
   static public void BuildChoseCoalStorage()
   {
     currentState = ACTION_STATE.NONE;
@@ -378,12 +476,16 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough money to buy coal from storage");
-      CancelAction();
+      return;
+      //CancelAction();
     }
 
     ObjectManager.buildCoalReq--;
 
     ObjectManager.DestroyAllBorders();
+
+    //Require remaining resources
+
 
     if (ObjectManager.buildCoalReq > 0)
     {
@@ -396,11 +498,20 @@ public class ActionManager : MonoBehaviour
 
       BuildRequireIron();
     }
+    //If no more resources are needed - build successful
 
     else EndBuildAction();
   }
 
+  /// <summary>
+  /// ironWorks used as iron sources for build action
+  /// </summary>
   static List<IronWorksTileScript> buildIronSources = new();
+
+  /// <summary>
+  /// Chose ironWorks as iron source for build action
+  /// </summary>
+  /// <param name="ironSource">Chosen ironWorks</param>
   static public void BuildChoseIron(IronWorksTileScript ironSource)
   {
     currentState = ACTION_STATE.NONE;
@@ -410,19 +521,33 @@ public class ActionManager : MonoBehaviour
     buildIronSources.Add(ironSource);
 
     ObjectManager.DestroyAllBorders();
+    //Require remaining resources
+
 
     if (ObjectManager.buildIronReq > 0)
     {
       BuildRequireIron();
     }
 
+    else if(ObjectManager.buildCoalReq > 0)
+    {
+      BuildRequireCoal();
+    }
+    //If no more resources are needed - build successful
+
     else
     {
       EndBuildAction();
     }
   }
-
+  /// <summary>
+  /// Amount of iron purchased from ironStorage
+  /// </summary>
   static int buildIronTakenFromStorage = 0;
+
+  /// <summary>
+  /// Chose coalStorage as source for build action
+  /// </summary>
   static public void BuildChoseIronStorage()
   {
     currentState = ACTION_STATE.NONE;
@@ -438,7 +563,8 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough money to buy iron from storage");
-      CancelAction();
+      return;
+      //CancelAction();
     }
 
 
@@ -450,10 +576,19 @@ public class ActionManager : MonoBehaviour
 
     ObjectManager.DestroyAllBorders();
 
+    //Require remaining resources
+
+
     if (ObjectManager.buildIronReq > 0)
     {
       BuildRequireIron();
     }
+
+    else if (ObjectManager.buildCoalReq > 0)
+    {
+      BuildRequireCoal();
+    }
+    //If no more resources are needed - build successful
 
     else
     {
@@ -461,21 +596,27 @@ public class ActionManager : MonoBehaviour
     }
   }
 
-
+  /// <summary>
+  /// Call if Build action was done successfuly
+  /// </summary>
   static void EndBuildAction()
   {
     //Debug.Log($"Ending build action succesfully - building {ObjectManager.itemInHand} on {ObjectManager.chosenBuildSpace}");
-    currentState = ACTION_STATE.NONE;
+    //currentState = ACTION_STATE.NONE;
 
     ObjectManager.BuildHeldIndustry();
-
-    if (ObjectManager.overBuiltTile is not null)
-      ObjectManager.RemoveTile(ObjectManager.overBuiltTile);
 
     CancelAction(true);
   }
 
+
+  /// <summary>
+  /// Tiles sold in the current Sell action
+  /// </summary>
   static List<TileScript> recentlySoldTiles = new();
+  /// <summary>
+  /// Tile chosen in the current Sell action, but not yet sold
+  /// </summary>
   static TileScript tileToBeSold = null;
   static void SellAction()
   {
@@ -497,6 +638,10 @@ public class ActionManager : MonoBehaviour
       ObjectManager.HighlightTiles(viableTiles);
   }
 
+  /// <summary>
+  /// Chosen tile for sell action
+  /// </summary>
+  /// <param name="tile">Chosen buildin tile</param>
   static public void SellChoseTile(TileScript tile)
   {
     ObjectManager.canSellTile = false;
@@ -506,8 +651,10 @@ public class ActionManager : MonoBehaviour
 
     currentState = ACTION_STATE.CHOOSING_BARREL;
 
+    //Update inner memory of barrels available for sell action
     ObjectManager.FillBarrelsForSell(tile.builtOnSpace.myLocation, tile);
 
+    //If there is no barrel available, this is unfinishable
     if (ObjectManager.GetAllAvailableMerchantBarrels(tile.builtOnSpace.myLocation, tile).Count <= 0 &&
       ObjectManager.GetAllSpacesWithAvailableBarrels(tile.builtOnSpace.myLocation).Count <= 0)
     { curMisRes = ACTION_MISSING_RESOURCE.BARREL; HelpFunctions.HUDProblemUpdate(); }
@@ -516,7 +663,15 @@ public class ActionManager : MonoBehaviour
 
   }
 
+  /// <summary>
+  /// Merchant barrel spaces where barrels were used for the current Sell action
+  /// </summary>
   static List<BarrelSpace> merchBarrelsSpaceUsedToSell = new();
+
+  /// <summary>
+  /// Chose merchant barrel for Sell action
+  /// </summary>
+  /// <param name="barrelMerchSpace">Chosen merchant barrel space</param>
   static public void SellChoseBarrel(BarrelSpace barrelMerchSpace)
   {
     merchBarrelsSpaceUsedToSell.Add(barrelMerchSpace);
@@ -530,8 +685,11 @@ public class ActionManager : MonoBehaviour
     ObjectManager.ClearBarrelsForSell();
     ObjectManager.DestroyAllBorders();
 
+    //Choose more tile to sell
+
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
+    //If there are no more tiles to be sold -> tell player -> sell is finishable
     if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL; HelpFunctions.HUDProblemUpdate(); }
 
       currentState = ACTION_STATE.CHOOSING_TILE;
@@ -539,8 +697,15 @@ public class ActionManager : MonoBehaviour
     //EndSellAction(); //Uncomment for a single time sell action
   }
 
+  /// <summary>
+  /// Breweries where barrels were used for current Sell action
+  /// </summary>
   static List<BreweryTileScript> tileBarrelsUsedToSell = new();
 
+  /// <summary>
+  /// Brewery chosen as barrel source for Sell action
+  /// </summary>
+  /// <param name="barrelTile">Chosen brewery as barrel source</param>
   static public void SellChoseBarrel(BreweryTileScript barrelTile)
   {
 
@@ -554,14 +719,19 @@ public class ActionManager : MonoBehaviour
 
     ObjectManager.ClearBarrelsForSell();
     ObjectManager.DestroyAllBorders();
+
+    //Choose more tile to sell
+
     List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
+    //If there are no more tiles to be sold -> tell player -> sell is finishable
     if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_SELL; HelpFunctions.HUDProblemUpdate(); }
       currentState = ACTION_STATE.CHOOSING_TILE;
 
     ObjectManager.HighlightTiles(viableTiles);
     //EndSellAction(); //Uncomment for a single time sell action
   }
+
 
   static void EndSellAction()
   {
@@ -579,7 +749,7 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough income for loan action!");
-      CancelAction();
+      //CancelAction();
       return;
     }
 
@@ -594,8 +764,11 @@ public class ActionManager : MonoBehaviour
     GameManager.ActivePlayerGainMoney(Constants.loanMoney);
     GameManager.PlayerLoseIncomeLevel(GameManager.activePlayerIndex, Constants.loanIncomeCost);
 
-    CameraScript camera = Camera.main.GetComponent<CameraScript>();
-    camera.MoveToMainBoard();
+    EndLoanAction();
+  }
+
+  static void EndLoanAction()
+  {
     CancelAction(true);
   }
 
@@ -607,13 +780,16 @@ public class ActionManager : MonoBehaviour
       curMisRes = ACTION_MISSING_RESOURCE.WILD_CARD_ALREADY_IN_HAND;
       HelpFunctions.HUDProblemUpdate();
       Debug.Log("Can't scout when wild card is already in hand");
-      CancelAction();
+      //CancelAction();
       return;
     }
 
     ChooseCardForAction();
   }
 
+  /// <summary>
+  /// Chosen all 3 card for Scout action
+  /// </summary>
   static void ScoutAfterCards()
   {
     CardManager.canDrawWildCards = true;
@@ -625,17 +801,35 @@ public class ActionManager : MonoBehaviour
     CardManager.HighlightWildDecks();
   }
 
-  static public void ScoutChoseWildCard()
-  {
-    currentState = ACTION_STATE.NONE;
+  /// <summary>
+  /// Chosen wild card to be drawn from Scout action
+  /// </summary>
+  static CardScript scoutChosenWildCard = null;
 
+  /// <summary>
+  /// Chosen which wild card will be drawn in Scout action
+  /// </summary>
+  /// <param name="chosenWildCard">Chosen wild card</param>
+  static public void ScoutChoseWildCard(CardScript chosenWildCard)
+  {
+    scoutChosenWildCard = chosenWildCard;
+    //Debug.Log($"Player {GameManager.activePlayerIndex} selected wild card in scout");
+    EndScoutAction();
+  }
+
+  static void EndScoutAction()
+  {
     CardManager.canDrawWildCards = false;
     CancelAction(true);
   }
 
+  /// <summary>
+  /// Whether current develop action is a reward from merchant barrel usage (No resources are required and only 1 tile can be developed)
+  /// </summary>
   static bool developFromMerchantReward = false;
   static void DevelopAction()
   {
+    //Develop from merchant reward doesn't require a card 
     if (developFromMerchantReward)
       DevelopAfterCard();
     else
@@ -655,12 +849,18 @@ public class ActionManager : MonoBehaviour
 
     if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP; HelpFunctions.HUDProblemUpdate(); }
 
-      ObjectManager.HighlightTiles(viableTiles);
+    ObjectManager.HighlightTiles(viableTiles);
     ObjectManager.canPickUpTile = true;
 
   }
 
+  /// <summary>
+  /// First of the two tiles chosen to be developed in Develop action
+  /// </summary>
   static TileScript developFirstChosenItem = null;
+  /// <summary>
+  /// Second of the two tiles chosen to be developed in Develop action
+  /// </summary>
   static TileScript developSecondChosenItem = null;
 
 
@@ -670,13 +870,16 @@ public class ActionManager : MonoBehaviour
     ObjectManager.DevelopTile(tile);
     ObjectManager.DestroyAllBorders();
 
+    //develop from merchant develops always only one tile
     if (developFromMerchantReward)
     {
-      CancelAction(true);
+      EndDevelopAction();
       return;
     }
 
     currentState = ACTION_STATE.CHOOSING_IRON;
+
+    //require iron for develop
 
     if (ObjectManager.GetAllIronWorksWithFreeIron().Count <= 0)
     {
@@ -701,8 +904,18 @@ public class ActionManager : MonoBehaviour
 
   }
 
+  /// <summary>
+  /// ironWorks chosen as iron source for the first developed item
+  /// </summary>
   static IronWorksTileScript developIronSource1 = null;
+  /// <summary>
+  /// ironWorks chosen as iron source for the second developed item
+  /// </summary>
   static IronWorksTileScript developIronSource2 = null;
+  /// <summary>
+  /// Chosen ironWorks as iron source for Develop action
+  /// </summary>
+  /// <param name="ironSource">chosen ironWorks</param>
   static public void DevelopChoseIron(IronWorksTileScript ironSource)
   {
     //Debug.Log($"DevelopChoseIron: {ironSource}");
@@ -715,6 +928,8 @@ public class ActionManager : MonoBehaviour
       currentState = ACTION_STATE.CHOOSING_TILE;
 
       ObjectManager.DestroyAllTileBorders();
+
+      //Choose another tile to be developed - now the action is finishable
       List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
       if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP; HelpFunctions.HUDProblemUpdate(); }
@@ -733,13 +948,17 @@ public class ActionManager : MonoBehaviour
 
     developIronSource2 = ironSource;
 
-    developSecondChosenItem = null;
-    developFirstChosenItem = null;
-    CancelAction(true);
+    EndDevelopAction();
   }
 
+  /// <summary>
+  /// amount of iron taken from storage for Develop action
+  /// </summary>
   static int developIronTakenFromStorage = 0;
 
+  /// <summary>
+  /// Chosen iron storage as iron source for DevelopAction
+  /// </summary>
   static public void DevelopChoseIronStorage()
   {
     developIronTakenFromStorage++;
@@ -752,7 +971,8 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough money to buy iron from storage");
-      CancelAction();
+      return;
+      //CancelAction();
     }
 
     if (developSecondChosenItem is null && !developFromMerchantReward) //If this is the first developed item
@@ -764,6 +984,9 @@ public class ActionManager : MonoBehaviour
       currentState = ACTION_STATE.CHOOSING_TILE;
 
       ObjectManager.DestroyAllTileBorders();
+
+      //Choose another tile to be developed - now the action is finishable
+
       List<TileScript> viableTiles = ObjectManager.GetViableTilesForCurrentAction();
 
       if (viableTiles.Count <= 0) { curMisRes = ACTION_MISSING_RESOURCE.TILE_DEVELOP; HelpFunctions.HUDProblemUpdate(); }
@@ -780,9 +1003,12 @@ public class ActionManager : MonoBehaviour
     ObjectManager.canPickUpTile = false;
     ObjectManager.developReqIron = false;
 
+    EndDevelopAction();
 
-    developSecondChosenItem = null;
-    developFirstChosenItem = null;
+  }
+
+  static void EndDevelopAction()
+  {
     CancelAction(true);
   }
 
@@ -793,7 +1019,7 @@ public class ActionManager : MonoBehaviour
       || (GameManager.currentEra == ERA.BOAT && GameManager.GetActivePlayer().money < Constants.boatCost)) // Catch not enough money right away
     {
       Debug.Log("Not enough money to perform network action");
-      CancelAction();
+      //CancelAction();
       return;
     }
 
@@ -825,11 +1051,11 @@ public class ActionManager : MonoBehaviour
     ObjectManager.MakeAllNetworkSpacesUnclickable();
     ObjectManager.DestroyAllBorders();
     ObjectManager.networkReqCoal = true;
-    if (ObjectManager.GetNearestCoalMinesWithFreeCoal(space).Count <= 0)
+    if (ObjectManager.GetNearestCoalMinesWithFreeCoal(space).Count <= 0) //Check whether there is a connected coalMine with free coal
     {
       if (ObjectManager.GetAllConnectedMerchantTiles(space).Count > 0) //Check whether networkSpace is connected to any merchant
       {
-        if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetCoalStoragePrice()))
+        if (GameManager.ActivePlayerHasEnoughMoney(ObjectManager.GetCoalStoragePrice())) //Check whether player has enough money for coal
         {
           ObjectManager.MakeCoalStorageClickable();
           ObjectManager.HighlightCoalStorage();
@@ -840,7 +1066,7 @@ public class ActionManager : MonoBehaviour
       else // Else there is not any coal to get
       { curMisRes = ACTION_MISSING_RESOURCE.COAL; HelpFunctions.HUDProblemUpdate(); }
     }
-    else
+    else //There is a connected coalMine with free iron
     {
       ObjectManager.UpdateNearestFreeCoalTiles(space);
       ObjectManager.HighlightNearestFreeCoalSpaces();
@@ -853,6 +1079,9 @@ public class ActionManager : MonoBehaviour
     else Network2Added(space);
   }
 
+  /// <summary>
+  /// first of the two possible networkSpaces where a vehicle was placed
+  /// </summary>
   static NetworkSpace placedNetworkSpace = null;
   static public void Network1Added(NetworkSpace space)
   {
@@ -870,23 +1099,32 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough money for network!");
-      CancelAction();
+      //CancelAction();
       return;
     }
-    if (GameManager.currentEra == ERA.BOAT) //Catch not enough money for second train right away
+
+    placedNetworkSpace = space;
+
+    if (GameManager.currentEra == ERA.BOAT) 
     {
       EndNetworkAction();
       return;
     }
 
-
-    placedNetworkSpace = space;
-
+    //Trains require coal
     NetworkRequireCoal(space);
   }
 
+  /// <summary>
+  /// coalMines chosen as coal sources for Network action
+  /// </summary>
   static List<CoalMineTileScript> networkCoalSources = new();
 
+
+  /// <summary>
+  /// Chose coalMine as coal source for Network action
+  /// </summary>
+  /// <param name="coalSource">chosen coalMine</param>
   static public void NetworkChoseCoal(CoalMineTileScript coalSource)
   {
     currentState = ACTION_STATE.NONE;
@@ -895,10 +1133,12 @@ public class ActionManager : MonoBehaviour
 
     ObjectManager.networkReqCoal = false;
 
-    if (placedNetworkSpace2 is null)
+    if (placedNetworkSpace2 is null) //If this is the coal for first train
     {
       //Debug.Log("Second placed network is null");
 
+
+      //Choose another networkSpace - action is now finishable
       currentState = ACTION_STATE.CHOOSING_NETWORK_SPACE;
 
       ObjectManager.DestroyAllBorders();
@@ -911,11 +1151,20 @@ public class ActionManager : MonoBehaviour
         ObjectManager.HighlightNetworkSpaces(viableSpaces);
     }
 
+    //Second train also requires a barrel
     else
       NetworkRequireBarrel(placedNetworkSpace2);
 
   }
+
+  /// <summary>
+  /// amount of coal taken from storage for Network action
+  /// </summary>
   static int networkCoalTakenFromStorage = 0;
+
+  /// <summary>
+  /// Chose coal storage as coal source for Network action
+  /// </summary>
   static public void NetworkChoseCoalStorage()
   {
     currentState = ACTION_STATE.NONE;
@@ -931,17 +1180,20 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough money to buy coal from storage");
-      CancelAction();
+      return;
+      //CancelAction();
     }
 
     ObjectManager.networkReqCoal = false;
 
-    if (placedNetworkSpace2 is null)
+    if (placedNetworkSpace2 is null) //This is a coal for the first train
     {
       //Debug.Log("Second placed network is null");
 
       currentState = ACTION_STATE.CHOOSING_NETWORK_SPACE;
 
+
+      //Choose another train - action is now finishable
       ObjectManager.DestroyAllBorders();
       ObjectManager.MakeCorrectNetworkSpacesClickable();
       List<NetworkSpace> viableSpaces = ObjectManager.GetMyNetworkNeighborConnections(GameManager.activePlayerIndex);
@@ -951,11 +1203,20 @@ public class ActionManager : MonoBehaviour
         ObjectManager.HighlightNetworkSpaces(viableSpaces);
     }
 
+    //Second train also requires barrel
     else
       NetworkRequireBarrel(placedNetworkSpace2);
   }
 
+  /// <summary>
+  /// second of the two possible networkSpaces where a vehicle was placed
+  /// </summary>
   static NetworkSpace placedNetworkSpace2 = null;
+
+  /// <summary>
+  /// Second network chosen and vehicle placed there - Only in train era
+  /// </summary>
+  /// <param name="space">Chosen network space</param>
   static public void Network2Added(NetworkSpace space)
   {
     currentState = ACTION_STATE.NONE;
@@ -968,7 +1229,7 @@ public class ActionManager : MonoBehaviour
       HelpFunctions.HUDProblemUpdate();
 
       Debug.Log("Not enough money for network!");
-      CancelAction();
+      //CancelAction();
       return;
     }
 
@@ -989,9 +1250,15 @@ public class ActionManager : MonoBehaviour
     ObjectManager.MakeAllNetworkSpacesUnclickable();
   }
 
-  static public void NetworkChoseBarrel(TileScript tile)
+  /// <summary>
+  /// Brewery chosen as barrel source for second train in Network action
+  /// </summary>
+  static BreweryTileScript networkBarrelSource = null;
+
+  static public void NetworkChoseBarrel(BreweryTileScript brewery)
   {
-    currentState = ACTION_STATE.NONE;
+    //currentState = ACTION_STATE.NONE;
+    networkBarrelSource = brewery;
 
     ObjectManager.DestroyAllBorders();
     ObjectManager.ClearCurrentSpacesWithBarrelsForNetwork();
@@ -1003,19 +1270,109 @@ public class ActionManager : MonoBehaviour
     CancelAction(true);
   }
 
-
+  /// <summary>
+  /// Gives bool whether current action in the current state is finishable
+  /// </summary>
   static public bool IsActionFinishable() =>
-    (developFirstChosenItem is not null && (developIronSource1 is not null || developIronTakenFromStorage == 1)
-        && developSecondChosenItem is null && currentAction == ACTION.DEVELOP) //Develop finishable requirements
+    (developFirstChosenItem is not null && (developIronSource1 is not null || developIronTakenFromStorage == 1)//Develop finishable requirements
+        && developSecondChosenItem is null && currentAction == ACTION.DEVELOP) 
     || (recentlySoldTiles.Count > 0 && currentAction == ACTION.SELL) //Sell finishable requirements
-    || (placedNetworkSpace is not null && placedNetworkSpace2 is null && //Network finishabel requirements
+    || (placedNetworkSpace is not null && placedNetworkSpace2 is null && //Network finishable requirements
         (networkCoalSources.Count == 1 ^ networkCoalTakenFromStorage == 1) && currentAction == ACTION.NETWORK);
+
+  /// <summary>
+  /// Gives bool whehter current player has already played all available actions -> only remaining action is to end turn
+  /// </summary>
+  /// <returns></returns>
   static public bool PlayerDoneAllActions() => actionsPlayed >= Constants.maxActionsPerRound || (GameManager.firstEverRound && actionsPlayed >= 1);
 
-  static public void CancelAction(bool endedSuccesfully = false)
+  /// <summary>
+  /// Stop the current action
+  /// </summary>
+  /// <param name="endedSuccessfully">Whether action was finished to the end or it was interrupted in the middle</param>
+  static public void CancelAction(bool endedSuccessfully = false)
   {
+
+    //Tell AI that action was succesful - if it is not happy with this action -> give it a chance to cancel in the last moment
+    if (endedSuccessfully)
+    {
+      AIManager.ActionAboutToEndSuccessfuly(out bool cancelAction);
+      if (cancelAction) { CancelAction(); return; }
+    }
+
     //Debug.Log($"Cancel action called with {endedSuccesfully} ending");
-    if(!endedSuccesfully)
+    HUDMessageShowAfterCancelAction(endedSuccessfully);
+
+    //Move camera to main board after action
+    CameraScript camera = Camera.main.GetComponent<CameraScript>();
+    camera.MoveToMainBoard();
+
+    //Action ended -> nothing is missing now
+    curMisRes = ACTION_MISSING_RESOURCE.NONE;
+
+    //Revert or place correct action effects after cancel
+    switch (currentAction)
+    {
+      case ACTION.BUILD:
+        BuildEffectsAfterCancel(endedSuccessfully);
+        break;
+      case ACTION.SELL:
+        SellEffectsAfterCancel(endedSuccessfully);
+        break;
+      case ACTION.LOAN:
+        break;
+      case ACTION.SCOUT:
+        ScoutEffectsAfterCancel(endedSuccessfully);
+        break;
+      case ACTION.DEVELOP:
+        DevelopEffectsAfterCancel(endedSuccessfully);
+        break;
+      case ACTION.NETWORK:
+        NetworkEffectsAfterCancel(endedSuccessfully);
+        break;
+      case ACTION.NONE:
+        break;
+      default:
+        break;
+    }
+
+    //Add played actions
+    if (endedSuccessfully)
+      if (!developFromMerchantReward)
+        actionsPlayed++;
+
+
+    //Clear memory - we don't want any effect from last action to hold in the next one
+    ClearLocalMemoryAfterCancel();
+
+    ClearCardManagerMemoryAfterCancel(endedSuccessfully);
+
+    ClearObjectManagerMemoryAfterCancel(endedSuccessfully);
+    
+
+    //Set player attributes to correct values
+    if (!endedSuccessfully) GameManager.ResetActivePlayerToStateBeforeAction();
+
+    GameManager.UpdateActivePlayerPropertiesBeforeAction();
+
+    //Action ended - state and action is now none
+    currentAction = ACTION.NONE;
+    currentState = ACTION_STATE.NONE;
+
+    //Begin new develop action if we gained it from merchant reward
+    DoRemainingDevelopActionsAfterSell();
+
+    //AI support
+    if (endedSuccessfully && developActionsToDo <= 0) AIManager.ActionWasDone();
+
+  }
+
+  /// <summary>
+  /// Show correct message after action
+  /// </summary>
+  static void HUDMessageShowAfterCancelAction(bool endedSuccessfully)
+  {
+    if (!endedSuccessfully)
       HelpFunctions.HUDInfoShowMessage(INFO_MESSAGE.ACTION_CANCELED);
     else
     {
@@ -1046,25 +1403,82 @@ public class ActionManager : MonoBehaviour
           break;
       }
     }
-
-    CameraScript camera = Camera.main.GetComponent<CameraScript>();
-    camera.MoveToMainBoard();
-
-    curMisRes = ACTION_MISSING_RESOURCE.NONE;
-
-    if (currentAction == ACTION.BUILD && !endedSuccesfully)
+  }
+  /// <summary>
+  /// Place correct effect after Build action
+  /// </summary>
+  static void BuildEffectsAfterCancel(bool endedSuccessfully)
+  {
+    if (!endedSuccessfully)
     {
       foreach (CoalMineTileScript coalSource in buildCoalSources)
+      {
+        if (coalSource.GetResourceCount() <= 0 && coalSource.isUpgraded)
+          coalSource.Downgrade();
         coalSource.AddCoal();
+      }
       foreach (IronWorksTileScript ironSource in buildIronSources)
+      {
+        if (ironSource.GetResourceCount() <= 0 && ironSource.isUpgraded)
+          ironSource.Downgrade();
         ironSource.AddIron();
+      }
       for (int i = 0; i < buildCoalTakenFromStorage; i++)
         ObjectManager.AddCoalToStorage();
       for (int i = 0; i < buildIronTakenFromStorage; i++)
         ObjectManager.AddIronToStorage();
+
+      if (ObjectManager.itemInHand is not null)
+        ObjectManager.UnBuildHeldIndustry();
     }
 
-    else if (currentAction == ACTION.DEVELOP && !endedSuccesfully)
+    else
+    {
+      //Debug.Log("Build successful");
+      if (ObjectManager.overBuiltTile is not null)
+      {
+        //Debug.Log($"Overbuilt tile - removing the previous {ObjectManager.overBuiltTile}");
+        ObjectManager.RemoveTile(ObjectManager.overBuiltTile);
+      }
+    }
+  }
+  /// <summary>
+  /// Place correct effect after Sell action
+  /// </summary>
+  static void SellEffectsAfterCancel(bool endedSuccessfully) 
+  {
+    if (!endedSuccessfully)
+    {
+      foreach (TileScript tile in recentlySoldTiles)
+        tile.Downgrade();
+      foreach (BarrelSpace barrelSpace in merchBarrelsSpaceUsedToSell)
+        barrelSpace.AddBarrel();
+      foreach (BreweryTileScript barrelSpace in tileBarrelsUsedToSell)
+      {
+        if (barrelSpace.GetResourceCount() <= 0 && barrelSpace.isUpgraded) barrelSpace.Downgrade();
+        barrelSpace.AddBarrel();
+      }
+    }
+    else
+      foreach (BarrelSpace barrel in merchBarrelsSpaceUsedToSell)
+        GameManager.GainMerchantBarrelReward(barrel.myReward);
+  }
+  /// <summary>
+  /// Place correct effect after Scout action
+  /// </summary>
+  static void ScoutEffectsAfterCancel(bool endedSuccessfully)
+  {
+    if (!endedSuccessfully && scoutChosenWildCard is not null)
+    {
+      CardManager.DiscardCard(scoutChosenWildCard, GameManager.activePlayerIndex);
+    }
+  }
+  /// <summary>
+  /// Place correct effect after Develop action
+  /// </summary>
+  static void DevelopEffectsAfterCancel(bool endedSuccessfully)
+  {
+    if (!endedSuccessfully)
     {
       if (developFirstChosenItem is not null)
         ObjectManager.UndevelopTile(developFirstChosenItem);
@@ -1073,50 +1487,58 @@ public class ActionManager : MonoBehaviour
       if (developIronSource1 is not null && developIronSource1 != null) //Double check since is not null kept failing for some reason
       {
         //Debug.Log($"Adding Iron to first develop iron source: {developIronSource1}");
+        if (developIronSource1.GetResourceCount() <= 0 && developIronSource1.isUpgraded)
+          developIronSource1.Downgrade();
         developIronSource1.AddIron();
-
       }
       if (developIronSource2 is not null && developIronSource1 != null)
       {
         //Debug.Log($"Adding Iron to second develop iron source: {developIronSource2}");
+        if (developIronSource2.GetResourceCount() <= 0 && developIronSource2.isUpgraded)
+          developIronSource2.Downgrade();
         developIronSource2.AddIron();
       }
 
       for (int i = 0; i < developIronTakenFromStorage; i++)
         ObjectManager.AddIronToStorage();
-
     }
-
-    else if (currentAction == ACTION.SELL && !endedSuccesfully)
-    {
-      foreach (TileScript tile in recentlySoldTiles)
-        tile.Downgrade();
-      foreach (BarrelSpace barrelSpace in merchBarrelsSpaceUsedToSell)
-        barrelSpace.AddBarrel();
-      foreach (BreweryTileScript barrelSpace in tileBarrelsUsedToSell)
-        barrelSpace.AddBarrel();
-    }
-
-    else if (currentAction == ACTION.NETWORK && !endedSuccesfully)
+  }
+  /// <summary>
+  /// Place correct effect after Network action
+  /// </summary>
+  static void NetworkEffectsAfterCancel(bool endedSuccessfully)
+  {
+    if (!endedSuccessfully)
     {
       if (placedNetworkSpace is not null)
         ObjectManager.RemoveNetwork(placedNetworkSpace);
       if (placedNetworkSpace2 is not null)
         ObjectManager.RemoveNetwork(placedNetworkSpace2);
       foreach (CoalMineTileScript coalSource in networkCoalSources)
+      {
+        if (coalSource.GetResourceCount() <= 0 && coalSource.isUpgraded) coalSource.Downgrade();
         coalSource.AddCoal();
+
+      }
       for (int i = 0; i < networkCoalTakenFromStorage; i++)
         ObjectManager.AddCoalToStorage();
+
+      if (networkBarrelSource is not null)
+      {
+        if (networkBarrelSource.GetResourceCount() <= 0 && networkBarrelSource.isUpgraded) networkBarrelSource.Downgrade();
+        networkBarrelSource.AddBarrel();
+
+      }
     }
+  }
 
-    if (endedSuccesfully)
-      if (!developFromMerchantReward)
-        actionsPlayed++;
-
+  static void ClearLocalMemoryAfterCancel()
+  {
     buildIronTakenFromStorage = 0;
     buildCoalTakenFromStorage = 0;
     buildCoalSources.Clear();
     buildIronSources.Clear();
+    scoutChosenWildCard = null;
     developFirstChosenItem = null;
     developSecondChosenItem = null;
     developFromMerchantReward = false;
@@ -1129,14 +1551,24 @@ public class ActionManager : MonoBehaviour
     placedNetworkSpace2 = null;
     networkCoalTakenFromStorage = 0;
     networkCoalSources.Clear();
+    networkBarrelSource = null;
+    cardsChosen = 0;
+    merchBarrelsSpaceUsedToSell.Clear();
+    tileBarrelsUsedToSell.Clear();
+  }
 
-    if (!endedSuccesfully && CardManager.chosenCards.Count > 0)
+  static void ClearCardManagerMemoryAfterCancel(bool endedSuccessfully)
+  {
+    if (!endedSuccessfully && CardManager.chosenCards.Count > 0)
       foreach (CardScript card in CardManager.chosenCards)
         CardManager.ReturnCardFromDiscard(card, GameManager.activePlayerIndex);
-    cardsChosen = 0;
     CardManager.canChooseCard = false;
     CardManager.ClearChosenCards();
     CardManager.DestroyAllBorders();
+  }
+
+  static void ClearObjectManagerMemoryAfterCancel(bool endedSuccessfully)
+  {
 
     ObjectManager.networkReqBarrel = false;
     ObjectManager.networkReqCoal = false;
@@ -1146,6 +1578,7 @@ public class ActionManager : MonoBehaviour
     ObjectManager.developReqIron = false;
     ObjectManager.buildCoalReq = 0;
     ObjectManager.buildIronReq = 0;
+    ObjectManager.overBuiltTile = null;
     ObjectManager.DestroyAllBorders();
     ObjectManager.MakeAllIndustrySpacesUnclickable();
     ObjectManager.MakeAllNetworkSpacesUnclickable();
@@ -1155,29 +1588,11 @@ public class ActionManager : MonoBehaviour
     ObjectManager.ForgetSpace();
     ObjectManager.RestoreColliders();
 
-    if (currentAction == ACTION.SELL)
-    {
-      foreach (BarrelSpace barrel in merchBarrelsSpaceUsedToSell)
-        GameManager.GainMerchantBarrelReward(barrel.myReward);
-      merchBarrelsSpaceUsedToSell.Clear();
-      tileBarrelsUsedToSell.Clear();
-    }
-
-    if (!endedSuccesfully) GameManager.ResetActivePlayerToStateBeforeAction();
-
-    GameManager.UpdateActivePlayerPropertiesBeforeAction();
-
-    currentAction = ACTION.NONE;
-    //Debug.Log("Setting action state to none");
-    currentState = ACTION_STATE.NONE;
-
-    DoRemainingDevelopActionsAfterSell();
-
-    //AI support
-    if (endedSuccesfully && developActionsToDo <= 0) AIManager.ActionWasDone();
-
   }
 
+  /// <summary>
+  /// Do all remaining develop actions gained from last Sell action
+  /// </summary>
   public static void DoRemainingDevelopActionsAfterSell()
   {
     if (developActionsToDo <= 0) return;

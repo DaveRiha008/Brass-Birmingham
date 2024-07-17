@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ActiveCharHighlight : MonoBehaviour
 {
+  //All these values must be set manually in the inspector
   public Vector3 player1Pos;
   public Vector3 player2Pos;
   public Vector3 player3Pos;

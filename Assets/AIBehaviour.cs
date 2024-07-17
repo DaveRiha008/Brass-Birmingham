@@ -10,9 +10,25 @@ public class AIBehaviour
   protected IndustrySpace chosenSpace;
   protected TileScript chosenTile;
   protected NetworkSpace chosenNetworkSpace;
+
+  /// <summary>
+  /// actions considered forbidden - don't even try to complete these
+  /// </summary>
   protected List<ACTION> unFinishableActions = new();
-  protected List<ACTION> actionsOrder = new() { ACTION.SELL, ACTION.BUILD, ACTION.NETWORK, ACTION.DEVELOP, ACTION.SCOUT, ACTION.LOAN, ACTION.NONE };
+
+  /// <summary>
+  /// array through which AI goes in order - if AI is set to do only the first action, then this is important
+  /// </summary>
+  public ACTION[] actionsOrder = { ACTION.SELL, ACTION.BUILD, ACTION.NETWORK, ACTION.DEVELOP, ACTION.SCOUT, ACTION.LOAN };
+
+  /// <summary>
+  /// to stop infinite loops
+  /// </summary>
   protected int startActionsDone = 0;
+
+  /// <summary>
+  /// to stop infinite loops
+  /// </summary>
   protected int startTurnsDone = 0;
 
 
@@ -21,16 +37,23 @@ public class AIBehaviour
     myAIPlayer = playerWithThisBehaviour;
   }
 
-
+  /// <summary>
+  /// Called when AI first starts an action (not only when its turn begins)
+  /// </summary>
   public virtual void StartTurn()
   {
     startActionsDone = 0;
     startTurnsDone++;
-    if (startTurnsDone > 2000) return;//Stack Overflow defense
+    //if (startTurnsDone > 2000) return;//Stack Overflow defense
     //Debug.Log($"Called StartTurn for {startTurnsDone}th time");
     unFinishableActions.Clear();
     //StartAction();
   }
+
+
+  /// <summary>
+  /// Called when AI should choose a new action to do -> can be called many times in one turn
+  /// </summary>
   public virtual void StartAction()
   {
     chosenCard = null;
@@ -40,9 +63,12 @@ public class AIBehaviour
 
 
     startActionsDone++;
-    if (startActionsDone > 2000) return; //Stack Overflow defense
+    //if (startActionsDone > 2000) return; //Stack Overflow defense
+
+    //Try action based on given order
     foreach (ACTION action in actionsOrder)
     {
+      //Don't try unfinishable actions
       if (unFinishableActions.Contains(action))
       {
         //Debug.Log($"{action} big bad");
@@ -71,6 +97,7 @@ public class AIBehaviour
           Network();
           break;
         case ACTION.NONE:
+          //Only action left is NONE -> end turn
           //Debug.Log("Calling EndTurn from AI -> NONE action in order");
           GameManager.EndTurn();
           break;
@@ -84,13 +111,23 @@ public class AIBehaviour
     //Debug.Log("AI didn't have any action to do");
     //Debug.Log("Calling EndTurn from AI -> no finishable action");
 
+    //No finishable action left -> end turn
     GameManager.EndTurn();
   }
 
 
+  /// <summary>
+  /// Information for AI that an action is close to being successfully done -> used in more advanced versions of AI
+  /// </summary>
+  /// <param name="canceled">Output - whether action should be canceled in the last moment</param>
+  public virtual void ActionAboutToBeDone(out bool canceled)
+  {
+    canceled = false;
+  }
+
   protected virtual void CantChooseTile()
   {
-    //Debug.Log("AI couldnt choose Tile");
+    Debug.Log("AI couldnt choose Tile");
     CancelAction();
   }
 
@@ -153,7 +190,8 @@ public class AIBehaviour
   {
     if(myAIPlayer.income < Constants.loanIncomeCost)
     {
-      unFinishableActions.Add(ACTION.LOAN); NotEnoughIncome(); return;  //Definitely unfinishable -> no point in trying any other options
+      ActionManager.currentAction = ACTION.LOAN; //Needed to know that this action is unfinishable -> can't call DoAction -> would cancel uncontroled by AI
+      NotEnoughIncome(); return;  //Definitely unfinishable -> no point in trying any other options
     }
     ActionManager.DoAction(ACTION.LOAN);
     //Debug.Log("AI Called Loan action!");
@@ -162,7 +200,7 @@ public class AIBehaviour
   {
     if (CardManager.PlayerHasWildCard(GameManager.activePlayerIndex))
     {
-      unFinishableActions.Add(ACTION.SCOUT); //Definitely unfinishable -> no point in trying any other options
+      ActionManager.currentAction = ACTION.SCOUT; //Needed to know that this action is unfinishable -> can't call DoAction -> would cancel uncontroled by AI
       CancelAction();
       return;
     }
@@ -179,7 +217,8 @@ public class AIBehaviour
     if ((GameManager.currentEra == ERA.TRAIN && GameManager.GetActivePlayer().money < Constants.train1Cost)
     || (GameManager.currentEra == ERA.BOAT && GameManager.GetActivePlayer().money < Constants.boatCost))
     { // Catch not enough money right away
-      unFinishableActions.Add(ACTION.NETWORK); //Definitely unfinishable -> no point in trying any other options
+
+      ActionManager.currentAction = ACTION.NETWORK; //Needed to know that this action is unfinishable -> can't call DoAction -> would cancel uncontroled by AI
       NotEnoughMoney(MISSING_MONEY_REASON.NETWORK_VEHICLE);
       return;
     }
@@ -193,7 +232,7 @@ public class AIBehaviour
     chosenTile = null;
     chosenNetworkSpace = null;
 
-    if(ActionManager.currentAction != ACTION.NONE) //If action is none -> action hasn't even started -> is unfinishable right away -> NONE is always finishable
+    if(ActionManager.currentAction != ACTION.NONE) //NONE is alaways finishable
       unFinishableActions.Add(ActionManager.currentAction);
     //Debug.Log($"AI added {ActionManager.currentAction} to unfinishableActions");
     ActionManager.CancelAction();

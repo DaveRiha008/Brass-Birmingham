@@ -5,6 +5,10 @@ using TMPro;
 
 public class HelpFunctions
 {
+
+  /// <summary>
+  /// Shuffles the given list randomly and return shuffled copy
+  /// </summary>
   static public List<T> GetShuffledList<T>(List<T> inputList)
   {
     List<T> inputCopy = new(inputList);
