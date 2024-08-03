@@ -88,7 +88,24 @@ public class CardManager : MonoBehaviour, ISaveable
 
   private void Update()
   {
+    //CheckMax8Cards();
+  }
 
+  /// <summary>
+  /// Debug tool -> finding bug which duplicates cards
+  /// </summary>
+  static void CheckMax8Cards()
+  {
+    int i = 0;
+    foreach(List<CardScript> hand in playerHands)
+    {
+      if (hand.Count > 8)
+      {
+        Debug.LogError($"Player hand {i} has more than 8 cards");
+        AIManager.playFreely = false;
+      }
+      i++;
+    }
   }
 
   /// <summary>

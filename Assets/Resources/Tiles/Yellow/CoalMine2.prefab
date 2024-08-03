@@ -124,20 +124,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a4ca7d44d766a4cab4908676814ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
+  builtOnSpace: {fileID: 0}
+  alreadyBuilt: 0
+  buildCost: 0
+  buildIronReq: 0
+  buildCoalReq: 0
+  upgradeIncomeReward: 0
+  upgradeVicPtsReward: 0
+  upgradeNetworkVicPtsReward: 0
   basicSprite: {fileID: -1737285985, guid: 3438c041e2dce8f4aa88b842ddd8a428, type: 3}
   upgradedSprite: {fileID: 1648852323, guid: 8e3cd53e8e0bd0f48b0071dcd8582430, type: 3}
   basicScale: {x: 0.62281185, y: 0.62281185, z: 0.62281185}
   upgradedScale: {x: 0.40271366, y: 0.40271366, z: 0.40271366}
-  builtOnSpace: {fileID: 0}
-  alreadyBuilt: 0
   industryType: 1
   level: 2
   isUpgraded: 0
   isDeveloped: 0
   canBeDeveloped: 1
-  ownerPlayerIndex: 2
-  buildCost: 0
-  buildIronReq: 0
-  buildCoalReq: 0
-  upgradeVicPtsReward: 0
-  upgradeNetworkVicPtsReward: 0
+  canBeBuiltInBoatEra: 1
+  canBeBuiltInTrainEra: 1
+  ownerPlayerIndex: 1

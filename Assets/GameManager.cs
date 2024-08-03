@@ -134,8 +134,14 @@ public class GameManager : MonoBehaviour, ISaveable
 
     ActionManager.CancelAction();
 
+    foreach (Player player in playerList)
+    {
+      player.moneySpentThisTurn = 0;
+    }
+
     // For AI analysis
     VictoryDataManager.UpdateVictoryData();
+
 
     AIManager.StopPlaying();
 
@@ -309,7 +315,14 @@ public class GameManager : MonoBehaviour, ISaveable
     }
   }
 
-  static public Player GetPlayer(int playerIndex) => playerList[playerIndex];
+  static public Player GetPlayer(int playerIndex)
+  {
+    if (playerIndex >= numOfPlayers)
+    {
+      Debug.LogError("Tried to get player who is not in game");
+    }
+    return playerList[playerIndex];
+  }
   static public Player GetActivePlayer() => GetPlayer(activePlayerIndex);
   static public int GetPlayerIncomeLvl(int playerIndex)
   {

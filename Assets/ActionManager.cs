@@ -201,6 +201,7 @@ public class ActionManager : MonoBehaviour
         currentState = ACTION_STATE.NONE;
         if (GameManager.GameRunning())
         {
+          ClearCardManagerMemoryAfterCancel(true); //This card choosing was not a part of action
           //Debug.Log("Calling EndTurn from empty action -> after discard");
           GameManager.EndTurn();
 

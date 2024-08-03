@@ -31,6 +31,7 @@ public class PersonalInfoLabels : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+    if (playerIndex >= GameManager.numOfPlayers) return;
     Player player = GameManager.GetPlayer(playerIndex);
     //playerName.text = "Name: " + player.name;
     //playerMoney.text = "Money: " + player.money.ToString();

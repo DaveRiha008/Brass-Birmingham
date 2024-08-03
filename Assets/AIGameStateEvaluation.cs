@@ -640,6 +640,7 @@ public class AIGameStateEvaluation : AIChooseRepeatedly
     foreach(MerchantTileSpace merchant in allConnectedMerchants)
     {
       //If merchant isn't empty
+      if (merchant.myTile is null) continue;
       if(merchant.myTile.hasCot || merchant.myTile.hasMan || merchant.myTile.hasPottery)
       {
         value += connectedMerchantValue;

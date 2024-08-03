@@ -76,6 +76,8 @@ public class BreweryTileScript : TileScript
       RemoveBarrel();
     }
 
+    if (isUpgraded) Downgrade();
+
   }
 
   public override void Remove()

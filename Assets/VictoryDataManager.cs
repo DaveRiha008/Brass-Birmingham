@@ -26,10 +26,12 @@ public class VictoryDataManager
       if (GameManager.playerWinningOrder[1] == player) playerSeconds.Add(1);
       else playerSeconds.Add(0);
 
-      if (GameManager.playerWinningOrder[2] == player) playerThirds.Add(1);
+      if (GameManager.numOfPlayers > 2 &&
+        GameManager.playerWinningOrder[2] == player) playerThirds.Add(1);
       else playerThirds.Add(0);
 
-      if (GameManager.playerWinningOrder[3] == player) playerFourths.Add(1);
+      if (GameManager.numOfPlayers > 3 &&
+        GameManager.playerWinningOrder[3] == player) playerFourths.Add(1);
       else playerFourths.Add(0);
     }
 
@@ -47,19 +49,25 @@ public class VictoryDataManager
     newVicData.player2Thirds = playerThirds[1];
     newVicData.player2Fourths = playerFourths[1];
 
-    newVicData.player3Strategy = playerStrats[2].ToString();
-    newVicData.player3VicPoints = playerVicPts[2];
-    newVicData.player3Victories = playerVictories[2];
-    newVicData.player3Seconds = playerSeconds[2];
-    newVicData.player3Thirds = playerThirds[2];
-    newVicData.player3Fourths = playerFourths[2];
+    if(GameManager.numOfPlayers > 2)
+      {
+      newVicData.player3Strategy = playerStrats[2].ToString();
+      newVicData.player3VicPoints = playerVicPts[2];
+      newVicData.player3Victories = playerVictories[2];
+      newVicData.player3Seconds = playerSeconds[2];
+      newVicData.player3Thirds = playerThirds[2];
+      newVicData.player3Fourths = playerFourths[2];
+    }
 
-    newVicData.player4Strategy = playerStrats[3].ToString();
-    newVicData.player4VicPoints = playerVicPts[3];
-    newVicData.player4Victories = playerVictories[3];
-    newVicData.player4Seconds = playerSeconds[3];
-    newVicData.player4Thirds = playerThirds[3];
-    newVicData.player4Fourths = playerFourths[3];
+    if(GameManager.numOfPlayers > 3)
+    {
+      newVicData.player4Strategy = playerStrats[3].ToString();
+      newVicData.player4VicPoints = playerVicPts[3];
+      newVicData.player4Victories = playerVictories[3];
+      newVicData.player4Seconds = playerSeconds[3];
+      newVicData.player4Thirds = playerThirds[3];
+      newVicData.player4Fourths = playerFourths[3];
+    }
 
 
     VictoryData loadedVicData = new();

@@ -34,7 +34,7 @@ public class AIManager:MonoBehaviour
   /// <summary>
   /// Each players strategy script
   /// </summary>
-  static AIBehaviour[] strategiesPerPlayer = new AIBehaviour[4];
+  static readonly AIBehaviour[] strategiesPerPlayer = new AIBehaviour[4];
 
   /// <summary>
   /// Possible fixed actionOrders
@@ -63,19 +63,22 @@ public class AIManager:MonoBehaviour
   }
   private void Update()
   {
+    if (GameManager.GetActivePlayer().AIReplaced) isPlaying = true;
+    else isPlaying = false;
     //Debug.Log("AIManager update");
     if (!isPlaying || GameManager.waitingForNextEra || !GameManager.GetActivePlayer().AIReplaced) return;
     if (playFreely) AIDoNextPart();
 
   }
 
-  private void OnDestroy()
-  {
-    strategiesPerPlayer[0] = new AIBehaviour(GameManager.GetPlayer(0));
-    strategiesPerPlayer[1] = new AIBehaviour(GameManager.GetPlayer(1));
-    strategiesPerPlayer[2] = new AIBehaviour(GameManager.GetPlayer(2));
-    strategiesPerPlayer[3] = new AIBehaviour(GameManager.GetPlayer(3));
-  }
+  //private void OnDestroy()
+  //{
+
+  //  strategiesPerPlayer[0] = new AIBehaviour(GameManager.GetPlayer(0));
+  //  strategiesPerPlayer[1] = new AIBehaviour(GameManager.GetPlayer(1));
+  //  strategiesPerPlayer[2] = new AIBehaviour(GameManager.GetPlayer(2));
+  //  strategiesPerPlayer[3] = new AIBehaviour(GameManager.GetPlayer(3));
+  //}
 
   static void LoadPlayerStrategies()
   {

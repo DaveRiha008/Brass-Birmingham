@@ -103,67 +103,65 @@ public class InputHandler : MonoBehaviour
         camera.MoveDown(Input.GetAxis("Mouse Y"));
       }
     }
+
+
+
     //Game testing -> comment everything below for user gaming version
+    //__________________________________________________________________________________________
 
+    //    if (Input.GetKey(KeyCode.X) || Input.GetKeyDown(KeyCode.Y))
+    //    {
+    //      if (SceneManager.GetActiveScene().name == "Game")
+    //        AIManager.AIDoNextPart();
+    //      else
+    //      {
+    //        SceneManager.LoadScene("Game");
+    //        GameManager.StartGame();
+    //        Debug.Log("Game start!");
+    //      }
 
-    //if (Input.GetKey(KeyCode.X) || Input.GetKeyDown(KeyCode.Y))
-    //{
-    //  if (SceneManager.GetActiveScene().name == "Game")
-    //    AIManager.AIDoNextPart();
-    //  else
-    //  {
-    //    SceneManager.LoadScene("Game");
-    //    GameManager.StartGame();
-    //    Debug.Log("Game start!");
-    //  }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Tab))
+    //      AIManager.playFreely = !AIManager.playFreely;
 
-    //}
-    //if (Input.GetKeyDown(KeyCode.Tab))
-    //  AIManager.playFreely = !AIManager.playFreely;
+    //    if (Input.GetKeyDown(KeyCode.T))
+    //    {
+    //      camera.lockMainBoard = !camera.lockMainBoard;
+    //    }
 
-    //if (Input.GetKeyDown(KeyCode.T))
-    //{
-    //  camera.lockMainBoard = !camera.lockMainBoard;
-    //}
+    //    //if (Input.GetKeyDown(KeyCode.E))
+    //    //{
+    //    //  GameManager.ChangeEra();
+    //    //}
+    //    if (Input.GetKeyDown(KeyCode.L)) //Not in final game version - just for testing
+    //    {
+    //      //ObjectManager.CreateAllObjects();
+    //      //CardManager.CreateAllCards();
+    //      ObjectManager.InitializeObjects();
+    //      CardManager.InitializeCards();
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.J)) //Not in final game version - just for testing
+    //    {
+    //      Debug.Log("Destroying everything!");
+    //      ObjectManager.DestroyAllObjects();
+    //      CardManager.DestroyAllCards();
+    //    }
 
-    ////if (Input.GetKeyDown(KeyCode.E))
-    ////{
-    ////  GameManager.ChangeEra();
-    ////}
-    //if (Input.GetKeyDown(KeyCode.L)) //Not in final game version - just for testing
-    //{
-    //  //ObjectManager.CreateAllObjects();
-    //  //CardManager.CreateAllCards();
-    //  ObjectManager.InitializeObjects();
-    //  CardManager.InitializeCards();
-    //}
-    //if (Input.GetKeyDown(KeyCode.J)) //Not in final game version - just for testing
-    //{
-    //  Debug.Log("Destroying everything!");
-    //  ObjectManager.DestroyAllObjects();
-    //  CardManager.DestroyAllCards();
-    //}
-    //if (Input.GetKeyDown(KeyCode.O)) //Not in final game version - just for testing
-    //{
-    //  ObjectManager.HighlightCorrectTiles();
-    //  ObjectManager.HighlightCorrectNetworkSpaces();
-    //  CardManager.HighlightAllCards();
-    //}
-    //if (Input.GetKeyDown(KeyCode.KeypadPlus))
-    //{
-    //  //ObjectManager.AddCoalToStorage();
-    //  //ObjectManager.AddIronToStorage();
+    //    if (Input.GetKeyDown(KeyCode.KeypadPlus))
+    //    {
+    //      //ObjectManager.AddCoalToStorage();
+    //      //ObjectManager.AddIronToStorage();
 
-    //  GameManager.ActivePlayerGainMoney(10);
-    //  //GameManager.PlayerGainIncome(GameManager.activePlayerIndex);
-    //}
-    //if (Input.GetKeyDown(KeyCode.KeypadMinus))
-    //{
-    //  ObjectManager.GetCoalFromStorage(out _).SetActive(false);
-    //  ObjectManager.GetIronFromStorage(out _).SetActive(false);
+    //      GameManager.ActivePlayerGainMoney(10);
+    //      //GameManager.PlayerGainIncome(GameManager.activePlayerIndex);
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.KeypadMinus))
+    //    {
+    //      ObjectManager.GetCoalFromStorage(out _).SetActive(false);
+    //      ObjectManager.GetIronFromStorage(out _).SetActive(false);
 
-    //  GameManager.ActivePlayerSpendMoney(10, out _);
-    //  GameManager.PlayerLoseIncome(GameManager.activePlayerIndex);
-    //}
+    //      GameManager.ActivePlayerSpendMoney(10, out _);
+    //      GameManager.PlayerLoseIncome(GameManager.activePlayerIndex);
+    //    }
   }
 }

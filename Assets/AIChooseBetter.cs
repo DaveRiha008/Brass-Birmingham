@@ -318,6 +318,7 @@ public class AIChooseBetter : AIBehaviour
       {
         foreach (MerchantTileSpace merch in connectedMerchants)
         {
+          if (merch.myTile is null) continue;
           if ((bestTileType == INDUSTRY_TYPE.COTTONMILL && merch.myTile.hasCot) ||
             (bestTileType == INDUSTRY_TYPE.MANUFACTURER && merch.myTile.hasMan) ||
             (bestTileType == INDUSTRY_TYPE.POTTERY && merch.myTile.hasPottery))
