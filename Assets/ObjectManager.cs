@@ -282,20 +282,22 @@ public class ObjectManager : MonoBehaviour, ISaveable
       var incomeTokenResource = HelpFunctions.LoadPrefabFromFile(Constants.allIncomeTokens[i]);
       GameObject newIncomeToken = Instantiate(incomeTokenResource) as GameObject;
       incomeTokens.Add(newIncomeToken);
+
+      Debug.Log($"Created token {i}");
     }
   }
 
   static void SetVictoryTokenPosition(int playerIndex, int victoryPoints)
   {
     //Debug.Log($"Victory token {VPTokens[playerIndex]}");
-    if (VPTokens.Count <= playerIndex + 1) return;
+    if (VPTokens.Count < playerIndex + 1) return;
     VPTokens[playerIndex].transform.position = mainBoard.transform.Find(Constants.VPSpacesName).GetChild(victoryPoints%99).position
       + Constants.victoryTokenOffset + Constants.playerTokenOffsets[playerIndex];
   }
 
   static void SetIncomeTokenPosition(int playerIndex, int income)
   {
-    if (incomeTokens.Count <= playerIndex + 1) return;
+    if (incomeTokens.Count < playerIndex + 1) return;
 
     Vector3 destination = mainBoard.transform.Find(Constants.VPSpacesName).transform.GetChild(income%99).position
       + Constants.incomeTokenOffset + Constants.playerTokenOffsets[playerIndex]; 
